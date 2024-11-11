@@ -1,5 +1,4 @@
 import {DocumentReference, FieldValue, GeoPoint, Timestamp} from "firebase-admin/firestore";
-import {adminDb} from "./firebaseAdmin";
 
 export function buildServerFirestoreUpdatePath(obj: any, prefix = "", isUpdate = true): Record<string, any> {
   return Object.keys(obj).reduce((acc, key) => {
