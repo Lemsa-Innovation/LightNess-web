@@ -19,7 +19,7 @@ function notFound(request: NextRequest) {
   url.pathname = "/500";
   return NextResponse.redirect(url);
 }
-function alreadyAuthenticated(request: NextRequest, headers: Headers) {
+function alreadyAuthenticated(request: NextRequest) {
   const redirect = request.nextUrl.searchParams.get("redirect");
   const url = request.nextUrl.clone();
   url.pathname = redirect ?? SIDEBAR_ROUTES.dashboard.path;
@@ -38,14 +38,14 @@ export function middleware(request: NextRequest) {
     loginPath: "/api/login",
     logoutPath: "/api/logout",
     ...authConfig,
-    handleValidToken: async ({token, decodedToken}, headers) => {
+    handleValidToken: async ({decodedToken}, headers) => {
       const allowedRoutes: string[] = PUBLIC_PATHS;
       const userRole = decodedToken?.["role"] as UserRole | undefined;
       const userStatus = decodedToken?.["status"] as UserStatus;
       if (userRole === "admin") {
         //Authenticated user should not be able to access auth routes
         if (AUTH_PATHS.includes(request.nextUrl.pathname)) {
-          return alreadyAuthenticated(request, headers);
+          return alreadyAuthenticated(request);
         }
         if (userStatus === "active") {
           allowedRoutes.push(...PROTECTED_PATHS);
@@ -53,7 +53,6 @@ export function middleware(request: NextRequest) {
       } else {
         allowedRoutes.push(...AUTH_PATHS);
       }
-
       if (
         allowedRoutes.some((path) => request.nextUrl.pathname.startsWith(path))
       ) {
@@ -63,8 +62,6 @@ export function middleware(request: NextRequest) {
           },
         });
       } else if (request.nextUrl.pathname === "/") {
-        console.log("Redirect to home ");
-
         redirectToHome(request);
       }
       return notFound(request);

@@ -1,4 +1,5 @@
 export interface AdminPositions {
+    super: string
     manager: string
     secretary: string
 }

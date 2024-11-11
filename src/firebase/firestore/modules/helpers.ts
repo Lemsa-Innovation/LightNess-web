@@ -35,14 +35,14 @@ export function checkArrayValues({updatedValue, defaultValue}: {
     }
 }
 
-export function getGeoPoint(latLng: google.maps.LatLngLiteral): GeoPoint {
-    return new GeoPoint(latLng.lat, latLng.lng)
-}
+// export function getGeoPoint(latLng: google.maps.LatLngLiteral): GeoPoint {
+//     return new GeoPoint(latLng.lat, latLng.lng)
+// }
 
-export function getLatLng(geoPoint: GeoPoint): google.maps.LatLngLiteral {
-    return {
-        lat: geoPoint.latitude,
-        lng: geoPoint.longitude
-    }
-}
+// export function getLatLng(geoPoint: GeoPoint): google.maps.LatLngLiteral {
+//     return {
+//         lat: geoPoint.latitude,
+//         lng: geoPoint.longitude
+//     }
+// }
 

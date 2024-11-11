@@ -56,7 +56,6 @@ export const auth: Auth = {
         logout: "Se déconnecter",
         toast: {
             error: "Déconnexion échouée. Veuillez réessayer.",
-            pending: "Déconnexion en cours... Veuillez patienter.",
             success: "Vous êtes déconnecté. À bientôt !",
         }
     },

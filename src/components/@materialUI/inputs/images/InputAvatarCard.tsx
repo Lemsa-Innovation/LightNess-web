@@ -1,39 +1,32 @@
-import { motion } from 'framer-motion';
-import { Control, useController } from "react-hook-form";
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
-import { useLanguage } from '@/contexts/language/LanguageContext';
-import { Fragment } from 'react';
-import { varFadeInLeft } from '../../animate/variants/fade';
+import {motion} from 'framer-motion';
+import {Control, useController} from "react-hook-form";
+import {Card, CardBody, CardHeader} from "@nextui-org/react";
+import {useLanguage} from '@/contexts/language/LanguageContext';
+import {Fragment} from 'react';
+import {varFadeInLeft} from '../../animate/variants/fade';
 import InputAvatar from './InputAvatar';
 
 type Props = {
     name: string
     control: Control<any>
-    variant : "user" | "store"
+    variant: "user"
 }
 const InputAvatarCard: React.FC<Props> = ({
     name,
     control,
     variant
 }) => {
-    const { fieldState: { error }, field: { value } } = useController({
+    const {fieldState: {error}, field: {value}} = useController({
         name,
         control,
     });
 
     //console.log(value);
 
-    const { languageData } = useLanguage()
+    const {languageData} = useLanguage()
     const imageLabels = languageData?.inputs.attachements.media.labels
-    const getLabels = () =>{
-        switch(variant){
-            case 'user':
-                return languageData?.inputs.user.fields.profilePhoto
-            case 'store':
-                return languageData?.inputs.store.fields.storeLogo
-        }
-    }
-    const avatarImage = getLabels()
+    const avatarImage = languageData?.inputs.users.fields.profilePhoto
+
     return (
         <Card className=' bg-transparent border-2 border-foreground-200 select-none '>
             <CardHeader className='flex flex-row justify-center'>

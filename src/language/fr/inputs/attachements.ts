@@ -10,7 +10,7 @@ export const attachements: Attachements = {
             toastUploading: {
                 success: "Image téléversée avec succès.",
                 error: "Échec du téléversement de l'image.",
-                pending: "Téléversement de l'image en cours..."
+                // pending: "Téléversement de l'image en cours..."
             },
             rules: {
                 isRequired: "L'image est requise.",
@@ -32,7 +32,7 @@ export const attachements: Attachements = {
             uploadingStatus: {
                 success: "Images téléchargées avec succès.",
                 error: "Échec du téléchargement des images.",
-                pending: "Téléchargement des images en cours..."
+                // pending: "Téléchargement des images en cours..."
             },
             rules: {
                 isRequired: "Veuillez télécharger au moins une image ."

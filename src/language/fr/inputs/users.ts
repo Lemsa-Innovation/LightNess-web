@@ -41,7 +41,7 @@ export const users: Users = {
             toastUploading: {
                 success: "Photo de profil téléversée avec succès.",
                 error: "Échec du téléversement de la photo de profil.",
-                pending: "Téléversement de la photo de profil en cours..."
+                // pending: "Téléversement de la photo de profil en cours..."
             },
             rules: {
                 isRequired: "La photo de profil est requise pour compléter votre profil."
@@ -67,23 +67,6 @@ export const users: Users = {
                 },
 
             },
-            identity: {
-                description: "Confirmez l'identité de l'utilisateur en validant les documents fournis.",
-                toast: {
-                    success: "Identité vérifiée avec succès.",
-                    error: "Échec de la vérification de l'identité. Veuillez réessayer.",
-                },
-                header: "Vérifier l'identité"
-            },
-            badge: {
-                label: "Attribuer le badge",
-                header: "Attribution du badge",
-                description: "Attribuez un badge pour certifier le profil de l'utilisateur.",
-                toast: {
-                    success: "Badge attribué avec succès.",
-                    error: "Échec de l'attribution du badge. Veuillez réessayer.",
-                },
-            }
         },
         updateProfile: {
             label: "Mettre à jour le profil",

@@ -1,4 +1,4 @@
-import {ToastContents} from ".";
+import {ToastContents} from "./index"
 
 export interface ImageField {
     placeholder: {

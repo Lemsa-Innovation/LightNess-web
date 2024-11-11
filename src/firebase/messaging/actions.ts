@@ -1,11 +1,11 @@
 'use server'
 import {NotificationItem} from "@/language/structure/notifications";
-import {collectionsIDS} from "../firestore/modules/assets";
+import {collectionIds} from "../firestore/modules/assets";
 import {adminFirestore, adminMessaging} from "../admin/firebaseAdmin";
 import {User} from "../firestore/collections/users/models";
 import {NotificationData} from "./models";
 
-const {users} = collectionsIDS
+const {users} = collectionIds
 
 export async function notifyUsers({userUIDs, notificationData, notificationPayload}: {
     userUIDs: string[]

@@ -9,7 +9,7 @@ import {
 import {auth} from "../config/firebase";
 import {Timestamp} from "@firebase/firestore";
 import {UserRole} from "../firestore/collections/users/models";
-import {Tenant} from "./models";
+import {CustomClaims, Tenant} from "./models";
 import {PROTECTED_PATHS} from "@/routes";
 
 
@@ -34,7 +34,7 @@ const mapFirebaseResponseToTenant = (
     email: user.email || null,
     emailVerified: user.emailVerified || false,
     photoUrl: user.photoURL || null,
-    customClaims: result.claims,
+    customClaims: result.claims as CustomClaims,
     lastSignInTime,
     providerData: providerData,
     idToken: result.token,

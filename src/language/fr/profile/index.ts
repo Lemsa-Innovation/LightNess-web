@@ -5,6 +5,7 @@ export const profile: Profile = {
         admin: {
             label: "Admin",
             positions: {
+                super: "Super admin",
                 manager: "Gérant",
                 secretary: "Secrétaire",
                 // operationsManager: "Responsable des opérations",

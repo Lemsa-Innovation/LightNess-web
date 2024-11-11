@@ -4,7 +4,7 @@ import {User} from '@/firebase/firestore/collections/users/models';
 import {createContext, useContext} from 'react';
 
 export interface AuthContextType {
-    tenant?: Tenant
+    tenant?: Tenant | null
     isLoading: boolean | undefined
     currentUser: User<"client"> | null | undefined
 }
