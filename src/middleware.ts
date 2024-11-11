@@ -1,5 +1,4 @@
 import {NextRequest, NextResponse} from "next/server";
-import {authConfig} from "./firebase/config/server-config";
 import {
   authMiddleware,
   redirectToLogin,
@@ -13,12 +12,14 @@ import {
   PUBLIC_PATHS,
   SIDEBAR_ROUTES,
 } from "./routes";
+import {authConfig} from "./firebase/config/server-config";
 
 function notFound(request: NextRequest) {
   const url = request.nextUrl.clone();
   url.pathname = "/500";
   return NextResponse.redirect(url);
 }
+
 function alreadyAuthenticated(request: NextRequest) {
   const redirect = request.nextUrl.searchParams.get("redirect");
   const url = request.nextUrl.clone();
@@ -38,7 +39,7 @@ export function middleware(request: NextRequest) {
     loginPath: "/api/login",
     logoutPath: "/api/logout",
     ...authConfig,
-    handleValidToken: async ({decodedToken}, headers) => {
+    handleValidToken: async ({decodedToken}) => {
       const allowedRoutes: string[] = PUBLIC_PATHS;
       const userRole = decodedToken?.["role"] as UserRole | undefined;
       const userStatus = decodedToken?.["status"] as UserStatus;
@@ -56,11 +57,7 @@ export function middleware(request: NextRequest) {
       if (
         allowedRoutes.some((path) => request.nextUrl.pathname.startsWith(path))
       ) {
-        return NextResponse.next({
-          request: {
-            headers, // Pass modified request headers to skip token verification in subsequent getTokens and getTokensFromObject calls
-          },
-        });
+        return NextResponse.next();
       } else if (request.nextUrl.pathname === "/") {
         redirectToHome(request);
       }

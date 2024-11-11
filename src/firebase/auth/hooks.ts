@@ -12,7 +12,6 @@ import {UserRole} from "../firestore/collections/users/models";
 import {CustomClaims, Tenant} from "./models";
 import {PROTECTED_PATHS} from "@/routes";
 
-
 const fetchLoginApi = (token: string) => {
   return fetch("/api/login", {
     method: "GET",
@@ -45,7 +44,6 @@ const mapFirebaseResponseToTenant = (
 
 export function useAuthUser() {
   const pathname = usePathname()
-
   const [tenant, setTenant] = useState<Tenant | null>(null)
   const [isLoadingTenant, setIsLoadingTenant] = useState<boolean>(true)
   const handleIdTokenChanged = async (firebaseUser: FirebaseUser | null) => {
@@ -53,14 +51,14 @@ export function useAuthUser() {
       try {
         const tokenResult = await getIdTokenResult(firebaseUser, true)
         const tenant = mapFirebaseResponseToTenant(tokenResult, firebaseUser)
-        setTenant(tenant)
         await fetchLoginApi(tokenResult.token)
+        setTenant(tenant)
         if (tenant.customClaims.role as UserRole === 'admin') {
-          if (pathname.startsWith("/auth"))
+          if (pathname.startsWith("/auth")) {
             window.location.reload()
+          }
         }
       } catch (error: any) {
-        console.log(error.code);
         switch (error.code) {
           case 'auth/network-request-failed': {
             //toast.error(languageData?.authTranslation.signIn.errors.networkRequestFailed)
@@ -69,10 +67,8 @@ export function useAuthUser() {
       }
     }
     else {
-      console.log("User signed out");
       await fetch("/api/logout");
       const isProtected = PROTECTED_PATHS.some((route) => pathname.startsWith(route))
-
       if (isProtected) {
         window.location.reload()
       }

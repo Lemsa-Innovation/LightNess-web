@@ -10,6 +10,7 @@ export const AUTH_ROUTES = {
     resetPassword: path(ROOTS_AUTH, '/reset-password'),
 }
 export const PUBLIC_ROUTES = {
+    root: "/",
     page404: '/404',
     page500: '/500',
     notSetUpPath: "/not-set-up"
@@ -30,7 +31,7 @@ export const SIDEBAR_ROUTES: Record<keyof SidebarItems, {
     children?: string[]
 }> = {
     dashboard: {
-        path: '/'
+        path: '/app'
     },
     // manage: {
     //     path: '/manage',
