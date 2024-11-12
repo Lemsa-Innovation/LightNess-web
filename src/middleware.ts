@@ -39,7 +39,7 @@ export function middleware(request: NextRequest) {
     loginPath: "/api/login",
     logoutPath: "/api/logout",
     ...authConfig,
-    handleValidToken: async ({decodedToken}) => {
+    handleValidToken: async ({decodedToken}, headers) => {
       const allowedRoutes: string[] = PUBLIC_PATHS;
       const userRole = decodedToken?.["role"] as UserRole | undefined;
       const userStatus = decodedToken?.["status"] as UserStatus;
@@ -57,7 +57,11 @@ export function middleware(request: NextRequest) {
       if (
         allowedRoutes.some((path) => request.nextUrl.pathname.startsWith(path))
       ) {
-        return NextResponse.next();
+        return NextResponse.next({
+          request: {
+            headers, // Pass modified request headers to skip token verification in subsequent getTokens and getTokensFromObject calls
+          },
+        });
       } else if (request.nextUrl.pathname === "/") {
         redirectToHome(request);
       }

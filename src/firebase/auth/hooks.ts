@@ -11,6 +11,8 @@ import {Timestamp} from "@firebase/firestore";
 import {UserRole} from "../firestore/collections/users/models";
 import {CustomClaims, Tenant} from "./models";
 import {PROTECTED_PATHS} from "@/routes";
+import {toast} from "sonner";
+import {useLanguage} from "@/contexts/language/LanguageContext";
 
 const fetchLoginApi = (token: string) => {
   return fetch("/api/login", {
@@ -44,6 +46,8 @@ const mapFirebaseResponseToTenant = (
 
 export function useAuthUser() {
   const pathname = usePathname()
+  const {languageData} = useLanguage()
+  const errors = languageData?.auth.errors
   const [tenant, setTenant] = useState<Tenant | null>(null)
   const [isLoadingTenant, setIsLoadingTenant] = useState<boolean>(true)
   const handleIdTokenChanged = async (firebaseUser: FirebaseUser | null) => {
@@ -51,13 +55,19 @@ export function useAuthUser() {
       try {
         const tokenResult = await getIdTokenResult(firebaseUser, true)
         const tenant = mapFirebaseResponseToTenant(tokenResult, firebaseUser)
-        await fetchLoginApi(tokenResult.token)
-        setTenant(tenant)
-        if (tenant.customClaims.role as UserRole === 'admin') {
-          if (pathname.startsWith("/auth")) {
-            window.location.reload()
+        const fetching = await fetchLoginApi(tokenResult.token)
+        console.log(fetching);
+        if (fetching.ok) {
+          if (tenant.customClaims.role === 'admin') {
+            if (pathname.startsWith("/auth")) {
+              window.location.reload()
+            }
           }
         }
+        else {
+          toast.error(errors?.networkRequestFailed)
+        }
+        setTenant(tenant)
       } catch (error: any) {
         switch (error.code) {
           case 'auth/network-request-failed': {
@@ -67,10 +77,13 @@ export function useAuthUser() {
       }
     }
     else {
-      await fetch("/api/logout");
+      const response = await fetch("/api/logout");
       const isProtected = PROTECTED_PATHS.some((route) => pathname.startsWith(route))
-      if (isProtected) {
-        window.location.reload()
+      if (response.ok) {
+        isProtected && window.location.reload()
+      }
+      else {
+        toast.error(errors?.networkRequestFailed)
       }
     }
     setIsLoadingTenant(false)
