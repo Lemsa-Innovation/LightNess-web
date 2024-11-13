@@ -1,22 +1,29 @@
-import {useQuery} from "@tanstack/react-query";
 import {getSuggestionsRef} from "./helpers";
-import {getDocs, query, where} from "@firebase/firestore";
+import {query, where} from "@firebase/firestore";
 import {Suggestion} from "./models";
+import {useEffect, useState} from "react";
+import {useCollection} from "react-firebase-hooks/firestore";
 
 export function useSuggestions({suggestionType}: {
   suggestionType: Suggestion["type"]
 }) {
-  return useQuery({
-    initialData: [],
-    queryKey: ["suggestions"],
-    queryFn: async () => {
-      const dataRef = getSuggestionsRef()
-      const queryRef = query(dataRef, where("type", "==", suggestionType))
-      const snapshots = await getDocs(queryRef)
-      return snapshots.docs.map((doc) => ({
+  const dataRef = getSuggestionsRef()
+  const queryRef = query(dataRef, where("type", "==", suggestionType))
+
+  const [snapshots, isLoading, error] = useCollection(queryRef)
+  const [data, setData] = useState<Suggestion[]>([])
+  useEffect(() => {
+    if (!isLoading && !error && snapshots && !snapshots?.empty) {
+      setData(snapshots.docs.map((doc) => ({
         ref: doc.ref,
         ...doc.data()
-      } as Suggestion))
+      } as Suggestion)))
     }
-  })
+  }, [snapshots, isLoading, error])
+
+  return {
+    data,
+    isLoading,
+    error
+  }
 }

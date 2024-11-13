@@ -1,5 +1,5 @@
-import DeleteSuggestionModal from "./DeleteModal";
+import ActionsDropdown from "./Actions";
 
 export {
-  DeleteSuggestionModal
+  ActionsDropdown,
 }

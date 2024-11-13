@@ -5,7 +5,6 @@ import {useSuggestions} from "@/firebase/firestore/collections/suggestions/hooks
 import {Suggestion} from "@/firebase/firestore/collections/suggestions/models";
 import {ColumnUID} from "@/language/structure/commons";
 import {
-  cn,
   Pagination,
   Table,
   TableBody,
@@ -15,10 +14,10 @@ import {
   TableRow,
 } from "@nextui-org/react";
 import {ChangeEvent, Key, useCallback, useMemo, useState} from "react";
-import {ActionsDropdown} from "../modals";
 import {searchIn} from "@/utils/string";
+import {ActionsDropdown} from "../modals";
 
-function TableWashers() {
+function TableCemeteries() {
   const {languageData} = useLanguage();
   const columns = languageData?.commons.table.columns;
   const tableLabels = languageData?.commons.labels.table;
@@ -27,7 +26,8 @@ function TableWashers() {
   const [filterValue, setFilterValue] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const {data} = useSuggestions({suggestionType: "washer"});
+  const {data} = useSuggestions({suggestionType: "cemetery"});
+
   const filteredData = useMemo(() => {
     const hits = data.filter(
       ({name, phoneNumber, additionalInfo}) =>
@@ -87,21 +87,17 @@ function TableWashers() {
   };
 
   const renderCell = useCallback((suggestion: Suggestion, columnKey: Key) => {
-    const {name, gender, phoneNumber, createdAt} = suggestion;
+    const {name, phoneNumber, additionalInfo, createdAt} =
+      suggestion;
     switch (columnKey as ColumnUID) {
       case "phoneNumber": {
         return <p>{phoneNumber}</p>;
       }
       case "name":
         return (
-          <div className="flex flex-row gap-2 items-center">
+          <div>
             <p>{name}</p>
-            <div
-              className={cn(
-                "size-3 rounded-full",
-                gender === "women" ? "bg-red-500" : "bg-blue-500"
-              )}
-            />
+            <p>{additionalInfo}</p>
           </div>
         );
       case "status":
@@ -125,6 +121,50 @@ function TableWashers() {
             onSearchChange={onSearchChange}
             onClear={() => onClear()}
           />
+          <div className="flex gap-3">
+            {/* <Dropdown>
+              <DropdownTrigger className="hidden sm:flex">
+                <Button endContent={<ChevronIcon down filled />} variant="flat">
+                  {columns?.role}
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="roles"
+                closeOnSelect={false}
+                selectedKeys={roleFilter}
+                selectionMode="multiple"
+                onSelectionChange={setRoleFilter}
+              >
+                {roleOptions.map((role) => (
+                  <DropdownItem key={role} className="capitalize">
+                    {roles?.[role].label}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown> */}
+            {/* <Dropdown>
+              <DropdownTrigger className="hidden sm:flex">
+                <Button endContent={<ChevronIcon down filled />} variant="flat">
+                  {columns?.status}
+                </Button>
+              </DropdownTrigger>
+              <DropdownMenu
+                disallowEmptySelection
+                aria-label="Table Columns"
+                closeOnSelect={false}
+                selectedKeys={statusFilter}
+                selectionMode="multiple"
+                onSelectionChange={setStatusFilter}
+              >
+                {statusOptions.map((status) => (
+                  <DropdownItem key={status} className="capitalize">
+                    {allStatus?.[status]}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown> */}
+          </div>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
@@ -195,4 +235,4 @@ function TableWashers() {
   );
 }
 
-export default TableWashers;
+export default TableCemeteries;
