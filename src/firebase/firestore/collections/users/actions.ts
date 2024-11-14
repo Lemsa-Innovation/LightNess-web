@@ -55,10 +55,9 @@ export async function verifyEmail({
 //   userRef.update(buildServerFirestoreUpdatePath(user))
 // }
 export async function updateUser(data: UpdateUserSchema) {
-  const {uid, birthday, isActive, ...parsedData} = updateUserSchema.parse(data)
+  const {uid, birthday, ...parsedData} = updateUserSchema.parse(data)
   const user: Partial<User<"server">> = {
     ...parsedData,
-    ...(isActive ? {accountStatus: "active"} : {}),
     birthday: birthday ? Timestamp.fromDate(birthday) : undefined,
   }
   const userRef = adminFirestore.collection(collectionIds.users).doc(uid)

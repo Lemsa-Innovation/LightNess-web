@@ -15,7 +15,6 @@ export const authFormSchema = zod.object({
 export type AuthSchema = zod.infer<typeof authFormSchema>
 // **************************************************
 export const updateUserSchema = zod.object({
-  isActive: zodRequiredBooleanValidation().optional(),
   birthday: zodRequiredDateValidation().optional(),
   email: zodRequiredEmailValidation().optional(),
   gender: genderSchema,

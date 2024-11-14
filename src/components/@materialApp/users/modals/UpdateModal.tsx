@@ -59,7 +59,6 @@ function UpdateSuggestionModal({
       email,
       gender,
       phoneNumber,
-      isActive: accountStatus === "active"
       // birthday: birthday?.toDate(),
     },
   });
@@ -67,12 +66,10 @@ function UpdateSuggestionModal({
   const [handleUpdate, isLoading] = useLoadingCallback(
     async (data: UpdateUserSchema) => {
       try {
-        const {uid, email, firstName, isActive, gender, lastName, birthday, phoneNumber} = data
+        const {uid, email, firstName, gender, lastName, birthday, phoneNumber} = data
         await updateUser({
           uid,
-          isActive: dirtyFields.isActive ? isActive : undefined,
           birthday: dirtyFields.birthday ? birthday : undefined,
-          email: dirtyFields.email ? email : undefined,
           gender: dirtyFields.gender ? gender : undefined,
           firstName: dirtyFields.firstName ? firstName : undefined,
           lastName: dirtyFields.lastName ? lastName : undefined,
@@ -100,6 +97,7 @@ function UpdateSuggestionModal({
         >
           <div className="col-span-full">
             <InputText
+              isReadOnly
               name={"email"}
               control={control}
               field={users?.fields.email}
@@ -122,14 +120,6 @@ function UpdateSuggestionModal({
               field={users?.fields.lastName}
             />
           </div>
-          <div className="col-span-full md:col-span-4">
-            <InputDate
-              control={control}
-              name="birthday"
-              checkAdult
-              label={users?.fields.birthday.label}
-            />
-          </div>
           <div className="col-span-full md:col-span-8">
             <InputText
               control={control}
@@ -137,12 +127,17 @@ function UpdateSuggestionModal({
               field={users?.fields.phoneNumber}
             />
           </div>
-          <div className="col-span-full md:col-span-6">
+          {/* <div className="col-span-full md:col-span-">
+            <InputDate
+              control={control}
+              name="birthday"
+              checkAdult
+              label={users?.fields.birthday.label}
+            />
+          </div> */}
+
+          <div className="col-span-full md:col-span-4">
             <InputGender control={control} />
-          </div>
-          <div className="col-span-full md:col-span-6 flex flex-row gap-2 items-center">
-            <p>{languageData?.inputs.commons.isActive.label}</p>
-            <InputSwitch name="isActive" control={control} />
           </div>
         </ModalBody>
         <ModalFooter>

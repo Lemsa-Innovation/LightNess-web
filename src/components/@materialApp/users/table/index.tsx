@@ -19,12 +19,9 @@ import {
 } from "@nextui-org/react";
 import {ChangeEvent, Key, useCallback, useMemo, useState} from "react";
 import {DateChip, StatusChip} from "@/components/@materialUI/chips";
-import {useRouter} from "next/navigation";
 import {useLanguage} from "@/contexts/language/LanguageContext";
 import {ChevronIcon} from "@/components/@materialUI/icons";
 import {searchIn} from "@/utils/string";
-import {SIDEBAR_ROUTES} from "@/routes";
-import {Menu} from "iconsax-react";
 import {MinimalUser} from "../cards";
 import {UserRoleChip} from "../chips";
 import {ActionsDropdown} from "../modals";
@@ -238,7 +235,7 @@ function UsersTable() {
   }, [pages, page]);
 
   const renderCell = useCallback((user: User<"client">, columnKey: Key) => {
-    const {accountStatus, createdAt} = user;
+    const {verificationSteps, createdAt} = user;
     switch (columnKey as ColumnUID) {
       case "user": {
         return <MinimalUser fetch={false} user={user} />;
@@ -248,7 +245,7 @@ function UsersTable() {
       case "phoneNumber":
         return <p>{user.phoneNumber}</p>;
       case "status":
-        return <StatusChip statusKey={accountStatus ?? "unverified"} />;
+        return <StatusChip statusKey={verificationSteps?.email?.verified ? "active" : "unverified"} />;
       case "registeredDate":
         return <DateChip timestamp={createdAt} />;
       case "actions":
