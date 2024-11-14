@@ -14,4 +14,6 @@ function InputSwitch({control, name}: {
   )
 }
 
-export default InputSwitch;
+export {
+  InputSwitch
+};

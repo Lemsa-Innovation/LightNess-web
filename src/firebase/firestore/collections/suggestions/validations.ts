@@ -1,19 +1,14 @@
+import {zodRequiredBooleanValidation, zodRequiredStringValidation} from "@/modules/validations/zodValidations";
 import * as zod from "zod";
 
 
 // const suggestionType = zod.enum(["cemetery", "washer", "funeralPump"]);
-// export const suggestionFormSchema = zod.object({
-//   gender: genderSchema,
-//   name: zodRequiredStringValidation(),
-//   phoneNumber: zodRequiredStringValidation().optional(),
-//   type: suggestionType,
-//   mapLocation: zod.object({
-//     latLng: zodRequiredLatLng,
-//     placeId: zodRequiredStringValidation().optional(),
-//     manualAddress: zodRequiredStringValidation().optional(),
-//   }),
-//   additionalInfo: zodRequiredStringValidation().optional(),
-// });
+export const suggestionFormSchema = zod.object({
+  name: zodRequiredStringValidation().optional(),
+  isActive: zodRequiredBooleanValidation().optional(),
+  phoneNumber: zodRequiredStringValidation().optional(),
+  additionalInfo: zodRequiredStringValidation().optional(),
+});
 
 // export const commentSchema = zod.object({
 //   entityPath: zodRequiredStringValidation(),
@@ -24,4 +19,4 @@ import * as zod from "zod";
 
 // export type CommentCreation = zod.infer<typeof commentSchema>;
 // export type SuggestionType = zod.infer<typeof suggestionType>
-// export type SuggestionCreation = zod.infer<typeof suggestionFormSchema>;
+export type SuggestionUpdateForm = zod.infer<typeof suggestionFormSchema>;

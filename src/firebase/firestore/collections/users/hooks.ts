@@ -3,6 +3,7 @@ import {User} from "./models"
 import {useEffect, useState} from "react"
 import {getDoc, getDocs, onSnapshot, orderBy, query} from "@firebase/firestore"
 import {useQuery} from "@tanstack/react-query"
+import {useCollection} from "react-firebase-hooks/firestore"
 
 export function useUser({uid}: {
     uid?: string
@@ -53,6 +54,31 @@ export function useUsersQuery() {
         }
     })
 }
+
+export function useUsers() {
+    const usersRef = getUsersRef()
+    const queryRef = query(usersRef,
+        orderBy("createdAt", "desc")
+    )
+
+    const [snapshots, isLoading, error] = useCollection(queryRef)
+    const [data, setData] = useState<User<"client">[]>([])
+    useEffect(() => {
+        if (!isLoading && !error && snapshots && !snapshots?.empty) {
+            setData(snapshots.docs.map((doc) => ({
+                uid: doc.ref.id,
+                ...doc.data()
+            } as User<"client">)))
+        }
+    }, [snapshots, isLoading, error])
+
+    return {
+        data,
+        isLoading,
+        error
+    }
+}
+
 export function useUserQuery({uid}: {
     uid?: string
 }) {

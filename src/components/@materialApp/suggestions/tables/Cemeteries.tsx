@@ -87,7 +87,7 @@ function TableCemeteries() {
   };
 
   const renderCell = useCallback((suggestion: Suggestion, columnKey: Key) => {
-    const {name, phoneNumber, additionalInfo, createdAt} =
+    const {name, phoneNumber, isActive, additionalInfo, createdAt} =
       suggestion;
     switch (columnKey as ColumnUID) {
       case "phoneNumber": {
@@ -101,7 +101,7 @@ function TableCemeteries() {
           </div>
         );
       case "status":
-        return <ActivationChip isActive />;
+        return <ActivationChip isActive={isActive} />;
       case "createdAt":
         return <DateChip timestamp={createdAt} />;
       case "actions":

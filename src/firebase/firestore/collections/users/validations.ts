@@ -1,4 +1,5 @@
 import {FieldValidationMessages} from "@/modules/validations/helpers";
+import {zodRequiredBooleanValidation, zodRequiredDateValidation, zodRequiredEmailValidation, zodRequiredStringValidation} from "@/modules/validations/zodValidations";
 import * as zod from "zod";
 // **************************************************
 export const genderSchema = zod.enum(["women", "men"]).optional();
@@ -13,6 +14,21 @@ export const authFormSchema = zod.object({
 })
 export type AuthSchema = zod.infer<typeof authFormSchema>
 // **************************************************
-
-
+export const updateUserSchema = zod.object({
+  isActive: zodRequiredBooleanValidation().optional(),
+  birthday: zodRequiredDateValidation().optional(),
+  email: zodRequiredEmailValidation().optional(),
+  gender: genderSchema,
+  uid: zodRequiredStringValidation(),
+  firstName: zodRequiredStringValidation({
+    minLength: 3,
+    maxLength: 50
+  }).optional(),
+  lastName: zodRequiredStringValidation({
+    minLength: 3,
+    maxLength: 50
+  }).optional(),
+  phoneNumber: zodRequiredStringValidation().optional()
+})
+export type UpdateUserSchema = zod.infer<typeof updateUserSchema>
 // **************************************************

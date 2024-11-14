@@ -8,7 +8,6 @@ import {
 } from "firebase/auth";
 import {auth} from "../config/firebase";
 import {Timestamp} from "@firebase/firestore";
-import {UserRole} from "../firestore/collections/users/models";
 import {CustomClaims, Tenant} from "./models";
 import {PROTECTED_PATHS} from "@/routes";
 import {toast} from "sonner";
@@ -56,7 +55,6 @@ export function useAuthUser() {
         const tokenResult = await getIdTokenResult(firebaseUser, true)
         const tenant = mapFirebaseResponseToTenant(tokenResult, firebaseUser)
         const fetching = await fetchLoginApi(tokenResult.token)
-        console.log(fetching);
         if (fetching.ok) {
           if (tenant.customClaims.role === 'admin') {
             if (pathname.startsWith("/auth")) {

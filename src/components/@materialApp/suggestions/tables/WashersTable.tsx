@@ -87,7 +87,7 @@ function TableWashers() {
   };
 
   const renderCell = useCallback((suggestion: Suggestion, columnKey: Key) => {
-    const {name, gender, phoneNumber, createdAt} = suggestion;
+    const {name, gender, isActive, phoneNumber, createdAt} = suggestion;
     switch (columnKey as ColumnUID) {
       case "phoneNumber": {
         return <p>{phoneNumber}</p>;
@@ -105,7 +105,7 @@ function TableWashers() {
           </div>
         );
       case "status":
-        return <ActivationChip isActive />;
+        return <ActivationChip isActive={isActive} />;
       case "createdAt":
         return <DateChip timestamp={createdAt} />;
       case "actions":

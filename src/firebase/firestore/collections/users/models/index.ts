@@ -34,7 +34,7 @@ export type User<Env extends EnvSource> = {
   lastName?: string;
 
   email?: string
-  birthday?: Timestamp
+  birthday?: Env extends "client" ? Timestamp : FieldValue
   gender?: UserGender;
 
   countryId: string;

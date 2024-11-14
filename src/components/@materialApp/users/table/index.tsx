@@ -1,5 +1,5 @@
 import {InputSearch} from "@/components/@materialUI/inputs/texts";
-import {useUsersQuery} from "@/firebase/firestore/collections/users/hooks";
+import {useUsers, useUsersQuery} from "@/firebase/firestore/collections/users/hooks";
 import {User} from "@/firebase/firestore/collections/users/models";
 import {ColumnUID} from "@/language/structure/commons";
 import {
@@ -27,9 +27,9 @@ import {SIDEBAR_ROUTES} from "@/routes";
 import {Menu} from "iconsax-react";
 import {MinimalUser} from "../cards";
 import {UserRoleChip} from "../chips";
+import {ActionsDropdown} from "../modals";
 
 function UsersTable() {
-  const {push} = useRouter();
   const {languageData} = useLanguage();
   const columns = languageData?.commons.table.columns;
   const tableLabels = languageData?.commons.labels.table;
@@ -41,8 +41,7 @@ function UsersTable() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [roleFilter, setRoleFilter] = useState<Selection>("all");
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
-
-  const {data: users} = useUsersQuery();
+  const {data: users} = useUsers()
   const roleOptions = useMemo(() => {
     const roleSet = new Set(users?.map(({role}) => role));
     return Array.from(roleSet);
@@ -92,7 +91,7 @@ function UsersTable() {
   const handleSelection = (keys: Selection) => {
     const selectedKey = Array.from(keys).at(0)?.toString();
     if (selectedKey) {
-      push(`${SIDEBAR_ROUTES.users.path}/${selectedKey}`);
+      // push(`${SIDEBAR_ROUTES.users.path}/${selectedKey}`);
     }
   };
   const onSearchChange = useCallback((value: string) => {
@@ -255,18 +254,7 @@ function UsersTable() {
       case "actions":
         return (
           <div className="relative flex justify-end items-center gap-2">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <Menu size={24} className="stroke-default-300" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem>View</DropdownItem>
-                <DropdownItem>Edit</DropdownItem>
-                <DropdownItem>Delete</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <ActionsDropdown user={user} />
           </div>
         );
     }

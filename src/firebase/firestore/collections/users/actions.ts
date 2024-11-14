@@ -6,14 +6,11 @@ import {auth} from "firebase-admin"
 import {buildServerFirestoreUpdatePath} from "@/firebase/admin/helpers"
 import {User} from "./models"
 import {notifyUser} from "@/firebase/messaging/actions"
+import {updateUserSchema, UpdateUserSchema} from "./validations"
+import {Timestamp} from "firebase-admin/firestore"
 
 export async function deleteUser(uid: string) {
-  try {
-    await auth().deleteUser(uid)
-  } catch (error: any) {
-    if (error.code !== "auth/user-not-found")
-      throw Error(error.code)
-  }
+  await auth().deleteUser(uid)
   const userRef = adminFirestore.collection(collectionIds.users).doc(uid)
   await userRef.delete()
 }
@@ -57,3 +54,13 @@ export async function verifyEmail({
 //   const userRef = adminFirestore.collection(collectionIds.users).doc(uid)
 //   userRef.update(buildServerFirestoreUpdatePath(user))
 // }
+export async function updateUser(data: UpdateUserSchema) {
+  const {uid, birthday, isActive, ...parsedData} = updateUserSchema.parse(data)
+  const user: Partial<User<"server">> = {
+    ...parsedData,
+    ...(isActive ? {accountStatus: "active"} : {}),
+    birthday: birthday ? Timestamp.fromDate(birthday) : undefined,
+  }
+  const userRef = adminFirestore.collection(collectionIds.users).doc(uid)
+  userRef.update(buildServerFirestoreUpdatePath(user))
+}

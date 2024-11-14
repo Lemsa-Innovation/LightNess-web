@@ -36,6 +36,7 @@ export interface Inputs {
     attachements: Attachements
     commons: {
         name: Field
+        isActive: Field
         searchByName: Field
         gender: {
             label: {

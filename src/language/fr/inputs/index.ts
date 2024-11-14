@@ -10,6 +10,10 @@ export const inputs: Inputs = {
   commons: {
     name: {
       label: "Nom",
+      placeholder: "Entrez le nom"
+    },
+    isActive: {
+      label: "Activer ou désactiver l'élément"
     },
     searchByName: {
       label: "Rechercher par nom ...",
