@@ -7,14 +7,12 @@ import {MinimalUser} from "../../users/cards";
 import {useLanguage} from "@/contexts/language/LanguageContext";
 import {DateChip} from "@/components/@materialUI/chips";
 import {RejectDeadModal, ValidateDeathModal} from "../modals";
+import {useCollectionSnapshots} from "@/firebase/firestore/modules/firestoreHooks";
 
 function ListDeclarations() {
   const {languageData} = useLanguage()
   const deathDeclarations = languageData?.inputs.deathDeclarations
-  const {data} = useCollectionQuery<DeathDeclaration>({
-    queryKey: ["deathDeclarations"],
-    dataRef: getDeclarationsRef()
-  });
+  const {data} = useCollectionSnapshots<DeathDeclaration>(getDeclarationsRef());
 
   const validateModalProps = useDisclosure();
   const rejectModalProps = useDisclosure();
@@ -40,7 +38,7 @@ function ListDeclarations() {
   }, [data])
 
   return (
-    <div>
+    <div className="flex flex-row gap-4 flex-wrap">
       {Object.entries(deathsDeclarations).map(([matchedUid, {declaredBy}]) =>
         <Fragment
           key={matchedUid}
@@ -57,7 +55,7 @@ function ListDeclarations() {
           />
           <Card
             key={matchedUid}
-            className="w-fit"
+            className="w-fit h-fit text-black"
           >
             <CardHeader>
               <MinimalUser
@@ -67,7 +65,7 @@ function ListDeclarations() {
             </CardHeader>
             <CardBody className="flex flex-col gap-3">
               <p className="text-xl">{deathDeclarations?.labels.declaredBy}</p>
-              <div>
+              <div className="flex flex-row gap-2">
                 {declaredBy.map(({declaredBy, createdAt, dateOfDeath, placeOfDeath}) =>
                   <div
                     key={declaredBy}
