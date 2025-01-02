@@ -1,5 +1,6 @@
 export type Day = 'saturday' | 'sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday';
 export interface ButtonItems {
+    reject: string
     submit: string
     back: string
     next: string
@@ -19,11 +20,12 @@ export interface ButtonItems {
 
 export interface SidebarItems {
     users: string
-    dashboard: string
+    // dashboard: string
     washers: string
     funeralServices: string
     cemeteries: string
-    settings: string
+    // settings: string
+    deathDeclarations: string
 }
 export interface TabItems {
     general: string
@@ -72,6 +74,8 @@ export interface TableDictionnary {
         registeredDate: string;
         details: string
         domaine: string
+        declaredBy: string
+        matchedUser: string
     }
 }
 

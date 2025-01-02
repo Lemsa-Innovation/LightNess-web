@@ -2,6 +2,7 @@ import {Commons} from "@/language/structure/commons";
 
 export const commons: Commons = {
     buttons: {
+        reject: "Rejeter",
         submit: "Soumettre",
         back: "Retour",
         next: "Suivant",
@@ -75,6 +76,8 @@ export const commons: Commons = {
             witnessCount: "Nombre de témoins",
             amount: "Montant",
             witnesses: "Témoins",
+            declaredBy: "Déclaré par", // Nouvelle colonne
+            matchedUser: "Utilisateur correspondant", // Nouvelle colonne
         }
     },
     labels: {
@@ -86,7 +89,7 @@ export const commons: Commons = {
         }
     },
     sidebar: {
-        dashboard: "Tableau de bord",
+        // dashboard: "Tableau de bord",
         users: "Utilisateurs",
         // manage: "Gérer",
         // testaments: "Testaments",
@@ -96,7 +99,8 @@ export const commons: Commons = {
         funeralServices: "Pompes funèbres",
         // invitations: "Invitations",
         // reports: "Rapports",
-        settings: "Paramètres",
+        // settings: "Paramètres",
+        deathDeclarations: "Déclarations de décès"
     },
 
 }

@@ -15,6 +15,7 @@ function UserRoleChip({user}: {
   return (
     <Chip
       variant="bordered"
+      className="dark:text-black"
       color={colors[role]}
     >
       {roles?.[role ?? "user"].label}

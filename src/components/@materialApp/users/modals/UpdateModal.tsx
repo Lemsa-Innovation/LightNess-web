@@ -1,7 +1,5 @@
 import {CancelButton, SubmitButton} from "@/components/@materialUI/buttons";
-import {InputDate} from "@/components/@materialUI/inputs/date";
 import {InputGender} from "@/components/@materialUI/inputs/radio";
-import {InputSwitch} from "@/components/@materialUI/inputs/switch";
 import {InputText} from "@/components/@materialUI/inputs/texts";
 import {UseDisclosureReturn} from "@/components/@materialUI/utils";
 import {useLanguage} from "@/contexts/language/LanguageContext";
@@ -88,7 +86,7 @@ function UpdateSuggestionModal({
       isOpen={isOpen}
       onClose={onClose}
       onOpenChange={onOpenChange}
-      className="text-black dark:text-white"
+      className="text-black"
     >
       <ModalContent>
         <ModalHeader>{action?.header}</ModalHeader>

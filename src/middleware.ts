@@ -23,14 +23,14 @@ function notFound(request: NextRequest) {
 function alreadyAuthenticated(request: NextRequest) {
   const redirect = request.nextUrl.searchParams.get("redirect");
   const url = request.nextUrl.clone();
-  url.pathname = redirect ?? SIDEBAR_ROUTES.dashboard.path;
+  url.pathname = redirect ?? SIDEBAR_ROUTES.users.path;
   url.search = "";
   return NextResponse.redirect(url);
 }
 
 function redirectToHome(request: NextRequest) {
   const url = request.nextUrl.clone();
-  url.pathname = SIDEBAR_ROUTES.dashboard.path;
+  url.pathname = SIDEBAR_ROUTES.users.path;
   url.search = "";
   return NextResponse.redirect(url);
 }
@@ -40,6 +40,8 @@ export function middleware(request: NextRequest) {
     logoutPath: "/api/logout",
     ...authConfig,
     handleValidToken: async ({decodedToken}, headers) => {
+      console.log("Valid Token");
+
       const allowedRoutes: string[] = PUBLIC_PATHS;
       const userRole = decodedToken?.["role"] as UserRole | undefined;
       const userStatus = decodedToken?.["status"] as UserStatus;
@@ -68,6 +70,7 @@ export function middleware(request: NextRequest) {
       return notFound(request);
     },
     handleInvalidToken: async () => {
+      console.log("InValid Token");
       return redirectToLogin(request, {
         path: "/auth",
         publicPaths: MERGED_PUBLIC_PATHS,

@@ -30,9 +30,9 @@ export const SIDEBAR_ROUTES: Record<keyof SidebarItems, {
     path: string
     children?: string[]
 }> = {
-    dashboard: {
-        path: '/app'
-    },
+    // dashboard: {
+    //     path: '/app'
+    // },
     // manage: {
     //     path: '/manage',
     //     children: [
@@ -54,9 +54,12 @@ export const SIDEBAR_ROUTES: Record<keyof SidebarItems, {
     cemeteries: {
         path: "/cemeteries"
     },
-    settings: {
-        path: "/settings"
+    deathDeclarations: {
+        path: "/deathDeclarations"
     },
+    // settings: {
+    //     path: "/settings"
+    // }
 }
 //******************************************* */
 export const PROTECTED_PATHS: string[] = [

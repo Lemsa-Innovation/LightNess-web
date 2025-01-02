@@ -29,7 +29,7 @@ function DeleteUserModal({user, disclosureProps}: {
       isOpen={isOpen}
       onClose={onClose}
       onOpenChange={onOpenChange}
-      className="text-black dark:text-white"
+      className="text-black "
     >
       <ModalContent>
         <ModalHeader>

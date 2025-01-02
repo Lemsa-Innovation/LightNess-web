@@ -45,7 +45,7 @@ const InputText: React.FC<Props> = (props) => {
             size={size ?? "md"}
             variant={variant ?? "bordered"}
             className={cn(
-                "text-black dark:text-white",
+                "text-black",
             )}
             //defaultValue={value}
             value={value ?? ""}

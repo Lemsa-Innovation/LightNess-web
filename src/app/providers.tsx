@@ -9,19 +9,16 @@ import {LanguageProvider} from '@/contexts/language/LanguageProvider';
 export function Providers({children}: {children: React.ReactNode}) {
     //const router = useRouter();
     const queryClient = new QueryClient()
-
     return (
         <NextUIProvider
         //navigate={router.push}
         >
             <LanguageProvider>
                 <AuthProvider>
-                    <NextThemesProvider attribute="class" defaultTheme="light">
-                        <QueryClientProvider client={queryClient}>
-                            {children}
-                        </QueryClientProvider>
-                        <Toaster richColors />
-                    </NextThemesProvider>
+                    <QueryClientProvider client={queryClient}>
+                        {children}
+                    </QueryClientProvider>
+                    <Toaster richColors />
                 </AuthProvider>
             </LanguageProvider>
         </NextUIProvider>

@@ -98,7 +98,19 @@ export const users: Users = {
                 success: "Utilisateur supprimé avec succès.",
                 error: "Échec de la suppression de l'utilisateur. Veuillez réessayer.",
             }
+        },
+        createAdmin: {
+            label: "Créer un administrateur",
+            description: "Ajoutez un nouvel administrateur au système.",
+            header: "Création d'un administrateur",
+            confirmation: {
+                title: "Confirmer la création",
+                message: "Voulez-vous vraiment ajouter cet administrateur au système ?",
+            },
+            toast: {
+                success: "Administrateur créé avec succès.",
+                error: "Échec de la création de l'administrateur. Veuillez réessayer.",
+            },
         }
-
     },
 }

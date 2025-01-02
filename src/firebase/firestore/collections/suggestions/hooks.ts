@@ -1,8 +1,10 @@
-import {getSuggestionsRef} from "./helpers";
+import {getSuggestionRef, getSuggestionsRef} from "./helpers";
 import {query, where} from "@firebase/firestore";
 import {Suggestion} from "./models";
 import {useEffect, useState} from "react";
 import {useCollection} from "react-firebase-hooks/firestore";
+import {useDocumentQuery} from "../../modules/queryHooks";
+import {useDocumentSnapshot} from "../../modules/firestoreHooks";
 
 export function useSuggestions({suggestionType}: {
   suggestionType: Suggestion["type"]
@@ -26,4 +28,9 @@ export function useSuggestions({suggestionType}: {
     isLoading,
     error
   }
+}
+
+export function useSuggestionQuery(docId: string) {
+  const docRef = getSuggestionRef(docId)
+  return useDocumentSnapshot<Suggestion>(docRef)
 }

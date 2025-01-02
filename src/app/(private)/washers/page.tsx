@@ -4,7 +4,7 @@ import {TableWashers} from "@/components/@materialApp/suggestions/tables";
 
 function Page() {
   return (
-    <div>
+    <div className="flex w-full h-full">
       <TableWashers />
     </div>
   );

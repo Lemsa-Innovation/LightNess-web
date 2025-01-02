@@ -34,6 +34,17 @@ export interface Inputs {
     users: Users
     suggestions: Suggestions
     attachements: Attachements
+    deathDeclarations: {
+        labels: {
+            declaredBy: string
+            placeOfDeath: string
+            dateOfDeath: string
+        }
+        actions: {
+            validateDeclaration: Action
+            rejectDeclaration: Action
+        }
+    }
     commons: {
         name: Field
         isActive: Field

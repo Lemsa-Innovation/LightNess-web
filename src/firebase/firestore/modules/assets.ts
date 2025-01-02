@@ -1,11 +1,12 @@
 
 export const collectionIds = {
     users: "users",
-    invitations: "invitations",
     debts: "debts",
     testaments: "testaments",
+    invitations: "invitations",
     suggestions: "suggestions",
     notifications: "notifications",
+    deathDeclarations: "deathDeclarations"
     // location: {
     //   continents: "continents",
     //   countries: "countries",

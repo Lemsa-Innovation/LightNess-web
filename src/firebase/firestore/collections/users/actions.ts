@@ -1,13 +1,14 @@
 "use server"
 
-import {adminDb, adminFirestore} from "@/firebase/admin/firebaseAdmin"
+import {adminAuth, adminDb, adminFirestore} from "@/firebase/admin/firebaseAdmin"
 import {collectionIds} from "../../modules/assets"
 import {auth} from "firebase-admin"
 import {buildServerFirestoreUpdatePath} from "@/firebase/admin/helpers"
 import {User} from "./models"
 import {notifyUser} from "@/firebase/messaging/actions"
-import {updateUserSchema, UpdateUserSchema} from "./validations"
-import {Timestamp} from "firebase-admin/firestore"
+import {authFormSchema, AuthSchema, updateUserSchema, UpdateUserSchema} from "./validations"
+import {FieldValue, Timestamp} from "firebase-admin/firestore"
+import {setCustomUserClaims} from "@/firebase/auth/actions"
 
 export async function deleteUser(uid: string) {
   await auth().deleteUser(uid)
@@ -62,4 +63,29 @@ export async function updateUser(data: UpdateUserSchema) {
   }
   const userRef = adminFirestore.collection(collectionIds.users).doc(uid)
   userRef.update(buildServerFirestoreUpdatePath(user))
+}
+
+export async function createAdmin(data: AuthSchema) {
+  const {email, password} = authFormSchema.parse(data)
+  const userCredentials = await adminAuth.createUser({
+    email,
+    password,
+  })
+  await setCustomUserClaims({
+    uid: userCredentials.uid,
+    customClaims: {
+      status: "active",
+      position: "manager",
+      role: "admin"
+    }
+  })
+  const user: Partial<User<"server">> = {
+    accountStatus: "active",
+    email,
+    role: "admin",
+    position: "manager",
+    createdAt: FieldValue.serverTimestamp()
+  }
+  const userRef = adminFirestore.collection(collectionIds.users).doc(userCredentials.uid)
+  userRef.create(buildServerFirestoreUpdatePath(user))
 }

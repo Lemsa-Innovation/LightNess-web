@@ -29,7 +29,9 @@ function ActionsDropdown({suggestion}: {suggestion: Suggestion}) {
         suggestion={suggestion}
         disclosureProps={updatedSuggestionProps}
       />
-      <Dropdown>
+      <Dropdown
+        className="text-black"
+      >
         <DropdownTrigger>
           <Button isIconOnly size="sm" variant="light">
             <Menu size={24} className="stroke-default-300" />

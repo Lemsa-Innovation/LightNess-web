@@ -7,6 +7,7 @@ import {ColumnUID} from "@/language/structure/commons";
 import {
   cn,
   Pagination,
+  Selection,
   Table,
   TableBody,
   TableCell,
@@ -17,8 +18,11 @@ import {
 import {ChangeEvent, Key, useCallback, useMemo, useState} from "react";
 import {ActionsDropdown} from "../modals";
 import {searchIn} from "@/utils/string";
+import {SIDEBAR_ROUTES} from "@/routes";
+import {useRouter} from "next/navigation";
 
 function TableWashers() {
+  const {push} = useRouter()
   const {languageData} = useLanguage();
   const columns = languageData?.commons.table.columns;
   const tableLabels = languageData?.commons.labels.table;
@@ -85,6 +89,13 @@ function TableWashers() {
       ];
     return tableColumns;
   };
+
+  const handleSelection = (keys: Selection) => {
+    const selectedKey = Array.from(keys).at(0)?.toString()
+    if (selectedKey) {
+      push(`${SIDEBAR_ROUTES.washers.path}/${selectedKey}`)
+    }
+  }
 
   const renderCell = useCallback((suggestion: Suggestion, columnKey: Key) => {
     const {name, gender, isActive, phoneNumber, createdAt} = suggestion;
@@ -173,7 +184,7 @@ function TableWashers() {
       selectionMode="single"
       topContent={topContent}
       bottomContent={bottomContent}
-    // onSelectionChange={handleSelection}
+      onSelectionChange={handleSelection}
     >
       <TableHeader columns={getColumns()}>
         {({uid, align, sortable}) => (

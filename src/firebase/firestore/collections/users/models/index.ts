@@ -43,11 +43,11 @@ export type User<Env extends EnvSource> = {
   photoUrl?: string;
   avatarImage?: string;
   estimatedSurvivalTime?: Timestamp; // in days
-  createdAt: Timestamp
+  createdAt: Env extends "client" ? Timestamp : FieldValue
 
   verificationSteps?: UserVerificationSteps<Env>
   accountStatus: UserStatus;
-
+  isDead?: boolean
   fcmToken?: {
     web?: Env extends "client" ? string : FieldValue;
     android?: Env extends "client" ? string : FieldValue;
@@ -56,20 +56,20 @@ export type User<Env extends EnvSource> = {
 
   contacts?: Record<string, {
     relation?: Relationship
-    createdAt: Env extends "default" ? Timestamp : FieldValue;
+    createdAt: Env extends "client" ? Timestamp : FieldValue;
     address?: {
       geoPoint: GeoPoint
       manualAddress?: string;
     }
   }>
   invitedBy?: string
-  invitedContacts?: Env extends "default" ? string[] : FieldValue
+  invitedContacts?: Env extends "client" ? string[] : FieldValue
   // medicalInfo?: Record<string, MedicalInfo>;
-  debts?: Record<string, Env extends "default" ? UserValidation : FieldValue>;
+  debts?: Record<string, Env extends "client" ? UserValidation : FieldValue>;
   testaments?: Record<
-    string, Env extends "default" ? UserValidation : FieldValue>;
-  favorites?: Env extends "default" ? string[] : FieldValue // doc paths
-  suggestedEntities?: Env extends "default" ? string[] : FieldValue // ids
+    string, Env extends "client" ? UserValidation : FieldValue>;
+  favorites?: Env extends "client" ? string[] : FieldValue // doc paths
+  suggestedEntities?: Env extends "client" ? string[] : FieldValue // ids
 } & (Admin | {
   role: "user"
 });

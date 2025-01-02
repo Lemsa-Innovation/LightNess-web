@@ -37,7 +37,7 @@ function Page() {
     //     })
     // }
     return (
-        <div>
+        <div className="flex w-full h-full">
             {/* <Button
                 onClick={handle}
             >

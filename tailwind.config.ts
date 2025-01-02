@@ -1,7 +1,6 @@
 import type {Config} from "tailwindcss";
 import {themeColor} from "./src/theme";
 const {nextui} = require("@nextui-org/theme");
-
 const config: Config = {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -25,9 +24,6 @@ const config: Config = {
       light: {
         colors: themeColor
       },
-      dark: {
-        colors: themeColor
-      }
     }
   })],
 };

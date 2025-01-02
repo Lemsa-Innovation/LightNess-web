@@ -4,7 +4,7 @@ import {TableFuneralServices} from "@/components/@materialApp/suggestions/tables
 
 function Page() {
   return (
-    <div>
+    <div className="flex w-full h-full">
       <TableFuneralServices />
     </div>
   );

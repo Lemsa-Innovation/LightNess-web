@@ -24,7 +24,7 @@ import {ChevronIcon} from "@/components/@materialUI/icons";
 import {searchIn} from "@/utils/string";
 import {MinimalUser} from "../cards";
 import {UserRoleChip} from "../chips";
-import {ActionsDropdown} from "../modals";
+import {ActionsDropdown, CreateUserModal} from "../modals";
 
 function UsersTable() {
   const {languageData} = useLanguage();
@@ -185,6 +185,7 @@ function UsersTable() {
                 ))}
               </DropdownMenu>
             </Dropdown>
+            <CreateUserModal />
           </div>
         </div>
         <div className="flex justify-between items-center">

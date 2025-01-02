@@ -1,6 +1,15 @@
 import {Suggestions} from "@/language/structure/inputs/suggestions";
 
 export const suggestions: Suggestions = {
+  labels: {
+    emptyComment: "Aucun commentaire n'a encore été ajouté."
+  },
+  questions: {
+    isPaid: "Est-ce payant ?",
+    perpetuity: "Est-ce perpétuel ?",
+    muslimFriendly: "Est-ce conforme aux pratiques musulmanes ?",
+    belongsToMosque: "Appartient-elle à une mosquée ?",
+  },
   actions: {
     update: {
       label: "Mettre à jour",
@@ -54,6 +63,20 @@ export const suggestions: Suggestions = {
           message: "Êtes-vous sûr de vouloir supprimer cette pompe funèbre?",
         },
         description: "Cette action supprimera définitivement la pompe funèbre sélectionnée.",
+      },
+      comment: {
+        label: "Supprimer le commentaire",
+        header: "Suppression du commentaire",
+        toast: {
+          success: "Le commentaire a été supprimé avec succès.",
+          error: "La suppression du commentaire a échoué.",
+        },
+        confirmation: {
+          title: "Confirmer la suppression",
+          message: "Êtes-vous sûr de vouloir supprimer ce commentaire?",
+        },
+        description:
+          "Cette action supprimera définitivement le commentaire sélectionné.",
       },
     },
   }

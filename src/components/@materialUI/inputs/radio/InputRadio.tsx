@@ -73,7 +73,12 @@ const InputRadio: React.FC<InputRadioProps> = ({
             description={description}
         >
             {values.map(({value, label}) => (
-                <Radio key={value} value={value} color={getColor(value)}>
+                <Radio
+                    key={value}
+                    className="text-black"
+                    value={value}
+                    color={getColor(value)}
+                >
                     {label}
                 </Radio>
             ))}
