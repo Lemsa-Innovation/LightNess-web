@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { loadImage } from "./functions";
 import { storage } from "../app";
 
-export function useImage({
+export function useImageUrl({
   src,
   displayNoImage,
 }: {
@@ -16,7 +16,7 @@ export function useImage({
       if (src) {
         if (typeof src === "string") {
           try {
-            const url = await loadImage(storage, src);
+            const url = await loadImage(src);
             setImage(url);
           } catch (error) {
             // console.log("Error fetching image , l'image n'existe pas");

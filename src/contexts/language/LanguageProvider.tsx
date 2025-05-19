@@ -18,9 +18,6 @@ export const LanguageProvider: React.FunctionComponent<
   const changeLanguage = (selectedLanguage: Language) => {
     setLanguage(selectedLanguage);
   };
-
-  console.log("language provider");
-
   return (
     <LanguageContext.Provider
       value={{

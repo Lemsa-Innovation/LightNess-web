@@ -26,18 +26,19 @@ function Page() {
         <p className="text-2xl font-bold">{announcements?.labels.title}</p>
         <AnnouncementModal />
       </div>
-      <div className="grid grid-cols-12 gap-4">
-        {data?.length === 0 ? (
-          <p className="text-sm font-light">{announcements?.labels.empty}</p>
-        ) : (
-          data?.map((announcement) => (
+
+      {data?.length === 0 ? (
+        <p className="text-sm font-light">{announcements?.labels.empty}</p>
+      ) : (
+        <div className="grid grid-cols-12 gap-4">
+          {data?.map((announcement) => (
             <AnnouncementCard
               key={announcement.ref.id}
               announcement={announcement}
             />
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

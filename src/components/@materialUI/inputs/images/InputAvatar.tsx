@@ -4,7 +4,6 @@ import { Avatar, cn } from "@heroui/react";
 import { CameraIcon } from "../../icons";
 import { ImageField } from "@/language/structure/inputs/attachements";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { useImage } from "@/firebase/storage";
 
 interface AvatarProps {
   control: Control<any>;
@@ -33,10 +32,7 @@ const InputAvatar: React.FC<AvatarProps> = ({
     control,
   });
 
-  const imagePath = useImage({
-    src: value,
-  });
-  const src = imagePath || altPath;
+  const src = value || altPath;
 
   const { getRootProps, getInputProps } = useDropzone({
     multiple: false,

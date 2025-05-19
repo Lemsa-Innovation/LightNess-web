@@ -26,8 +26,6 @@ const InputImageCard: React.FC<Props> = ({
     control,
   });
 
-  //console.log(value);
-
   const { languageData } = useLanguage();
   const imageLabels = languageData?.inputs.attachements.media.labels;
   return (

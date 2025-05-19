@@ -19,7 +19,6 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
     isLoading,
     currentUser: user,
   };
-  console.log("tenant", tenant);
 
   //   useEffect(() => {
   //     // if (tenant && currentUser)

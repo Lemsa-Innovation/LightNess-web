@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
-import { Image as NextuiImage, Skeleton, cn } from "@heroui/react";
-import { useImage } from "@/firebase/storage";
+import { Image as NextuiImage, Skeleton, cn, image } from "@heroui/react";
 import clsx from "clsx";
 
 export const DisplayImage: React.FC<{
@@ -9,13 +8,10 @@ export const DisplayImage: React.FC<{
   isZoomed?: boolean;
   className?: string;
 }> = ({ src, isZoomed, className }) => {
-  const image = useImage({
-    src,
-  });
   return (
     <NextuiImage
       alt="image"
-      src={image}
+      src={src}
       width={"100%"}
       height={"100%"}
       isZoomed={isZoomed}
@@ -31,30 +27,16 @@ export const DisplayNextImage: React.FC<{
   src?: string;
   displayNoImage?: boolean;
 }> = ({ src, displayNoImage }) => {
-  const image = useImage({
-    src,
-    displayNoImage,
-  });
-
   const className = cn(
     "rounded-lg bg-foreground-100 object-cover duration-700 ease-in-out w-full h-full"
   );
 
   return (
     <div className="relative w-full h-full rounded-lg">
-      {image ? (
-        <Image
-          fill
-          sizes="100%"
-          alt="image"
-          src={image}
-          className={className}
-        />
+      {src ? (
+        <Image fill sizes="100%" alt="image" src={src} className={className} />
       ) : (
-        <Skeleton
-          isLoaded={!!image}
-          className={cn("w-full h-full rounded-lg")}
-        />
+        <Skeleton isLoaded={!!src} className={cn("w-full h-full rounded-lg")} />
       )}
     </div>
   );

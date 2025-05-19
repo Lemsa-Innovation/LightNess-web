@@ -4,7 +4,6 @@ import { useDropzone } from "react-dropzone";
 import { Control, useController } from "react-hook-form";
 import { CameraIcon } from "../../icons";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { useImage } from "@/firebase/storage";
 import { ImageField } from "@/language/structure/inputs/attachements";
 
 const InputImage: React.FC<{
@@ -35,10 +34,8 @@ const InputImage: React.FC<{
     name,
     control,
   });
-  const imagePath = useImage({
-    src: value,
-  });
-  const src = imagePath || altPath;
+
+  const src = value || altPath;
 
   const { getRootProps, getInputProps } = useDropzone({
     multiple: false,

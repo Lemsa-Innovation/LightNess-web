@@ -4,7 +4,7 @@ import {
   addAnnouncementValidation,
   AnnouncementValidation,
 } from "./validations";
-import { adminFirestore } from "@/firebase/admin/config";
+import { adminFirestore, adminStorage } from "@/firebase/admin/config";
 import { Announcement } from "./types";
 import { FieldValue, WithFieldValue } from "firebase-admin/firestore";
 
@@ -22,5 +22,8 @@ export const addAnnouncement = async (data: AnnouncementValidation) => {
 };
 
 export const deleteAnnouncement = async (id: string) => {
+  adminStorage.bucket("lightness-f70cb.appspot.com").deleteFiles({
+    prefix: `announcements/${id}`,
+  });
   await adminFirestore.collection(collectionIds.announcements).doc(id).delete();
 };

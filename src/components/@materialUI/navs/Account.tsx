@@ -12,7 +12,6 @@ import { useLanguage } from "@/contexts/language/LanguageContext";
 import { useAuth } from "@/contexts/auth/AuthContext";
 import { logout } from "@/firebase/auth";
 import { PROTECTED_ROUTES } from "@/config";
-import { useImage } from "@/firebase/storage";
 
 function Account() {
   const { push } = useRouter();
@@ -21,10 +20,7 @@ function Account() {
 
   const signOut = languageData?.auth.signOut;
 
-  const image = useImage({
-    src: currentUser?.avatarImage,
-  });
-  const imageSrc = image || currentUser?.photoUrl;
+  const imageSrc = currentUser?.avatarImage || currentUser?.photoUrl;
 
   const handleSelect = (key: Key) => {
     switch (key) {

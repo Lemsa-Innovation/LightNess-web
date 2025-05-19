@@ -6,7 +6,7 @@ import {
 } from "@firebase/storage";
 import { v4 as uuidv4 } from "uuid";
 import { storage } from "../app";
-export async function loadImage(storage: FirebaseStorage, image_path: string) {
+export async function loadImage(image_path: string) {
   const imageRef = ref(storage, image_path);
   const file = getDownloadURL(imageRef);
   return file;
@@ -21,8 +21,7 @@ export async function uploadImageBucket({
   const storageRef = ref(storage, imagePath);
   const uploadTask = uploadBytesResumable(storageRef, image);
   const result = await uploadTask;
-  console.log(result);
-  return result.ref.fullPath;
+  return await loadImage(result.ref.fullPath);
 }
 
 export function uploadImages({
