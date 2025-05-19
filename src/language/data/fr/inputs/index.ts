@@ -9,9 +9,11 @@ export const inputs: Inputs = {
   attachements,
   deathDeclarations: {
     labels: {
+      title: "Déclarations de décès",
       declaredBy: "Déclaré par",
       placeOfDeath: "Lieu du décès",
       dateOfDeath: "Date du décès",
+      empty: "Aucune déclaration de décès disponible",
     },
     actions: {
       rejectDeclaration: {
@@ -71,6 +73,10 @@ export const inputs: Inputs = {
     },
   },
   blogs: {
+    labels: {
+      title: "Blogs",
+      empty: "Aucun blog disponible",
+    },
     steps: {
       description: {
         title: "Informations générales",
@@ -184,6 +190,10 @@ export const inputs: Inputs = {
     },
   },
   announcements: {
+    labels: {
+      title: "Annonces",
+      empty: "Aucune annonce disponible",
+    },
     actions: {
       deleteAnnouncement: {
         label: "Supprimer l'annonce",
@@ -236,6 +246,24 @@ export const inputs: Inputs = {
           isRequired: "L'image complète est obligatoire",
         },
       },
+    },
+  },
+  funeralCompanies: {
+    labels: {
+      title: "Entreprises de funérailles",
+      empty: "Aucune entreprise de funérailles disponible",
+    },
+  },
+  cemeteries: {
+    labels: {
+      title: "Cimetières",
+      empty: "Aucun cimetière disponible",
+    },
+  },
+  washers: {
+    labels: {
+      title: "Laveurs de tombes",
+      empty: "Aucune laveuse de tombes disponible",
     },
   },
 };

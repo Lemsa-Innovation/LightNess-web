@@ -1,4 +1,6 @@
-import {DeathDeclaration as DeathDeclarationBase} from "@shared/collections";
-import { DefaultFirestoreTypes } from "../../modules/types";
+import { DeathDeclaration as DeathDeclarationBase } from "@shared/collections";
+import { DefaultFirestoreTypes, WithRef } from "../../modules/types";
 
-export type DeathDeclaration = DeathDeclarationBase<DefaultFirestoreTypes>;
+export type DeathDeclaration = WithRef<
+  DeathDeclarationBase<DefaultFirestoreTypes>
+>;

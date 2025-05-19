@@ -35,6 +35,10 @@ export interface Inputs {
   suggestions: Suggestions;
   attachements: Attachements;
   blogs: {
+    labels: {
+      title: string;
+      empty: string;
+    };
     steps: {
       description: {
         title: string;
@@ -47,7 +51,7 @@ export interface Inputs {
       content: {
         title: string;
         description: string;
-      }
+      };
     };
     actions: {
       addBlog: Action;
@@ -67,6 +71,10 @@ export interface Inputs {
     };
   };
   announcements: {
+    labels: {
+      title: string;
+      empty: string;
+    };
     fields: {
       bannerImage: ImageField;
       fullImage: ImageField;
@@ -78,15 +86,36 @@ export interface Inputs {
   };
   deathDeclarations: {
     labels: {
+      title: string;
       declaredBy: string;
       placeOfDeath: string;
       dateOfDeath: string;
+      empty: string;
     };
     actions: {
       validateDeclaration: Action;
       rejectDeclaration: Action;
     };
   };
+  funeralCompanies: {
+    labels: {
+      title: string;
+      empty: string;
+    };
+  };
+  cemeteries: {
+    labels: {
+      title: string;
+      empty: string;
+    };
+  };
+  washers: {
+    labels: {
+      title: string;
+      empty: string;
+    };
+  };
+
   commons: {
     name: Field;
     isActive: Field;

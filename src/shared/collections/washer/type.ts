@@ -9,6 +9,7 @@ export type WasherProfile<
   address: string;
   region: string; // rayon d'intervention
   available: boolean;
+  status: "active" | "inactive";
   geoPoint?: Ctx["_geo"];
   // experienceYears?: number;
   phoneNumber: string;

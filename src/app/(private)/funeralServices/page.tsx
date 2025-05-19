@@ -41,7 +41,7 @@ function Page() {
   const { languageData } = useLanguage();
   const columns = languageData?.commons.table.columns;
   const tableLabels = languageData?.commons.labels.table;
-
+  const funeralCompanies = languageData?.inputs.funeralCompanies;
   const {
     page,
     filterValue,
@@ -152,7 +152,8 @@ function Page() {
   );
 
   return (
-    <div className="flex w-full h-full">
+    <div className="flex flex-col gap-4 w-full h-full">
+      <p className="text-2xl font-bold">{funeralCompanies?.labels.title}</p>
       <Table isHeaderSticky topContent={topContent}>
         <TableHeader columns={getColumns()}>
           {({ uid, align, sortable }) => (

@@ -17,7 +17,7 @@ export type FuneralCompanyProfile<
   createdAt: Ctx["_time"];
   updatedAt?: Ctx["_time"];
   geoPoint?: Ctx["_geo"];
-
+  status: "active" | "inactive";
   reviews?: Record<string, Review<Ctx>>; // keyed by userId
   verifications: {
     identity: {
