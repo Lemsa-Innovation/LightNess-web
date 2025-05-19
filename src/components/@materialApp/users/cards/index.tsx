@@ -1,5 +1,2 @@
-import MinimalUser from "./MinimalUser";
-
-export {
-  MinimalUser
-}
+export * from "./Actions";
+export * from "./MinimalUser";

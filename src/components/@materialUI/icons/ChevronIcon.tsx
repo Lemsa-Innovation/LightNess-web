@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface ChevronIconProps {
   fill?: string;
   right?: boolean;
@@ -13,8 +11,8 @@ interface ChevronIconProps {
   label?: string;
 }
 
-const ChevronIcon: React.FC<ChevronIconProps> = ({
-  fill = 'currentColor',
+const ChevronIcon = ({
+  fill = "currentColor",
   right,
   left,
   down,
@@ -25,7 +23,7 @@ const ChevronIcon: React.FC<ChevronIconProps> = ({
   width,
   label,
   ...props
-}) => {
+}: ChevronIconProps) => {
   let rotation = 180;
 
   if (right) {
@@ -43,7 +41,7 @@ const ChevronIcon: React.FC<ChevronIconProps> = ({
       width={size || width || 24}
       height={size || height || 24}
       viewBox="0 0 24 24"
-      fill={filled ? fill : 'none'}
+      fill={filled ? fill : "none"}
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
@@ -60,4 +58,4 @@ const ChevronIcon: React.FC<ChevronIconProps> = ({
   );
 };
 
-export default ChevronIcon
+export default ChevronIcon;

@@ -1,11 +1,11 @@
 import InputCheckbox from "./InputCheckbox";
+import InputCheckboxGroup from "./InputCheckboxGroup";
 import InputCustomCheckbox from "./InputCustomCheckbox";
-import InputFullyCustomCheckbox from "./InputFullyCustomChechbox";
 import InputStyledCheckbox from "./InputStyledCheckbox";
 
 export {
-    InputCheckbox,
-    InputStyledCheckbox,
-    InputCustomCheckbox,
-    InputFullyCustomCheckbox
-}
+  InputCheckbox,
+  InputCheckboxGroup,
+  InputStyledCheckbox,
+  InputCustomCheckbox,
+};

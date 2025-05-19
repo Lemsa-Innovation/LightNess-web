@@ -1,7 +1,7 @@
 "use server"
-import {adminAuth} from "../admin/firebaseAdmin"
 import {CreateRequest} from "firebase-admin/auth"
-import {CustomClaims} from "./models"
+import { CustomClaims } from "./types"
+import { adminAuth } from "../admin/config"
 
 
 export async function createAuthUser(properties: CreateRequest) {

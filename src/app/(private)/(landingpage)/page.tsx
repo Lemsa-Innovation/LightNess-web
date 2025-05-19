@@ -1,7 +1,7 @@
-"use client"
-import {AUTH_ROUTES, SIDEBAR_ROUTES} from "@/routes";
-import {useRouter} from "next/navigation";
-import {useEffect} from "react";
+"use client";
+import { SIDEBAR_ROUTES } from "@/config";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 function Page() {
   const router = useRouter();
@@ -11,7 +11,6 @@ function Page() {
   }, [router]);
 
   return null; // La page racine ne contient rien, car elle redirige immédiatement
-
 }
 
 export default Page;

@@ -1,33 +1,49 @@
-import {ref, uploadBytesResumable} from "@firebase/storage";
-import {v4 as uuidv4} from 'uuid';
-import {storage} from "../config/firebase";
-
-export async function uploadImageBucket({image, imagePath}: {
-    image: File
-    imagePath: string
+import {
+  FirebaseStorage,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "@firebase/storage";
+import { v4 as uuidv4 } from "uuid";
+import { storage } from "../app";
+export async function loadImage(storage: FirebaseStorage, image_path: string) {
+  const imageRef = ref(storage, image_path);
+  const file = getDownloadURL(imageRef);
+  return file;
+}
+export async function uploadImageBucket({
+  image,
+  imagePath,
+}: {
+  image: File;
+  imagePath: string;
 }) {
-    const storageRef = ref(storage, imagePath);
-    const uploadTask = uploadBytesResumable(storageRef, image);
-    await uploadTask;
-
-    return imagePath
+  const storageRef = ref(storage, imagePath);
+  const uploadTask = uploadBytesResumable(storageRef, image);
+  const result = await uploadTask;
+  console.log(result);
+  return result.ref.fullPath;
 }
 
-export function uploadImages({path, images}: {
-    images: File[]
-    path: string
+export function uploadImages({
+  path,
+  images,
+}: {
+  images: File[];
+  path: string;
 }) {
-    return Promise.all(
-        images.map(async (image) => {
-            const uuid = uuidGenerate();
-            const imageUrl = path.concat(`/${uuid}`)
-            await uploadImageBucket({
-                image, imagePath: imageUrl
-            })
-        })
-    )
+  return Promise.all(
+    images.map(async (image) => {
+      const uuid = uuidGenerate();
+      const imageUrl = path.concat(`/${uuid}`);
+      await uploadImageBucket({
+        image,
+        imagePath: imageUrl,
+      });
+    })
+  );
 }
 
 export function uuidGenerate() {
-    return uuidv4();
+  return uuidv4();
 }

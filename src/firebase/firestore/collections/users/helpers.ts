@@ -1,24 +1,18 @@
-import {collectionIds} from "../../modules/assets";
-import {getCollectionRef, getDocumentRef} from "../../modules/helpers";
-import {User} from "./models";
-const {users} = collectionIds
+import { User } from "./types";
+import { getCollectionRef, getDocumentRef } from "../../modules/helpers";
+import { collectionIds } from "@shared/modules";
+const { users } = collectionIds;
 
 export function getUserRef(uid: string) {
-    return getDocumentRef(users, uid)
+  return getDocumentRef(users, uid);
 }
 export function getUsersRef() {
-    return getCollectionRef(users)
-}
-export function generateUserAvatarPath(uid: string) {
-    return (`${users}/${uid}`)
-}
-export function getFullName({firstName = '', lastName = ''}: {
-    firstName?: string
-    lastName?: string
-}) {
-    return `${firstName} ${lastName}`.trim();
+  return getCollectionRef(users);
 }
 
-export function isUserVerified(verificationSteps: User<"client">["verificationSteps"]) {
-    return !!(verificationSteps?.phone?.verified && verificationSteps?.email?.verified)
+export function getUserFullName(
+  user: Pick<User, "firstName" | "lastName"> | undefined
+) {
+  if (!user) return "";
+  return `${user.firstName || ""} ${user.lastName || ""}`;
 }

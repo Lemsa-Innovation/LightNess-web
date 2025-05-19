@@ -1,18 +1,18 @@
-import {NextRequest, NextResponse} from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import {
   authMiddleware,
   redirectToLogin,
 } from "next-firebase-auth-edge/lib/next/middleware";
 
-import {UserStatus, UserRole} from "./firebase/firestore/collections/users/models";
 import {
   AUTH_PATHS,
   MERGED_PUBLIC_PATHS,
   PROTECTED_PATHS,
   PUBLIC_PATHS,
   SIDEBAR_ROUTES,
-} from "./routes";
-import {authConfig} from "./firebase/config/server-config";
+} from "./config";
+import { authConfig } from "./config/server-config";
+import { UserRole, UserStatus } from "@shared/collections";
 
 function notFound(request: NextRequest) {
   const url = request.nextUrl.clone();
@@ -39,7 +39,7 @@ export function middleware(request: NextRequest) {
     loginPath: "/api/login",
     logoutPath: "/api/logout",
     ...authConfig,
-    handleValidToken: async ({decodedToken}, headers) => {
+    handleValidToken: async ({ decodedToken }, headers) => {
       console.log("Valid Token");
 
       const allowedRoutes: string[] = PUBLIC_PATHS;

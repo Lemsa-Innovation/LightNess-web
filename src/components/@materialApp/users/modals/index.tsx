@@ -1,7 +1,3 @@
-import ActionsDropdown from "./Actions"
-import CreateUserModal from "./CreateModal"
-
-export {
-  ActionsDropdown,
-  CreateUserModal
-}
+export * from "./CreateModal";
+export * from "./DeleteModal";
+export * from "./UpdateModal";

@@ -1,13 +1,13 @@
 export interface Rules {
     field: {
         isRequired: string;
-        minLength: string;
-        maxLength: string;
+        minLength: (minLength: string) => string;
+        maxLength: (maxLength: string) => string;
     };
     number: {
         invalid: string;
-        minValue: string;
-        maxValue: string;
+        minValue: (minValue: string) => string;
+        maxValue: (maxValue: string) => string;
         integer: string;
         positive: string;
         maxShouldGreaterthenMin: string
