@@ -1,7 +1,7 @@
 "use client";
 import {
   AnnouncementCard,
-  AnnouncementModal,
+  AddAnnouncementModal,
 } from "@/components/@materialApp/announcements";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { Announcement } from "@/firebase/firestore";
@@ -24,7 +24,7 @@ function Page() {
     <div className="flex flex-col items-start gap-4">
       <div className="flex flex-row justify-between items-center w-full">
         <p className="text-2xl font-bold">{announcements?.labels.title}</p>
-        <AnnouncementModal />
+        <AddAnnouncementModal />
       </div>
 
       {data?.length === 0 ? (

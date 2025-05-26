@@ -35,7 +35,9 @@ const InputImage: React.FC<{
     control,
   });
 
-  const src = value || altPath;
+  console.log(value);
+
+  const src = (value || altPath) as string | File;
 
   const { getRootProps, getInputProps } = useDropzone({
     multiple: false,
@@ -65,7 +67,7 @@ const InputImage: React.FC<{
       {src && (
         <Image
           fill
-          src={src}
+          src={src instanceof File ? URL.createObjectURL(src) : src}
           style={{ zIndex: 8 }}
           className="object-cover"
           alt="image"
