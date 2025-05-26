@@ -1,29 +1,37 @@
-import {CancelButton, SubmitButton} from "@/components/@materialUI/buttons";
-import {UseDisclosureReturn} from "@/components/@materialUI/utils";
-import {useLanguage} from "@/contexts/language/LanguageContext";
-import {deleteUser} from "@/firebase/firestore/collections/users/actions";
-import {User} from "@/firebase/firestore/collections/users/models";
-import {Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@nextui-org/react";
-import {useLoadingCallback} from "react-loading-hook";
-import {toast} from "sonner";
+import { CancelButton, SubmitButton } from "@/components/@materialUI";
+import { UseDisclosureReturn } from "@/components/types";
+import { useLanguage } from "@/contexts/language/LanguageContext";
+import { deleteUser, User } from "@/firebase/firestore";
+import {
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@heroui/react";
+import { useLoadingCallback } from "react-loading-hook";
+import { toast } from "sonner";
 
-function DeleteUserModal({user, disclosureProps}: {
-  user: User<"client">
-  disclosureProps: UseDisclosureReturn
+function DeleteUserModal({
+  user,
+  disclosureProps,
+}: {
+  user: User;
+  disclosureProps: UseDisclosureReturn;
 }) {
-  const {languageData} = useLanguage()
-  const {isOpen, onOpenChange, onClose} = disclosureProps
-  const action = languageData?.inputs.users.actions.deleteUser
+  const { languageData } = useLanguage();
+  const { isOpen, onOpenChange, onClose } = disclosureProps;
+  const action = languageData?.inputs.users.actions.deleteUser;
 
   const [handleDelete, isLoading] = useLoadingCallback(async () => {
     try {
-      await deleteUser(user.uid)
-      toast.success(action?.toast.success)
-      onClose()
+      await deleteUser(user.uid);
+      toast.success(action?.toast.success);
+      onClose();
     } catch (error) {
-      toast.error(action?.toast.error)
+      toast.error(action?.toast.error);
     }
-  })
+  });
   return (
     <Modal
       isOpen={isOpen}
@@ -32,22 +40,17 @@ function DeleteUserModal({user, disclosureProps}: {
       className="text-black "
     >
       <ModalContent>
-        <ModalHeader>
-          {action?.confirmation?.title}
-        </ModalHeader>
-        <ModalBody
-        >
+        <ModalHeader>{action?.confirmation?.title}</ModalHeader>
+        <ModalBody>
           <p className="text-sm font-light">{action?.confirmation?.message}</p>
         </ModalBody>
         <ModalFooter>
-          <CancelButton onClick={onClose} />
-          <SubmitButton
-            isLoading={isLoading}
-            onClick={handleDelete} />
+          <CancelButton onPress={onClose} />
+          <SubmitButton isLoading={isLoading} onPress={handleDelete} />
         </ModalFooter>
       </ModalContent>
     </Modal>
-  )
+  );
 }
 
-export default DeleteUserModal;
+export { DeleteUserModal };

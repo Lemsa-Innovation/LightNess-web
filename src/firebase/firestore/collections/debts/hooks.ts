@@ -1,8 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
 import {getDocs} from "@firebase/firestore";
-import {Debt} from "./models";
 import {getCollectionRef} from "../../modules/helpers";
-import {collectionIds} from "../../modules/assets";
+import { collectionIds } from "@shared/modules";
+import { Debt } from "./types";
 
 export function useDebts() {
   return useQuery({

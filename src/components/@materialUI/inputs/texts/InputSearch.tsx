@@ -1,26 +1,30 @@
-import {useLanguage} from "@/contexts/language/LanguageContext";
-import {Input} from "@nextui-org/react";
-import {SearchIcon} from "lucide-react";
-
-function InputSearch({isDisabled, onClear, onSearchChange}: {
-    isDisabled?: boolean
-    onClear: () => void
-    onSearchChange: (value: string) => void
+import { Input } from "@heroui/react";
+import { Icon } from "@iconify/react";
+import { useLanguage } from "@/contexts/language/LanguageContext";
+function InputSearch({
+  isDisabled,
+  onClear,
+  onSearchChange,
+}: {
+  isDisabled?: boolean;
+  onClear: () => void;
+  onSearchChange: (value: string) => void;
 }) {
-    const {languageData} = useLanguage()
-    return (
-        <Input
-            isClearable
-            size="md"
-            isDisabled={isDisabled}
-            variant="bordered"
-            className="w-full sm:max-w-[44%] rounded-xl"
-            placeholder={languageData?.inputs.commons.searchByName.label}
-            startContent={<SearchIcon />}
-            onClear={onClear}
-            onValueChange={onSearchChange}
-        />
-    )
+  const { languageData } = useLanguage();
+  const search = languageData?.inputs.commons.searchByName;
+  return (
+    <Input
+      isClearable
+      size="md"
+      isDisabled={isDisabled}
+      variant="bordered"
+      className="w-full sm:max-w-[44%] rounded-xl"
+      placeholder={search?.label}
+      startContent={<Icon icon="mdi:search" />}
+      onClear={onClear}
+      onValueChange={onSearchChange}
+    />
+  );
 }
 
-export default InputSearch
+export default InputSearch;

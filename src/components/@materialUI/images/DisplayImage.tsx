@@ -1,56 +1,43 @@
+"use client";
 import Image from "next/image";
-import { useImage } from "@/firebase/storage/hooks";
-import { Image as NextuiImage, Skeleton, cn } from "@nextui-org/react";
+import { Image as NextuiImage, Skeleton, cn, image } from "@heroui/react";
+import clsx from "clsx";
 
 export const DisplayImage: React.FC<{
-    src: string | File
-    isZoomed?: boolean
-}> = ({ src, isZoomed }) => {
-    const image = useImage({
-        src
-    })
-    return (
-        <NextuiImage
-            alt="image"
-            isZoomed={isZoomed}
-            src={image}
-            className="object-contain rounded-lg duration-700 ease-in-out"
-            as={Image}
-            width={250}
-            height={250}
-        />
-    );
-}
+  src: string | File;
+  isZoomed?: boolean;
+  className?: string;
+}> = ({ src, isZoomed, className }) => {
+  return (
+    <NextuiImage
+      alt="image"
+      src={src}
+      width={"100%"}
+      height={"100%"}
+      isZoomed={isZoomed}
+      className={clsx(
+        "object-contain rounded-lg duration-700 ease-in-out",
+        className
+      )}
+    />
+  );
+};
 
 export const DisplayNextImage: React.FC<{
-    src?: string
-    displayNoImage?: boolean
+  src?: string;
+  displayNoImage?: boolean;
 }> = ({ src, displayNoImage }) => {
+  const className = cn(
+    "rounded-lg bg-foreground-100 object-cover duration-700 ease-in-out w-full h-full"
+  );
 
-    const image = useImage({
-        src, displayNoImage
-    })
-
-    const className = cn(
-        'rounded-lg bg-foreground-100 duration-700 ease-in-out w-full h-full',
-    )
-
-    return (
-
-        <div className="relative w-full h-full rounded-lg">
-            {image ? <Image
-                fill
-                sizes="100%"
-                alt="image"
-                src={image}
-                className={className}
-            /> : <Skeleton
-                isLoaded={!!image}
-                className={cn(
-                    "w-full h-full rounded-lg",
-                )}
-            />}
-        </div>
-
-    )
-}
+  return (
+    <div className="relative w-full h-full rounded-lg">
+      {src ? (
+        <Image fill sizes="100%" alt="image" src={src} className={className} />
+      ) : (
+        <Skeleton isLoaded={!!src} className={cn("w-full h-full rounded-lg")} />
+      )}
+    </div>
+  );
+};

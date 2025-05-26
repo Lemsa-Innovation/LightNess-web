@@ -1,41 +1,35 @@
-import {useEffect, useState} from "react";
-import {getDownloadURL, ref} from "@firebase/storage";
-import {storage} from "../config/firebase";
+"use client";
+import { useEffect, useState } from "react";
+import { loadImage } from "./functions";
+import { storage } from "../app";
 
-export async function loadImage(image_path: string) {
-    const imageRef = ref(storage, image_path);
-    const file = getDownloadURL(imageRef);
-    return file
-}
-
-export function useImage({src, displayNoImage}: {
-    src: File | string | undefined
-    displayNoImage?: boolean
+export function useImageUrl({
+  src,
+  displayNoImage,
+}: {
+  src: File | string | undefined | null;
+  displayNoImage?: boolean;
 }) {
-    const [image, setImage] = useState<string>();
-    useEffect(() => {
-        const getImage = async () => {
-            if (src) {
-                if (typeof src === 'string') {
-                    try {
-                        const url = await loadImage(src)
-                        setImage(url);
-                    } catch (error) {
-                        console.log("Error fetching image , l'image n'existe pas");
-                    }
-                }
-                else {
-                    setImage(URL.createObjectURL(src))
-                }
-            }
-            else {
-                if (displayNoImage)
-                    setImage("/assets/images/no-image-icon.jpg")
-                else
-                    setImage(undefined)
-            }
+  const [image, setImage] = useState<string>();
+  useEffect(() => {
+    const getImage = async () => {
+      if (src) {
+        if (typeof src === "string") {
+          try {
+            const url = await loadImage(src);
+            setImage(url);
+          } catch (error) {
+            // console.log("Error fetching image , l'image n'existe pas");
+          }
+        } else {
+          setImage(URL.createObjectURL(src));
         }
-        getImage()
-    }, [src])
-    return image;
+      } else {
+        if (displayNoImage) setImage("/assets/images/no-image-icon.jpg");
+        else setImage(undefined);
+      }
+    };
+    getImage();
+  }, [src]);
+  return image;
 }

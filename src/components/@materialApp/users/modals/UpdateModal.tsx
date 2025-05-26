@@ -1,37 +1,41 @@
-import {CancelButton, SubmitButton} from "@/components/@materialUI/buttons";
-import {InputGender} from "@/components/@materialUI/inputs/radio";
-import {InputText} from "@/components/@materialUI/inputs/texts";
-import {UseDisclosureReturn} from "@/components/@materialUI/utils";
-import {useLanguage} from "@/contexts/language/LanguageContext";
-import {updateUser} from "@/firebase/firestore/collections/users/actions";
-import {User} from "@/firebase/firestore/collections/users/models";
 import {
-  UpdateUserSchema,
+  InputGender,
+  InputText,
+  CancelButton,
+  SubmitButton,
+} from "@/components/@materialUI";
+import { UseDisclosureReturn } from "@/components/types";
+import { useLanguage } from "@/contexts/language/LanguageContext";
+import {
+  updateUser,
   updateUserSchema,
-} from "@/firebase/firestore/collections/users/validations";
-import {zodResolver} from "@hookform/resolvers/zod";
+  UpdateUserSchema,
+  User,
+} from "@/firebase/firestore";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
-} from "@nextui-org/react";
-import {useForm} from "react-hook-form";
-import {useLoadingCallback} from "react-loading-hook";
-import {toast} from "sonner";
+} from "@heroui/react";
+import { useForm } from "react-hook-form";
+import { useLoadingCallback } from "react-loading-hook";
+import { toast } from "sonner";
 
-function UpdateSuggestionModal({
+function UpdateUserModal({
   user,
   disclosureProps,
 }: {
-  user: User<"client">;
+  user: User;
   disclosureProps: UseDisclosureReturn;
 }) {
-  const {languageData} = useLanguage();
+  const { languageData } = useLanguage();
   const users = languageData?.inputs.users;
 
-  const {isOpen, onOpenChange, onClose} = disclosureProps;
+  const { isOpen, onOpenChange, onClose } = disclosureProps;
   const action = languageData?.inputs.suggestions.actions.update;
   const {
     firstName,
@@ -46,7 +50,7 @@ function UpdateSuggestionModal({
   const {
     control,
     handleSubmit,
-    formState: {dirtyFields},
+    formState: { dirtyFields },
   } = useForm<UpdateUserSchema>({
     mode: "onChange",
     resolver: zodResolver(updateUserSchema),
@@ -55,24 +59,32 @@ function UpdateSuggestionModal({
       firstName,
       lastName,
       email,
-      gender,
-      phoneNumber,
-      // birthday: birthday?.toDate(),
+      ...(gender && { gender }),
+      ...(phoneNumber && { phoneNumber }),
+      // birthday: ,
     },
   });
 
   const [handleUpdate, isLoading] = useLoadingCallback(
     async (data: UpdateUserSchema) => {
       try {
-        const {uid, email, firstName, gender, lastName, birthday, phoneNumber} = data
+        const {
+          uid,
+          email,
+          firstName,
+          gender,
+          lastName,
+          birthday,
+          phoneNumber,
+        } = data;
         await updateUser({
           uid,
           birthday: dirtyFields.birthday ? birthday : undefined,
           gender: dirtyFields.gender ? gender : undefined,
           firstName: dirtyFields.firstName ? firstName : undefined,
           lastName: dirtyFields.lastName ? lastName : undefined,
-          phoneNumber: dirtyFields.phoneNumber ? phoneNumber : undefined
-        })
+          phoneNumber: dirtyFields.phoneNumber ? phoneNumber : undefined,
+        });
         toast.success(action?.toast.success);
         onClose();
       } catch (error) {
@@ -90,9 +102,7 @@ function UpdateSuggestionModal({
     >
       <ModalContent>
         <ModalHeader>{action?.header}</ModalHeader>
-        <ModalBody
-          className="grid grid-cols-12"
-        >
+        <ModalBody className="grid grid-cols-12">
           <div className="col-span-full">
             <InputText
               isReadOnly
@@ -139,10 +149,10 @@ function UpdateSuggestionModal({
           </div>
         </ModalBody>
         <ModalFooter>
-          <CancelButton onClick={onClose} />
+          <CancelButton onPress={onClose} />
           <SubmitButton
             isLoading={isLoading}
-            onClick={handleSubmit(handleUpdate)}
+            onPress={handleSubmit(handleUpdate)}
           />
         </ModalFooter>
       </ModalContent>
@@ -150,4 +160,4 @@ function UpdateSuggestionModal({
   );
 }
 
-export default UpdateSuggestionModal;
+export { UpdateUserModal };

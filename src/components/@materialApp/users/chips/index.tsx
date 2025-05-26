@@ -1,5 +1,1 @@
-import UserRoleChip from "./UserRoleChip";
-
-export {
-  UserRoleChip
-}
+export * from "./UserRoleChip";

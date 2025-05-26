@@ -1,30 +1,24 @@
-import {UserGender} from "@/firebase/firestore/collections/users/validations";
-import {useImage} from "@/firebase/storage/hooks";
-import {Avatar} from "@nextui-org/react";
+import { Avatar } from "@heroui/react";
+import { UserGender } from "@shared/collections";
 function DisplayAvatar({
-    src,
-    gender,
-    altPath,
-    className,
+  src,
+  gender,
+  altPath,
+  className,
 }: {
-    src: string | undefined
-    gender?: UserGender
-    altPath?: string
-    className?: string
+  src: string | undefined;
+  gender?: UserGender;
+  altPath?: string;
+  className?: string;
 }) {
-
-    const image = useImage({
-        src,
-    })
-
-    return (
-        <Avatar
-            isBordered
-            src={image || altPath}
-            className={className}
-            color={gender ? (gender === 'men' ? 'secondary' : 'danger') : 'default'}
-        />
-    );
+  return (
+    <Avatar
+      isBordered
+      src={src || altPath}
+      className={className}
+      color={gender ? (gender === "men" ? "secondary" : "danger") : "default"}
+    />
+  );
 }
 
 export default DisplayAvatar;

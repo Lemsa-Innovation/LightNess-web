@@ -1,28 +1,25 @@
 "use client";
-import {toast} from "sonner";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Button, Card, CardBody, CardHeader, cn} from "@nextui-org/react";
-import {useLoadingCallback} from "react-loading-hook";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Card, CardBody, CardHeader, cn } from "@heroui/react";
+import { useLoadingCallback } from "react-loading-hook";
 import {
   InputText,
   InputPassword,
 } from "@/components/@materialUI/inputs/texts";
-import {useLanguage} from "@/contexts/language/LanguageContext";
-import {signIn} from "@/firebase/auth/functions";
-import {
-  authFormSchema,
-  AuthSchema,
-} from "@/firebase/firestore/collections/users/validations";
+import { useLanguage } from "@/contexts/language/LanguageContext";
+import { signIn } from "@/firebase/auth";
+import { authFormSchema, AuthSchema } from "@/firebase/auth/validations";
+import { toast } from "sonner";
 
 function Page() {
-  const {languageData} = useLanguage();
+  const { languageData } = useLanguage();
   const auth = languageData?.auth;
   const fields = languageData?.inputs.users.fields;
 
   const {
     control,
-    formState: {isValid},
+    formState: { isValid },
     handleSubmit,
   } = useForm<AuthSchema>({
     mode: "onChange",
@@ -30,11 +27,10 @@ function Page() {
   });
 
   const [handleSignIn, isLoading] = useLoadingCallback(
-    async ({email, password}: AuthSchema) => {
+    async ({ email, password }: AuthSchema) => {
       try {
         await signIn(email, password);
       } catch (error: any) {
-        console.log(error.code);
         switch (error.code) {
           case "auth/invalid-credential": {
             toast.error(auth?.errors.invalidCredential, {
@@ -77,7 +73,7 @@ function Page() {
               className="w-full"
               color="primary"
               variant="solid"
-              onClick={() => handleSubmit(handleSignIn)()}
+              onPress={() => handleSubmit(handleSignIn)()}
               isDisabled={!isValid}
               isLoading={isLoading}
             >

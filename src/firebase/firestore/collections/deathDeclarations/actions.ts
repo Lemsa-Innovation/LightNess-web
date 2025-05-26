@@ -1,13 +1,12 @@
 "use server"
-import {adminFirestore} from "@/firebase/admin/firebaseAdmin"
-import {collectionIds} from "../../modules/assets"
-import {buildServerFirestoreUpdatePath} from "@/firebase/admin/helpers"
-import {User} from "../users/models"
-import {Testament} from "../testaments/models"
+
+import { adminFirestore } from "@/firebase/admin/config"
+import { collectionIds } from "@shared/modules"
 import {FieldValue} from "firebase-admin/firestore"
-import {notifyUser} from "@/firebase/messaging/actions"
-import {getFullName} from "../users/helpers"
-import {DeathDeclaration} from "./model"
+import { getUserFullName, User } from "../users"
+import { buildServerFirestoreUpdatePath } from "@/firebase/admin/firestore"
+import { DeathDeclaration } from "./types"
+import { Testament } from "../testaments"
 const {users, testaments} = collectionIds
 
 export async function markUserAsDeath({matchedUid, declaredDeathsPath}: {
@@ -17,16 +16,15 @@ export async function markUserAsDeath({matchedUid, declaredDeathsPath}: {
   const userRef = adminFirestore.collection(users).doc(matchedUid)
   const userSnapshot = await userRef.get()
   if (userSnapshot.exists) {
-    const user = userSnapshot.data() as User<"client">
-    const fullName = getFullName(user)
+    const user = userSnapshot.data() as User
+    const fullName = getUserFullName(user)
     if (user.isDead) {
       throw new Error("user already dead")
     }
     adminFirestore.runTransaction(async (transaction) => {
-      declaredDeathsPath
       transaction.update(userRef, buildServerFirestoreUpdatePath({
         isDead: true
-      } as Partial<User<"client">>))
+      } as Partial<User>))
       await Promise.all(declaredDeathsPath.map(async (docPath) => {
         return transaction.update(adminFirestore.doc(docPath), buildServerFirestoreUpdatePath({
           status: "approved"
@@ -48,20 +46,20 @@ export async function markUserAsDeath({matchedUid, declaredDeathsPath}: {
           // const usersToNotify = new Set(recipientIds.concat(testament.ownerUid))
           // usersToNotify.delete(uid)
 
-          await Promise.all(recipientIds.map(async (uid) =>
-            notifyUser({
-              uid,
-              notificationData: {
-                fullName,
-                testamentId,
-                type: "testamentAvailable"
-              },
-              notificationPayload: {
-                title: "Accès à un testament",
-                body: `Vous êtes bénéficiaire d'un testament associé à ${fullName}. Veuillez consulter les détails dans votre espace personnel`
-              }
-            })
-          ));
+          // await Promise.all(recipientIds.map(async (uid) =>
+          //   notifyUser({
+          //     uid,
+          //     notificationData: {
+          //       fullName,
+          //       testamentId,
+          //       type: "testamentAvailable"
+          //     },
+          //     notificationPayload: {
+          //       title: "Accès à un testament",
+          //       body: `Vous êtes bénéficiaire d'un testament associé à ${fullName}. Veuillez consulter les détails dans votre espace personnel`
+          //     }
+          //   })
+          // ));
         }
       })
     })
@@ -74,8 +72,8 @@ export async function rejectDeadDeclarations({matchedUid, declaredDeathsPath}: {
   const userRef = adminFirestore.collection(users).doc(matchedUid)
   const userSnapshot = await userRef.get()
   if (userSnapshot.exists) {
-    const user = userSnapshot.data() as User<"client">
-    const fullName = getFullName(user)
+    const user = userSnapshot.data() as User
+    const fullName = getUserFullName(user)
     adminFirestore.runTransaction(async (transaction) => {
       await Promise.all(declaredDeathsPath.map(async (docPath) => {
         return transaction.update(adminFirestore.doc(docPath), buildServerFirestoreUpdatePath({
