@@ -5,7 +5,7 @@ import {
   SubmitButton,
 } from "@/components/@materialUI";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { firestoreDbV2 } from "@/firebase/app";
+import { firestoreDb } from "@/firebase/app";
 import { addAnnouncement } from "@/firebase/firestore/collections/announcements/actions";
 import {
   addAnnouncementValidation,
@@ -32,7 +32,7 @@ function AnnouncementModal() {
   const { control, handleSubmit } = useForm<AnnouncementValidation>({
     resolver: zodResolver(addAnnouncementValidation),
     defaultValues: {
-      path: doc(collection(firestoreDbV2, collectionIds.announcements)).path,
+      path: doc(collection(firestoreDb, collectionIds.announcements)).path,
     },
   });
   const { languageData } = useLanguage();

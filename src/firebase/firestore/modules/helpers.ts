@@ -5,7 +5,6 @@ import {
   doc,
   Timestamp,
 } from "@firebase/firestore";
-import { hoursToMilliseconds } from "date-fns";
 
 export function generateDocumentRef(path: string, ...pathSegments: string[]) {
   return doc(collection(firestoreDb, path, ...pathSegments));

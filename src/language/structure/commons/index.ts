@@ -61,6 +61,7 @@ export interface Status {
   offline: string;
   completed: string;
   removed: string;
+  inactive: string;
 }
 export type ColumnUID = keyof TableDictionnary["columns"];
 export interface TableDictionnary {

@@ -1,9 +1,10 @@
-import {FcmToken, Review, WithFirestoreTypes} from "../../modules";
-import {UserGender} from "../users";
+import { FcmToken, Review, WithFirestoreTypes } from "../../modules";
+import { UserGender } from "../users";
 
 export type WasherProfile<
-  Ctx extends Pick<WithFirestoreTypes, "_time" | "_geo">,
+  Ctx extends Pick<WithFirestoreTypes, "_time" | "_geo">
 > = {
+  email?: string;
   image?: string | null;
   fullname: string;
   address: string;

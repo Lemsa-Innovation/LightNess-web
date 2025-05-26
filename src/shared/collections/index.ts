@@ -6,4 +6,5 @@ export * from "./funeral";
 export * from "./testaments";
 export * from "./suggestions";
 export * from "./announcements";
+export * from "./conversations";
 export * from "./deathDeclarations";

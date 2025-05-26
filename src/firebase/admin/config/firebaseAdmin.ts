@@ -14,7 +14,7 @@ if (!admin.apps.length) {
 const adminAuth = admin?.auth();
 const adminStorage = admin?.storage();
 const adminMessaging = admin?.messaging();
-const adminFirestore = getFirestore("lightness-v2");
+const adminFirestore = getFirestore();
 export {
   admin as adminDb,
   adminFirestore,

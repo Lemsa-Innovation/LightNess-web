@@ -265,5 +265,28 @@ export const inputs: Inputs = {
       title: "Laveurs de tombes",
       empty: "Aucune laveuse de tombes disponible",
     },
+    actions: {
+      updateWasher: {
+        label: "Mettre à jour le laveur",
+        header: "Mise à jour du laveur",
+        description: "Modifiez les informations du laveur de tombes.",
+        confirmation: {
+          title: "Confirmer la mise à jour",
+          message: "Êtes-vous sûr de vouloir mettre à jour ce laveur ?",
+        },
+        toast: {
+          success: "Laveur mis à jour avec succès.",
+          error: "Échec de la mise à jour du laveur. Veuillez réessayer.",
+        },
+      },
+      validateWasher: {
+        label: "Valider le laveur",
+        header: "Validation du laveur",
+        toast: {
+          success: "Laveur validé avec succès.",
+          error: "Échec de la validation du laveur. Veuillez réessayer.",
+        },
+      },
+    },
   },
 };

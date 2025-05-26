@@ -11,6 +11,9 @@ export const collectionIds = {
   suggestions: "suggestions",
   notifications: "notifications",
   deathDeclarations: "deathDeclarations",
+  conversations: "conversations",
+  messages: "messages",
+  chats: "chats",
   // location: {
   //   continents: "continents",
   //   countries: "countries",

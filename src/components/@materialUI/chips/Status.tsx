@@ -19,6 +19,7 @@ export const statusColor: Record<keyof Status, InputProps["color"]> = {
   offline: "danger",
   completed: "success",
   removed: "danger",
+  inactive: "danger",
 };
 function StatusChip({ statusKey }: { statusKey: keyof Status }) {
   const { languageData } = useLanguage();

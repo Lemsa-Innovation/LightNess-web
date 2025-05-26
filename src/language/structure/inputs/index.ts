@@ -114,6 +114,12 @@ export interface Inputs {
       title: string;
       empty: string;
     };
+    actions: {
+      updateWasher: Action;
+      // deleteWasher: Action;
+      validateWasher: Action;
+      // rejectWasher: Action;
+    };
   };
 
   commons: {

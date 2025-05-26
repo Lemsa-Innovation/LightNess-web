@@ -14,4 +14,5 @@ export type Blog<
   published: boolean;
   readTime: number;
   isFeatured?: boolean;
+  countOfViews?: number;
 };

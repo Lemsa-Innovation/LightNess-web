@@ -36,6 +36,7 @@ export const commons: Commons = {
     offline: "Hors ligne",
     completed: "Completer",
     removed: "Supprimé",
+    inactive: "Inactif",
   },
   times: {
     days: {
