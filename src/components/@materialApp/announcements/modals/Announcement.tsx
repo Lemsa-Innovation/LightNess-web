@@ -8,6 +8,7 @@ import {
 import { UseDisclosureReturn } from "@/components/types";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { firestoreDb } from "@/firebase/app";
+import { Announcement } from "@/firebase/firestore";
 import { addAnnouncement } from "@/firebase/firestore/collections/announcements/actions";
 import {
   addAnnouncementValidation,
@@ -31,19 +32,27 @@ import { Fragment } from "react";
 import { useForm } from "react-hook-form";
 import { useLoadingCallback } from "react-loading-hook";
 
-const UpdateAnnouncementModal = () => {
+const UpdateAnnouncementModal: React.FC<{
+  announcement: Announcement;
+}> = ({ announcement }) => {
   const updateProps = useDisclosure();
   const { isOpen, onClose, onOpen } = updateProps;
   return (
     <Fragment>
       <Button isIconOnly startContent={<EditIcon />} onPress={onOpen} />
-      <AnnouncementModal modalProps={updateProps} />
+      <AnnouncementModal
+        type="update"
+        announcement={announcement}
+        modalProps={updateProps}
+      />
     </Fragment>
   );
 };
 function AnnouncementModal({
-  modalProps: { onOpen, isOpen, onClose },
+  modalProps: { isOpen, onClose },
 }: {
+  type: "add" | "update";
+  announcement?: Announcement;
   modalProps: UseDisclosureReturn;
 }) {
   const { control, handleSubmit } = useForm<AnnouncementValidation>({
@@ -71,11 +80,13 @@ function AnnouncementModal({
       };
       const imagePath = await uploadCoverImage(image, "banner");
       const fullImagePath = await uploadCoverImage(fullImage, "full");
-      await addAnnouncement({
+
+      const result = await addAnnouncement({
         path,
         image: imagePath,
         fullImage: fullImagePath,
       });
+      console.log(result);
     },
     []
   );
@@ -130,7 +141,7 @@ const AddAnnouncementModal = () => {
       >
         {announcements?.actions.addAnnouncement.label}
       </Button>
-      <AnnouncementModal modalProps={modalProps} />
+      <AnnouncementModal type="add" modalProps={modalProps} />
     </Fragment>
   );
 };

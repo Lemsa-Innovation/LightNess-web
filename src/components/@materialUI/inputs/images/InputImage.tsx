@@ -35,8 +35,6 @@ const InputImage: React.FC<{
     control,
   });
 
-  console.log(value);
-
   const src = (value || altPath) as string | File;
 
   const { getRootProps, getInputProps } = useDropzone({
