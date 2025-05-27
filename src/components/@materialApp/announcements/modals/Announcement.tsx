@@ -101,7 +101,7 @@ function AnnouncementModal({
           },
           type
         );
-        toast.error(action?.toast.success);
+        toast.success(action?.toast.success);
         onClose();
       } catch (error) {
         toast.error(action?.toast.error);
