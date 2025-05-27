@@ -9,6 +9,8 @@ import { Announcement } from "./types";
 import { FieldValue, WithFieldValue } from "firebase-admin/firestore";
 
 export const addAnnouncement = async (data: AnnouncementValidation) => {
+  console.log("Adding announcement", data);
+
   const { image, fullImage, path } = addAnnouncementValidation.parse(data);
   const announcement: Omit<WithFieldValue<Announcement>, "ref"> = {
     image: image as string,
@@ -16,6 +18,8 @@ export const addAnnouncement = async (data: AnnouncementValidation) => {
     createdAt: FieldValue.serverTimestamp(),
     updatedAt: FieldValue.serverTimestamp(),
   };
+  console.log(announcement);
+
   try {
     await adminFirestore.doc(path).create(announcement);
   } catch (error) {
