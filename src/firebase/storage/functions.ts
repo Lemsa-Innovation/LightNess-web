@@ -21,7 +21,8 @@ export async function uploadImageBucket({
   const storageRef = ref(storage, imagePath);
   const uploadTask = uploadBytesResumable(storageRef, image);
   const result = await uploadTask;
-  return await loadImage(result.ref.fullPath);
+  return result.ref.fullPath;
+  // return await loadImage(result.ref.fullPath);
 }
 
 export function uploadImages({

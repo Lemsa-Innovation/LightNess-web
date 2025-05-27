@@ -81,6 +81,11 @@ function AnnouncementModal({
       const imagePath = await uploadCoverImage(image, "banner");
       const fullImagePath = await uploadCoverImage(fullImage, "full");
 
+      console.log({
+        imagePath,
+        fullImagePath,
+      });
+
       const result = await addAnnouncement({
         path,
         image: imagePath,
