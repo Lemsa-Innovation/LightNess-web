@@ -9,9 +9,9 @@ import { UseDisclosureReturn } from "@/components/types";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { firestoreDb } from "@/firebase/app";
 import { Announcement } from "@/firebase/firestore";
-import { addAnnouncement } from "@/firebase/firestore/collections/announcements/actions";
+import { setAnnouncement } from "@/firebase/firestore/collections/announcements/actions";
 import {
-  addAnnouncementValidation,
+  announcementValidation,
   AnnouncementValidation,
 } from "@/firebase/firestore/collections/announcements/validations";
 import { uploadImageBucket } from "@/firebase/storage";
@@ -31,77 +31,89 @@ import { collectionIds } from "@shared/modules";
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
 import { useLoadingCallback } from "react-loading-hook";
+import { toast } from "sonner";
 
-const UpdateAnnouncementModal: React.FC<{
-  announcement: Announcement;
-}> = ({ announcement }) => {
-  const updateProps = useDisclosure();
-  const { isOpen, onClose, onOpen } = updateProps;
-  return (
-    <Fragment>
-      <Button isIconOnly startContent={<EditIcon />} onPress={onOpen} />
-      <AnnouncementModal
-        type="update"
-        announcement={announcement}
-        modalProps={updateProps}
-      />
-    </Fragment>
-  );
-};
 function AnnouncementModal({
+  type,
+  announcement,
   modalProps: { isOpen, onClose },
 }: {
   type: "add" | "update";
   announcement?: Announcement;
   modalProps: UseDisclosureReturn;
 }) {
-  const { control, handleSubmit } = useForm<AnnouncementValidation>({
-    resolver: zodResolver(addAnnouncementValidation),
-    defaultValues: {
+  const getDefaultValues = (): AnnouncementValidation => {
+    if (type === "update" && announcement) {
+      return {
+        type: "update",
+        path: announcement.ref.path,
+        image: announcement.image,
+        fullImage: announcement.fullImage,
+      };
+    }
+    return {
+      type: "add",
       path: doc(collection(firestoreDb, collectionIds.announcements)).path,
-    },
+    };
+  };
+  const {
+    control,
+    handleSubmit,
+    formState: { dirtyFields },
+  } = useForm<AnnouncementValidation>({
+    resolver: zodResolver(announcementValidation("client", type)),
+    defaultValues: getDefaultValues(),
   });
   const { languageData } = useLanguage();
   const announcements = languageData?.inputs.announcements;
-
+  const action =
+    announcements?.actions[
+      type === "add" ? "addAnnouncement" : "updateAnnouncement"
+    ];
   const [onSubmit, isLoading] = useLoadingCallback(
-    async ({ image, fullImage, path }: AnnouncementValidation) => {
-      const uploadCoverImage = async (
-        image: unknown,
-        type: "banner" | "full"
-      ) => {
-        if (image instanceof File) {
-          const imagePath = await uploadImageBucket({
-            image,
-            imagePath: `${path}/${type}`,
-          });
-          return imagePath;
-        }
-      };
-      const imagePath = await uploadCoverImage(image, "banner");
-      const fullImagePath = await uploadCoverImage(fullImage, "full");
+    async ({ image, fullImage, path, type }: AnnouncementValidation) => {
+      try {
+        const uploadCoverImage = async (
+          image: unknown,
+          type: "banner" | "full"
+        ) => {
+          if (image instanceof File) {
+            const imagePath = await uploadImageBucket({
+              image,
+              imagePath: `${path}/${type}`,
+            });
+            return imagePath;
+          }
+        };
+        const imagePath = dirtyFields.image
+          ? await uploadCoverImage(image, "banner")
+          : undefined;
+        const fullImagePath = dirtyFields.fullImage
+          ? await uploadCoverImage(fullImage, "full")
+          : undefined;
 
-      console.log({
-        imagePath,
-        fullImagePath,
-      });
-
-      const result = await addAnnouncement({
-        path,
-        image: imagePath,
-        fullImage: fullImagePath,
-      });
-      console.log(result);
+        await setAnnouncement(
+          {
+            path,
+            type,
+            image: imagePath,
+            fullImage: fullImagePath,
+          },
+          type
+        );
+        toast.error(action?.toast.success);
+        onClose();
+      } catch (error) {
+        toast.error(action?.toast.error);
+      }
     },
-    []
+    [dirtyFields]
   );
   return (
     <Modal size="3xl" isOpen={isOpen} onClose={onClose}>
       <ModalContent>
         <ModalHeader>
-          <ModalHeader>
-            {announcements?.actions.addAnnouncement.header}
-          </ModalHeader>
+          <ModalHeader>{action?.header}</ModalHeader>
         </ModalHeader>
         <ModalBody className="grid grid-cols-12 gap-4 ">
           <div className="col-span-7">
@@ -131,6 +143,27 @@ function AnnouncementModal({
   );
 }
 
+const UpdateAnnouncementModal: React.FC<{
+  announcement: Announcement;
+}> = ({ announcement }) => {
+  const updateProps = useDisclosure();
+  const { onOpen } = updateProps;
+  return (
+    <Fragment>
+      <Button
+        color="primary"
+        isIconOnly
+        startContent={<EditIcon className="size-5" />}
+        onPress={onOpen}
+      />
+      <AnnouncementModal
+        type="update"
+        announcement={announcement}
+        modalProps={updateProps}
+      />
+    </Fragment>
+  );
+};
 const AddAnnouncementModal = () => {
   const modalProps = useDisclosure();
   const { languageData } = useLanguage();

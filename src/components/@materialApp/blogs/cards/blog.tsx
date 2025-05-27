@@ -1,8 +1,18 @@
+import { ConfirmModal, TrashIcon } from "@/components/@materialUI";
 import { DisplayImage } from "@/components/@materialUI/images";
-import { Blog } from "@/firebase/firestore";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/react";
+import { useLanguage } from "@/contexts/language/LanguageContext";
+import { Blog, deleteBlog } from "@/firebase/firestore";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  useDisclosure,
+} from "@heroui/react";
 import { formatDate } from "date-fns";
 import { useRouter } from "next/navigation";
+import { useLoadingCallback } from "react-loading-hook";
 
 function BlogCard({
   blog: { createdAt, readTime, title, ref, coverImageUrl },
@@ -10,6 +20,15 @@ function BlogCard({
   blog: Blog;
 }) {
   const { push } = useRouter();
+  const deletModalProps = useDisclosure();
+
+  const { languageData } = useLanguage();
+  const action = languageData?.inputs.blogs.actions.deleteBlog;
+
+  const [handleConfirmDelete, isLoading] = useLoadingCallback(async () => {
+    await deleteBlog(ref.id);
+  }, []);
+
   return (
     <Card
       isPressable
@@ -17,10 +36,26 @@ function BlogCard({
       className="col-span-4"
       onPress={() => push(`/blogs/${ref.id}`)}
     >
-      <CardHeader className="text-start absolute z-10 top-1 font-semibold">
+      <CardHeader className="flex justify-between text-start absolute z-10 top-1 font-semibold">
         {title}
+        <div>
+          <Button
+            color="danger"
+            isIconOnly
+            startContent={<TrashIcon />}
+            onPress={deletModalProps.onOpen}
+          />
+          <ConfirmModal
+            action={action}
+            modalProps={deletModalProps}
+            isLoading={isLoading}
+            handleConfirm={handleConfirmDelete}
+          />
+        </div>
       </CardHeader>
-      {coverImageUrl && <DisplayImage className="z-0" src={coverImageUrl} />}
+      <div className="w-full min-h-60">
+        <DisplayImage className="z-0" src={coverImageUrl} />
+      </div>
       <CardFooter>
         <p className="text-primary">
           {formatDate(createdAt.toDate(), "MMM dd")}

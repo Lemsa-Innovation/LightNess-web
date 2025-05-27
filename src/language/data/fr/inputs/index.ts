@@ -95,6 +95,10 @@ export const inputs: Inputs = {
       },
     },
     fields: {
+      language: {
+        label: "Langue",
+        description: "Sélectionnez la langue du blog",
+      },
       category: {
         label: "Catégorie",
         placeholder: "Sélectionnez une catégorie",
@@ -214,6 +218,19 @@ export const inputs: Inputs = {
         toast: {
           success: "Annonce ajoutée avec succès.",
           error: "Échec de l'ajout de l'annonce. Veuillez réessayer.",
+        },
+      },
+      updateAnnouncement: {
+        label: "Mettre à jour l'annonce",
+        header: "Mise à jour de l'annonce",
+        description: "Modifiez les informations de l'annonce existante.",
+        confirmation: {
+          title: "Confirmer la mise à jour",
+          message: "Êtes-vous sûr de vouloir mettre à jour cette annonce ?",
+        },
+        toast: {
+          success: "Annonce mise à jour avec succès.",
+          error: "Échec de la mise à jour de l'annonce. Veuillez réessayer.",
         },
       },
     },

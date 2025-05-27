@@ -6,6 +6,18 @@ export type Day =
   | "wednesday"
   | "thursday"
   | "friday";
+
+export type Languages = {
+  ar: string;
+  en: string;
+  fr: string;
+  es: string;
+  de: string;
+  it: string;
+  pt: string;
+  ru: string;
+  zh: string;
+};
 export interface ButtonItems {
   reject: string;
   submit: string;
@@ -95,7 +107,7 @@ export interface Commons {
     days: Record<Day, string>;
   };
   status: Status;
-
+  languages: Languages;
   sidebar: SidebarItems;
 
   table: TableDictionnary;

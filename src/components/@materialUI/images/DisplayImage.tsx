@@ -2,16 +2,17 @@
 import Image from "next/image";
 import { Image as NextuiImage, Skeleton, cn, image } from "@heroui/react";
 import clsx from "clsx";
+import { unavailableImage } from "@/config";
 
 export const DisplayImage: React.FC<{
-  src: string | File;
+  src?: string | File;
   isZoomed?: boolean;
   className?: string;
 }> = ({ src, isZoomed, className }) => {
   return (
     <NextuiImage
       alt="image"
-      src={src}
+      src={src || unavailableImage}
       width={"100%"}
       height={"100%"}
       isZoomed={isZoomed}

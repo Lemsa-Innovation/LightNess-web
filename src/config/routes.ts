@@ -1,5 +1,6 @@
 import { SidebarItems } from "@/language/structure";
 
+export const unavailableImage = "/assets/images/no-image-icon.jpg";
 function path(root: string, sublink: string) {
   return `${root}${sublink}`;
 }

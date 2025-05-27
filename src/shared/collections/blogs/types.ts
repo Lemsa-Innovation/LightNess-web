@@ -1,9 +1,19 @@
-import {WithFirestoreTypes} from "../../modules";
+import { WithFirestoreTypes } from "../../modules";
+
+type BlogLanguage =
+  | "fr"
+  | "ar"
+  | "en"
+  | "es"
+  | "de"
+  | "it"
+  | "pt"
+  | "ru"
+  | "zh";
 
 export type Blog<
-  Ctx extends Pick<WithFirestoreTypes, "_time" | "_ref"> = WithFirestoreTypes,
+  Ctx extends Pick<WithFirestoreTypes, "_time"> = WithFirestoreTypes
 > = {
-  ref: Ctx["_ref"];
   title: string;
   content: string;
   author?: string;
@@ -15,4 +25,5 @@ export type Blog<
   readTime: number;
   isFeatured?: boolean;
   countOfViews?: number;
+  language?: BlogLanguage;
 };

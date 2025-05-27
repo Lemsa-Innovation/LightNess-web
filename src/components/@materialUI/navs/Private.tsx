@@ -15,9 +15,10 @@ import Account from "./Account";
 import { SIDEBAR_ROUTES } from "@/config";
 import { SidebarItems } from "@/language/structure";
 import { LanguageSwitch, ThemeSwitch } from "../buttons";
+import { usePathname } from "next/navigation";
 
 function PrivateHeader() {
-  // const pathname = usePathname();
+  const pathname = usePathname();
   const { languageData } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const sidebar = languageData?.commons.sidebar;
@@ -47,7 +48,7 @@ function PrivateHeader() {
         <NavbarMenuToggle />
       </NavbarContent>
 
-      {/* <NavbarMenu>
+      <NavbarMenu>
         {Object.entries(SIDEBAR_ROUTES).map(
           ([routeName, { path, children }]) => {
             const firstItem = children?.at(0);
@@ -70,7 +71,7 @@ function PrivateHeader() {
             );
           }
         )}
-      </NavbarMenu> */}
+      </NavbarMenu>
 
       <NavbarBrand className="hidden md:flex flex-col gap-1 items-start">
         <p className="text-primary text-xl  __className_c4ff9d">LightNess</p>

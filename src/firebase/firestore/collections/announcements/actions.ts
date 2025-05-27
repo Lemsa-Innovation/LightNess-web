@@ -1,33 +1,38 @@
 "use server";
 import { collectionIds } from "@shared/modules";
-import {
-  addAnnouncementServerValidation,
-  addAnnouncementValidation,
-  AnnouncementValidation,
-} from "./validations";
+import { announcementValidation, AnnouncementValidation } from "./validations";
 import { adminFirestore, adminStorage } from "@/firebase/admin/config";
 import { Announcement } from "./types";
-import { FieldValue, WithFieldValue } from "firebase-admin/firestore";
+import {
+  FieldValue,
+  PartialWithFieldValue,
+  WithFieldValue,
+} from "firebase-admin/firestore";
+import { buildServerFirestoreUpdatePath } from "@/firebase/admin/firestore";
 
-export const addAnnouncement = async (data: AnnouncementValidation) => {
-  console.log("Adding announcement", data);
-
-  const { image, fullImage, path } =
-    addAnnouncementServerValidation.parse(data);
-  const announcement: Omit<WithFieldValue<Announcement>, "ref"> = {
+export const setAnnouncement = async (
+  data: AnnouncementValidation,
+  actionType: "update" | "add"
+) => {
+  const { image, fullImage, type, path } = announcementValidation(
+    "server",
+    actionType
+  ).parse(data);
+  const announcement: PartialWithFieldValue<Announcement> = {
     image: image as string,
     fullImage: fullImage as string,
-    createdAt: FieldValue.serverTimestamp(),
-    updatedAt: FieldValue.serverTimestamp(),
+    ...(type === "update"
+      ? {
+          updatedAt: FieldValue.serverTimestamp(),
+        }
+      : {
+          createdAt: FieldValue.serverTimestamp(),
+        }),
   };
   console.log(announcement);
-
-  try {
-    await adminFirestore.doc(path).create(announcement);
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+  await adminFirestore
+    .doc(path)
+    .set(buildServerFirestoreUpdatePath(announcement, actionType === "update"));
 };
 
 export const deleteAnnouncement = async (id: string) => {

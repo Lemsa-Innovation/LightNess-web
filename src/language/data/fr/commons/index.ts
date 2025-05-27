@@ -1,6 +1,17 @@
 import { Commons } from "@/language/structure/commons";
 
 export const commons: Commons = {
+  languages: {
+    fr: "Français",
+    ar: "Arabe",
+    en: "Anglais",
+    es: "Espagnol",
+    de: "Allemand",
+    it: "Italien",
+    pt: "Portugais",
+    ru: "Russe",
+    zh: "Chinois",
+  },
   buttons: {
     reject: "Rejeter",
     submit: "Soumettre",

@@ -59,6 +59,7 @@ export interface Inputs {
       deleteBlog: Action;
     };
     fields: {
+      language: Field;
       title: Field;
       content: Field;
       image: Field;
@@ -81,6 +82,7 @@ export interface Inputs {
     };
     actions: {
       addAnnouncement: Action;
+      updateAnnouncement: Action;
       deleteAnnouncement: Action;
     };
   };

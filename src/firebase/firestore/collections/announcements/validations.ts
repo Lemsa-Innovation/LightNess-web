@@ -4,20 +4,24 @@ import {
 } from "@shared/modules";
 import * as zod from "zod";
 
-export const addAnnouncementValidation = zod.object({
-  path: zodRequiredStringValidation(),
-
-  image: zodImageValidation(),
-  fullImage: zodImageValidation(),
-});
-
-export const addAnnouncementServerValidation = zod.object({
-  path: zodRequiredStringValidation(),
-
-  image: zodRequiredStringValidation(),
-  fullImage: zodRequiredStringValidation(),
-});
+export const announcementValidation = (
+  env: "server" | "client",
+  action: "update" | "add"
+) => {
+  const imageValidation =
+    env === "client"
+      ? zodImageValidation()
+      : action === "add"
+      ? zodRequiredStringValidation()
+      : zodRequiredStringValidation().optional();
+  return zod.object({
+    type: zod.enum(["add", "update"]),
+    path: zodRequiredStringValidation(),
+    image: imageValidation,
+    fullImage: imageValidation,
+  });
+};
 
 export type AnnouncementValidation = zod.infer<
-  typeof addAnnouncementValidation
+  ReturnType<typeof announcementValidation>
 >;

@@ -20,11 +20,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useLoadingCallback } from "react-loading-hook";
 import { toast } from "sonner";
-import { Card, CardBody, Chip } from "@heroui/react";
+import { Card, CardBody, Chip, Select } from "@heroui/react";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { useRef } from "react";
 import Quill from "quill";
 import { QuillEditor } from "@/components/@materialUI/inputs/quill";
+import { InputBlogLanguage } from "../inputs";
 
 function BlogForm(
   props:
@@ -46,6 +47,7 @@ function BlogForm(
   const getDefaultValue = (): Partial<BlogValidation> => {
     if (type === "update") {
       return {
+        language: props.blog.language,
         path: props.blog.ref.path,
         title: props.blog.title,
         isFeatured: props.blog.isFeatured,
@@ -70,7 +72,7 @@ function BlogForm(
     formState: { isDirty },
   } = useForm<BlogValidation>({
     mode: "onChange",
-    resolver: zodResolver(blogValidations),
+    resolver: zodResolver(blogValidations("client")),
     defaultValues: getDefaultValue(),
   });
   const quillRef = useRef<Quill>(null);
@@ -158,7 +160,7 @@ function BlogForm(
               </div>
             </div>
             {/* <InputText control={control} name="author" field={fields?.author} /> */}
-
+            <InputBlogLanguage control={control} />
             <InputText
               control={control}
               name="tag"
@@ -170,7 +172,9 @@ function BlogForm(
               endContent={<AddButton onPress={() => tag && onAddTag(tag)} />}
             />
             <div className="flex flex-row gap-3 flex-wrap">
-              {tags?.map((tag) => <Chip key={tag}>{tag}</Chip>)}
+              {tags?.map((tag) => (
+                <Chip key={tag}>{tag}</Chip>
+              ))}
             </div>
           </CardBody>
         </Card>

@@ -7,6 +7,7 @@ import { useLanguage } from "@/contexts/language/LanguageContext";
 import { Announcement, deleteAnnouncement } from "@/firebase/firestore";
 import { Button, Card, CardHeader, useDisclosure } from "@heroui/react";
 import { useLoadingCallback } from "react-loading-hook";
+import { UpdateAnnouncementModal } from "../modals";
 
 const AnnouncementCard = ({ announcement }: { announcement: Announcement }) => {
   const modalProps = useDisclosure();
@@ -24,6 +25,7 @@ const AnnouncementCard = ({ announcement }: { announcement: Announcement }) => {
           startContent={<TrashIcon />}
           onPress={modalProps.onOpen}
         />
+        <UpdateAnnouncementModal announcement={announcement} />
         <ConfirmModal
           action={action}
           modalProps={modalProps}
@@ -31,7 +33,9 @@ const AnnouncementCard = ({ announcement }: { announcement: Announcement }) => {
           handleConfirm={handleConfirm}
         />
       </CardHeader>
-      <DisplayImage src={announcement.image} className="z-0" />
+      <div className="min-w-60 min-h-60 relative">
+        <DisplayImage src={announcement.image} className="z-0" />
+      </div>
     </Card>
   );
 };
