@@ -1,6 +1,7 @@
 "use server";
 import { collectionIds } from "@shared/modules";
 import {
+  addAnnouncementServerValidation,
   addAnnouncementValidation,
   AnnouncementValidation,
 } from "./validations";
@@ -11,7 +12,8 @@ import { FieldValue, WithFieldValue } from "firebase-admin/firestore";
 export const addAnnouncement = async (data: AnnouncementValidation) => {
   console.log("Adding announcement", data);
 
-  const { image, fullImage, path } = addAnnouncementValidation.parse(data);
+  const { image, fullImage, path } =
+    addAnnouncementServerValidation.parse(data);
   const announcement: Omit<WithFieldValue<Announcement>, "ref"> = {
     image: image as string,
     fullImage: fullImage as string,
