@@ -1,13 +1,15 @@
-import {WithFirestoreTypes} from "../../modules";
+import { Language } from "@/firebase/firestore/modules/validations";
+import { WithFirestoreTypes } from "../../modules";
 
 type Announcement<
-  Ctx extends Pick<WithFirestoreTypes, "_time" | "_ref"> = WithFirestoreTypes,
+  Ctx extends Pick<WithFirestoreTypes, "_time" | "_ref"> = WithFirestoreTypes
 > = {
   ref: Ctx["_ref"];
   image: string;
   fullImage?: string;
   createdAt: Ctx["_time"];
   updatedAt: Ctx["_time"];
+  language?: Language;
 };
 
-export type {Announcement};
+export type { Announcement };

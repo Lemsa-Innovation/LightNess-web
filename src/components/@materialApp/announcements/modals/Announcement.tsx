@@ -2,6 +2,7 @@ import {
   CancelButton,
   EditIcon,
   InputImageCard,
+  InputLanguage,
   PlusIcon,
   SubmitButton,
 } from "@/components/@materialUI";
@@ -46,6 +47,7 @@ function AnnouncementModal({
     if (type === "update" && announcement) {
       return {
         type: "update",
+        language: announcement.language,
         path: announcement.ref.path,
         image: announcement.image,
         fullImage: announcement.fullImage,
@@ -71,7 +73,13 @@ function AnnouncementModal({
       type === "add" ? "addAnnouncement" : "updateAnnouncement"
     ];
   const [onSubmit, isLoading] = useLoadingCallback(
-    async ({ image, fullImage, path, type }: AnnouncementValidation) => {
+    async ({
+      image,
+      fullImage,
+      path,
+      type,
+      language,
+    }: AnnouncementValidation) => {
       try {
         const uploadCoverImage = async (
           image: unknown,
@@ -96,6 +104,7 @@ function AnnouncementModal({
           {
             path,
             type,
+            language,
             image: imagePath,
             fullImage: fullImagePath,
           },
@@ -116,6 +125,9 @@ function AnnouncementModal({
           <ModalHeader>{action?.header}</ModalHeader>
         </ModalHeader>
         <ModalBody className="grid grid-cols-12 gap-4 ">
+          <div className="col-span-full">
+            <InputLanguage control={control} />
+          </div>
           <div className="col-span-7">
             <InputImageCard
               name="image"

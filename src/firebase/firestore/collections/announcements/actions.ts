@@ -14,11 +14,12 @@ export const setAnnouncement = async (
   data: AnnouncementValidation,
   actionType: "update" | "add"
 ) => {
-  const { image, fullImage, type, path } = announcementValidation(
+  const { image, fullImage, type, path, language } = announcementValidation(
     "server",
     actionType
   ).parse(data);
   const announcement: PartialWithFieldValue<Announcement> = {
+    language,
     image: image as string,
     fullImage: fullImage as string,
     ...(type === "update"
@@ -29,10 +30,12 @@ export const setAnnouncement = async (
           createdAt: FieldValue.serverTimestamp(),
         }),
   };
-  console.log(announcement);
-  await adminFirestore
-    .doc(path)
-    .set(buildServerFirestoreUpdatePath(announcement, actionType === "update"));
+  const docRef = adminFirestore.doc(path);
+  if (actionType === "add") {
+    await docRef.create(buildServerFirestoreUpdatePath(announcement, false));
+  } else {
+    await docRef.update(buildServerFirestoreUpdatePath(announcement));
+  }
 };
 
 export const deleteAnnouncement = async (id: string) => {

@@ -13,14 +13,11 @@ import { PartialWithFieldValue } from "@firebase/firestore";
 import { collectionIds } from "@/shared";
 
 export const createBlog = async (data: BlogValidation) => {
-  const { content, isFeatured, path, readTime, title, coverImage, tags } =
+  const { path, coverImage, tags, ...parsedData } =
     blogValidations("server").parse(data);
   const blog: Omit<WithFieldValue<Blog>, "ref"> = {
-    content,
     tags,
-    isFeatured,
-    title,
-    readTime,
+    ...parsedData,
     published: true,
     createdAt: FieldValue.serverTimestamp(),
     ...(typeof coverImage === "string" && { coverImageUrl: coverImage }),

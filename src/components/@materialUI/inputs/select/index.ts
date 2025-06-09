@@ -1,3 +1,2 @@
-import InputSelectStatus from "./status";
-
-export { InputSelectStatus };
+export * from "./status";
+export * from "./language";

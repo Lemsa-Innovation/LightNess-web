@@ -56,7 +56,7 @@ export function useAuthUser() {
 
   useEffect(() => {
     return onIdTokenChanged(auth, handleIdTokenChanged);
-  }, []);
+  }, [pathname]);
 
   return {
     tenant,

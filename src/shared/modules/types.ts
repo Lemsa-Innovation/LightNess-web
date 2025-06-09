@@ -18,7 +18,7 @@ export type OperatingTime = {
 export type WithFirestoreTypes<
   TTime = unknown,
   TGeoPoint = unknown,
-  TDocumentReference = unknown,
+  TDocumentReference = unknown
 > = {
   _time: TTime;
   _geo: TGeoPoint;
@@ -26,7 +26,7 @@ export type WithFirestoreTypes<
 };
 
 export type MapLocation<
-  Ctx extends Pick<WithFirestoreTypes, "_geo"> = WithFirestoreTypes,
+  Ctx extends Pick<WithFirestoreTypes, "_geo"> = WithFirestoreTypes
 > = {
   geoPoint: Ctx["_geo"];
   placeId?: string;
@@ -51,7 +51,7 @@ export type FcmToken = {
 };
 
 export type Validation<
-  Ctx extends Partial<Pick<WithFirestoreTypes, "_time">> = WithFirestoreTypes,
+  Ctx extends Partial<Pick<WithFirestoreTypes, "_time">> = WithFirestoreTypes
 > =
   | {
       status: "pending";
@@ -66,7 +66,7 @@ export type Validation<
     };
 
 export type ValidationRecord<
-  Ctx extends Partial<Pick<WithFirestoreTypes, "_time">> = WithFirestoreTypes,
+  Ctx extends Partial<Pick<WithFirestoreTypes, "_time">> = WithFirestoreTypes
 > = {
   validation: Validation<Ctx>;
   createdAt: Ctx["_time"]; // Date à laquelle le bénéficiaire a été ajouté

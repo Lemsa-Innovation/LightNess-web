@@ -5,6 +5,7 @@ import {
   SubmitButton,
   InputNumber,
   InputImageCard,
+  InputLanguage,
 } from "@/components/@materialUI";
 import {
   Blog,
@@ -25,7 +26,6 @@ import { useLanguage } from "@/contexts/language/LanguageContext";
 import { useRef } from "react";
 import Quill from "quill";
 import { QuillEditor } from "@/components/@materialUI/inputs/quill";
-import { InputBlogLanguage } from "../inputs";
 
 function BlogForm(
   props:
@@ -160,7 +160,7 @@ function BlogForm(
               </div>
             </div>
             {/* <InputText control={control} name="author" field={fields?.author} /> */}
-            <InputBlogLanguage control={control} />
+            <InputLanguage control={control} />
             <InputText
               control={control}
               name="tag"

@@ -77,4 +77,4 @@ function InputSelectStatus(props: Props) {
   );
 }
 
-export default InputSelectStatus;
+export { InputSelectStatus };

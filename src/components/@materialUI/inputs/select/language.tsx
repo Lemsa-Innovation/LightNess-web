@@ -1,9 +1,9 @@
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { BlogValidation } from "@/firebase/firestore";
+import { LanguageValidation } from "@/firebase/firestore/modules";
 import { Select, SelectItem } from "@heroui/react";
 import { Control, useController } from "react-hook-form";
 
-function InputBlogLanguage({ control }: { control: Control<BlogValidation> }) {
+function InputLanguage({ control }: { control: Control<any> }) {
   const {
     field: { onChange, value },
   } = useController({
@@ -38,4 +38,4 @@ function InputBlogLanguage({ control }: { control: Control<BlogValidation> }) {
   );
 }
 
-export { InputBlogLanguage };
+export { InputLanguage };

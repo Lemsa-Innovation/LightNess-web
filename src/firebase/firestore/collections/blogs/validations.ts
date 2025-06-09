@@ -6,21 +6,8 @@ import {
   zodRequiredNumberValidation,
   zodRequiredStringValidation,
 } from "@shared/modules";
-import { EnvSource } from "../../modules/types";
+import { language, EnvSource } from "../../modules";
 
-const language = zod.enum([
-  "fr",
-  "ar",
-  "en",
-  "es",
-  "de",
-  "it",
-  "pt",
-  "ru",
-  "zh",
-]);
-
-export type BlogLanguage = zod.infer<typeof language>;
 export const blogValidations = (env: EnvSource = "client") =>
   zod.object({
     language,

@@ -1,15 +1,5 @@
 import { WithFirestoreTypes } from "../../modules";
-
-type BlogLanguage =
-  | "fr"
-  | "ar"
-  | "en"
-  | "es"
-  | "de"
-  | "it"
-  | "pt"
-  | "ru"
-  | "zh";
+import { Language } from "@/firebase/firestore/modules/validations";
 
 export type Blog<
   Ctx extends Pick<WithFirestoreTypes, "_time"> = WithFirestoreTypes
@@ -25,5 +15,5 @@ export type Blog<
   readTime: number;
   isFeatured?: boolean;
   countOfViews?: number;
-  language?: BlogLanguage;
+  language?: Language;
 };
