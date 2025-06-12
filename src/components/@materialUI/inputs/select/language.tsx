@@ -4,15 +4,16 @@ import { Select, SelectItem } from "@heroui/react";
 import { Control, useController } from "react-hook-form";
 
 function InputLanguage({ control }: { control: Control<any> }) {
+  const { languageData } = useLanguage();
+  const languages = languageData?.commons.languages;
+  const field = languageData?.inputs.blogs.fields.language;
+
   const {
     field: { onChange, value },
   } = useController({
     control,
     name: "language",
   });
-  const { languageData } = useLanguage();
-  const languages = languageData?.commons.languages;
-  const field = languageData?.inputs.blogs.fields.language;
 
   return (
     <Select
