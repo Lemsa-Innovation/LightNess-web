@@ -2,7 +2,7 @@
 import { BlogCard } from "@/components/@materialApp/blogs/cards";
 import { PlusIcon } from "@/components/@materialUI/icons/iconify";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { Blog } from "@/types/database";
+
 import { useSupabaseBlogs } from "@/hooks/useSupabaseBlogs";
 import { Button } from "@heroui/react";
 import { useRouter } from "next/navigation";

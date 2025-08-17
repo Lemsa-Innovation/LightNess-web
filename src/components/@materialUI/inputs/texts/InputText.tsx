@@ -1,4 +1,4 @@
-import { cn, Input, InputProps, InputVariantProps } from "@heroui/react";
+import { Input, InputProps, InputVariantProps } from "@heroui/react";
 import { ReactNode, RefObject } from "react";
 import { Control, useController } from "react-hook-form";
 import { Field } from "@/language/structure";

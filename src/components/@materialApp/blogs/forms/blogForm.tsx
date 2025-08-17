@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useLoadingCallback } from "react-loading-hook";
 import { toast } from "sonner";
-import { Card, CardBody, Chip, Select } from "@heroui/react";
+import { Card, CardBody, Chip } from "@heroui/react";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { useRef } from "react";
 import Quill from "quill";
@@ -71,7 +71,7 @@ function BlogForm(
         language: props.blog.language,
         title: props.blog.title,
         is_featured: props.blog.is_featured,
-        read_time: props.blog.read_time,
+        read_time: props.blog.read_time || 10,
         cover_image: props.blog.cover_image_url,
         content: props.blog.content,
         tags: props.blog.tags,
@@ -140,7 +140,7 @@ function BlogForm(
           await updateBlog(props.blog.id, blogData);
         }
         toast.success(action?.toast.success || "Blog saved successfully");
-      } catch (error) {
+      } catch (_error: unknown) {
         toast.error(action?.toast.error || "Failed to save blog");
       }
     },

@@ -19,6 +19,15 @@ export default defineConfig([
   {
     rules: {
       "no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-unused-expressions": "warn",
+      "react/no-unescaped-entities": "warn",
+      "react/no-unknown-property": "warn",
+      "no-constant-binary-expression": "warn",
+      "prefer-const": "warn",
     },
   },
 ]);

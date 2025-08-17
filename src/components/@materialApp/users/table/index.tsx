@@ -42,10 +42,8 @@ function UsersTable() {
     handleChangeFilterValue,
     handleChangePage,
     handleChangeRowsPerPage,
-    handleChangeVisibleColumns,
     page,
     rowsPerPage,
-    visibleColumns,
     sortDescriptor,
     handleSort,
   } = useTable({
@@ -219,8 +217,15 @@ function UsersTable() {
                 onSelectionChange={setStatusFilter}
               >
                 {statusOptions.map((status) => (
-                  <DropdownItem key={status} className="capitalize">
-                    {allStatus?.[status]}
+                  <DropdownItem
+                    key={status || "unknown"}
+                    className="capitalize"
+                  >
+                    {
+                      allStatus?.[
+                        (status || "unknown") as keyof typeof allStatus
+                      ]
+                    }
                   </DropdownItem>
                 ))}
               </DropdownMenu>
@@ -317,7 +322,7 @@ function UsersTable() {
       isHeaderSticky
       aria-label="stores"
       selectionMode="single"
-      sortDescriptor={sortDescriptor}
+      sortDescriptor={sortDescriptor.column ? { column: sortDescriptor.column, direction: sortDescriptor.direction } : undefined}
       onSortChange={handleSort}
       topContent={topContent}
       bottomContent={bottomContent}

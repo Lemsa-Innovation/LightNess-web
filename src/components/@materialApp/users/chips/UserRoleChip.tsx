@@ -17,7 +17,7 @@ function UserRoleChip({ user }: { user: SupabaseUser }) {
       className="dark:text-black"
       color={colors[role] || "default"}
     >
-      {roles?.[role ?? "user"]?.label || role}
+      {roles?.[(role ?? "user") as keyof typeof roles]?.label || role}
     </Chip>
   );
 }

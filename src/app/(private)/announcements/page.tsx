@@ -4,7 +4,7 @@ import {
   AddAnnouncementModal,
 } from "@/components/@materialApp/announcements";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { Announcement } from "@/types/database";
+
 import { useSupabaseAnnouncements } from "@/hooks/useSupabaseAnnouncements";
 
 function Page() {

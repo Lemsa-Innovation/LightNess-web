@@ -2,12 +2,8 @@
 import { useEffect, useState } from "react";
 import { useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { AuthContext, AuthContextType } from "./AuthContext";
-import {
-  UserWithRole,
-  getUserWithRole,
-  isAdmin,
-  isSuperAdmin,
-} from "@/lib/supabase";
+import { UserWithRole } from "@/types/database";
+import { getUserWithRole, isAdmin, isSuperAdmin } from "@/lib/supabase";
 
 export interface ProviderProps {
   children: React.ReactNode;

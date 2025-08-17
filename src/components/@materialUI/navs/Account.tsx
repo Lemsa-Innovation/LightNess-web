@@ -15,12 +15,12 @@ import { PROTECTED_ROUTES } from "@/config";
 
 function Account() {
   const { push } = useRouter();
-  const { currentUser } = useAuth();
+  const { user } = useAuth();
   const { languageData } = useLanguage();
 
   const signOut = languageData?.auth.signOut;
 
-  const imageSrc = currentUser?.avatarImage || currentUser?.photoUrl;
+  const imageSrc = user?.avatar_image || user?.photo_url;
 
   const handleSelect = (key: Key) => {
     switch (key) {
@@ -64,7 +64,7 @@ function Account() {
       >
         <DropdownItem key="profile" className="h-14 gap-2">
           <p className="font-semibold">Signed in as</p>
-          <p className="font-semibold">{currentUser?.email}</p>
+          <p className="font-semibold">{user?.email}</p>
         </DropdownItem>
         <DropdownItem key="logout" color="danger">
           {signOut?.logout}

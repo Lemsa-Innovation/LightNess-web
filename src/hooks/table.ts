@@ -73,18 +73,15 @@ export function useTable({
 
   // Add sorting state management
   const [sortDescriptor, setSortDescriptor] = useState({
-    column: undefined as string | undefined,
+    column: undefined as string | number | undefined,
     direction: "ascending" as "ascending" | "descending",
   });
 
-  const handleSort = (column: string) => {
-    setSortDescriptor((prev) => ({
-      column,
-      direction:
-        prev.column === column && prev.direction === "ascending"
-          ? "descending"
-          : "ascending",
-    }));
+  const handleSort = (descriptor: {
+    column: string | number;
+    direction: "ascending" | "descending";
+  }) => {
+    setSortDescriptor(descriptor);
   };
 
   return {

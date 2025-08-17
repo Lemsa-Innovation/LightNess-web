@@ -46,10 +46,8 @@ function WashersTable() {
     handleChangeFilterValue,
     handleChangePage,
     handleChangeRowsPerPage,
-    handleChangeVisibleColumns,
     page,
     rowsPerPage,
-    visibleColumns,
   } = useTable({
     usedFor: "washers",
     INITIAL_VISIBLE_COLUMNS,
@@ -96,7 +94,7 @@ function WashersTable() {
         : hits;
 
     return statusFilteredHits;
-  }, [washers, filterValue, roleFilter, statusFilter]);
+  }, [washers, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredData.length / rowsPerPage);
 
@@ -194,7 +192,7 @@ function WashersTable() {
               >
                 {statusOptions.map((status) => (
                   <DropdownItem key={status} className="capitalize">
-                    {allStatus?.[status]}
+                    {allStatus?.[status as keyof typeof allStatus]}
                   </DropdownItem>
                 ))}
               </DropdownMenu>
@@ -256,9 +254,7 @@ function WashersTable() {
   const renderCell = useCallback((washer: SupabaseWasher, columnKey: Key) => {
     const {
       created_at,
-      address,
       gender,
-      region,
       image,
       fullname,
       phone_number,

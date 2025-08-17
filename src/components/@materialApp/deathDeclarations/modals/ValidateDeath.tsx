@@ -52,7 +52,7 @@ function ValidateDeathModal({
       onClose();
       // Refresh the data to show updated status
       onSuccess?.();
-    } catch (error) {
+    } catch (_error) {
       toast.error(action?.toast.error);
     }
   });

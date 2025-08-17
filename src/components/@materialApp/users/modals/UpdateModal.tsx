@@ -33,7 +33,7 @@ function UpdateUserModal({
       // TODO: Implement Supabase user update
       toast.info("User update functionality coming soon");
       onClose();
-    } catch (error) {
+    } catch (_error) {
       toast.error(action?.toast.error || "Failed to update user");
     }
   };

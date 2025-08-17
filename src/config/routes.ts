@@ -39,9 +39,9 @@ export const SIDEBAR_ROUTES: Record<
   washers: {
     path: "/washers",
   },
-  // cemeteries: {
-  //   path: "/cemeteries",
-  // },
+  cemeteries: {
+    path: "/cemeteries",
+  },
   deathDeclarations: {
     path: "/deathDeclarations",
   },

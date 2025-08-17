@@ -27,7 +27,7 @@ function DeleteUserModal({
       // TODO: Implement Supabase user deletion
       toast.info("User deletion functionality coming soon");
       onClose();
-    } catch (error) {
+    } catch (_error) {
       toast.error(action?.toast.error || "Failed to delete user");
     }
   };

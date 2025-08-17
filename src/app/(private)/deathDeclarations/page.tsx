@@ -119,10 +119,6 @@ function Page() {
                 return { ...declaration, user };
               });
 
-              // Check if all declarations are pending to show action buttons
-              const allPending = declaredBy.every(
-                ({ status }) => status === "pending"
-              );
               const hasPending = declaredBy.some(
                 ({ status }) => status === "pending"
               );
@@ -155,18 +151,18 @@ function Page() {
                         {matchedUser && <MinimalUser user={matchedUser} />}
                       </div>
                       <div className="flex flex-col gap-1">
-                        {declaredByUsers.map(({ status }) => (
+                        {declaredByUsers.length > 0 && (
                           <StatusChip
-                            key={status}
+                            key={declaredByUsers[0].status}
                             statusKey={
-                              status === "approved"
+                              declaredByUsers[0].status === "approved"
                                 ? "active"
-                                : status === "rejected"
+                                : declaredByUsers[0].status === "rejected"
                                 ? "inactive"
                                 : "pending"
                             }
                           />
-                        ))}
+                        )}
                       </div>
                     </CardHeader>
                     <CardBody className="flex flex-col gap-3">

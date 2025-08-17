@@ -8,7 +8,7 @@ export async function validateDeathDeclaration(
   const { data, error } = await supabase
     .from("death_declarations")
     .update({
-      status: "pending",
+      status: "approved",
     })
     .in("uid", declarationUids);
 

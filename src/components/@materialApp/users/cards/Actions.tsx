@@ -18,9 +18,7 @@ function UserActionsDropdown({ user }: { user: SupabaseUser }) {
   const updatedProps = useDisclosure();
   const { user: currentUser } = useAuth();
   const canBeDeleted = !(
-    user.role === "admin" &&
-    currentUser?.role === "admin" &&
-    currentUser.role !== "super_admin"
+    user.role === "admin" && currentUser?.role === "admin"
   );
 
   const { languageData } = useLanguage();
@@ -45,7 +43,7 @@ function UserActionsDropdown({ user }: { user: SupabaseUser }) {
           <DropdownItem
             key="delete"
             onPress={() => {
-              canBeDeleted && deletedProps.onOpen();
+              if (canBeDeleted) deletedProps.onOpen();
             }}
             color="danger"
           >

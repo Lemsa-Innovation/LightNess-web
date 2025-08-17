@@ -1,11 +1,6 @@
 "use client";
-import {
-  UpdateWasherModal,
-  WashersTable,
-} from "@/components/@materialApp/washers";
-import { DisplayAvatar, EditIcon } from "@/components/@materialUI";
+import { WashersTable } from "@/components/@materialApp/washers";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { Listbox, ListboxItem } from "@heroui/react";
 
 function Page() {
   const { languageData } = useLanguage();

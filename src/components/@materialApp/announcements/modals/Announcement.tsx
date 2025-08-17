@@ -22,7 +22,6 @@ import {
   ModalFooter,
   ModalHeader,
   useDisclosure,
-  UseDisclosureProps,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Fragment } from "react";
@@ -68,11 +67,7 @@ function AnnouncementModal({
     };
   };
 
-  const {
-    control,
-    handleSubmit,
-    formState: { dirtyFields },
-  } = useForm<AnnouncementValidation>({
+  const { control, handleSubmit } = useForm<AnnouncementValidation>({
     resolver: zodResolver(announcementValidationSchema),
     defaultValues: getDefaultValues(),
   });
@@ -125,7 +120,7 @@ function AnnouncementModal({
         );
         onClose();
         onSuccess?.();
-      } catch (error) {
+      } catch (_error: unknown) {
         toast.error(action?.toast.error || "Failed to save announcement");
       }
     },

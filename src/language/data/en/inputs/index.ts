@@ -18,28 +18,52 @@ export const inputs: Inputs = {
       email: {
         label: "Email",
         placeholder: "Enter email",
+        undefinedEmail: "Email is required",
       },
       phoneNumber: {
         label: "Phone Number",
         placeholder: "Enter phone number",
+        undefinedPhoneNumber: "Phone number is required",
       },
-      role: {
-        label: "Role",
-        placeholder: "Select role",
+      password: {
+        label: "Password",
+        placeholder: "Enter password",
+      },
+      birthday: {
+        label: "Birthday",
+        placeholder: "Select birthday",
+      },
+      username: {
+        label: "Username",
+        placeholder: "Enter username",
+      },
+      profilePhoto: {
+        label: "Profile Photo",
+        placeholder: {
+          upload: "Upload profile photo",
+          update: "Update profile photo",
+        },
+        toastUploading: {
+          error: "Failed to upload image",
+          success: "Image uploaded successfully",
+        },
+        rules: {
+          isRequired: "Profile photo is required",
+        },
       },
     },
     actions: {
-      addUser: {
-        label: "Add User",
-        header: "Add New User",
-        description: "Create a new user account",
+      updateProfile: {
+        label: "Update Profile",
+        header: "Update Profile",
+        description: "Update your profile information",
         toast: {
-          success: "User added successfully",
-          error: "Failed to add user. Please try again.",
+          success: "Profile updated successfully",
+          error: "Failed to update profile. Please try again.",
         },
         confirmation: {
-          title: "Confirm Creation",
-          message: "Are you sure you want to create this user?",
+          title: "Confirm Update",
+          message: "Are you sure you want to update your profile?",
         },
       },
       updateUser: {
@@ -68,18 +92,166 @@ export const inputs: Inputs = {
           message: "Are you sure you want to delete this user?",
         },
       },
+      verifications: {
+        email: {
+          label: "Verify Email",
+          header: "Verify Email",
+          description: "Verify your email address",
+          toast: {
+            success: "Email verification sent successfully",
+            error: "Failed to send email verification. Please try again.",
+          },
+          confirmation: {
+            title: "Confirm Email Verification",
+            message: "Are you sure you want to send email verification?",
+          },
+        },
+        phone: {
+          label: "Verify Phone",
+          header: "Verify Phone",
+          description: "Verify your phone number",
+          toast: {
+            success: "Phone verification sent successfully",
+            error: "Failed to send phone verification. Please try again.",
+          },
+          confirmation: {
+            title: "Confirm Phone Verification",
+            message: "Are you sure you want to send phone verification?",
+          },
+        },
+      },
+      createAdmin: {
+        label: "Create Admin",
+        header: "Create Admin",
+        description: "Create a new admin user",
+        toast: {
+          success: "Admin created successfully",
+          error: "Failed to create admin. Please try again.",
+        },
+        confirmation: {
+          title: "Confirm Admin Creation",
+          message: "Are you sure you want to create this admin?",
+        },
+      },
     },
   },
   suggestions: {
     labels: {
-      title: "Suggestions",
-      empty: "No suggestions available",
+      emptyComment: "No suggestions available",
+    },
+    questions: {
+      isPaid: "Is this service paid?",
+      perpetuity: "Is this service available in perpetuity?",
+      muslimFriendly: "Is this service Muslim-friendly?",
+      belongsToMosque: "Does this service belong to a mosque?",
+    },
+    actions: {
+      update: {
+        label: "Update Suggestion",
+        header: "Update Suggestion",
+        description: "Update suggestion information",
+        toast: {
+          success: "Suggestion updated successfully",
+          error: "Failed to update suggestion. Please try again.",
+        },
+        confirmation: {
+          title: "Confirm Update",
+          message: "Are you sure you want to update this suggestion?",
+        },
+      },
+      delete: {
+        cemetery: {
+          label: "Delete Cemetery",
+          header: "Delete Cemetery",
+          description: "Remove cemetery from suggestions",
+          toast: {
+            success: "Cemetery deleted successfully",
+            error: "Failed to delete cemetery. Please try again.",
+          },
+          confirmation: {
+            title: "Confirm Deletion",
+            message: "Are you sure you want to delete this cemetery?",
+          },
+        },
+        washer: {
+          label: "Delete Washer",
+          header: "Delete Washer",
+          description: "Remove washer from suggestions",
+          toast: {
+            success: "Washer deleted successfully",
+            error: "Failed to delete washer. Please try again.",
+          },
+          confirmation: {
+            title: "Confirm Deletion",
+            message: "Are you sure you want to delete this washer?",
+          },
+        },
+        funeralPump: {
+          label: "Delete Funeral Pump",
+          header: "Delete Funeral Pump",
+          description: "Remove funeral pump from suggestions",
+          toast: {
+            success: "Funeral pump deleted successfully",
+            error: "Failed to delete funeral pump. Please try again.",
+          },
+          confirmation: {
+            title: "Confirm Deletion",
+            message: "Are you sure you want to delete this funeral pump?",
+          },
+        },
+        comment: {
+          label: "Delete Comment",
+          header: "Delete Comment",
+          description: "Remove comment from suggestions",
+          toast: {
+            success: "Comment deleted successfully",
+            error: "Failed to delete comment. Please try again.",
+          },
+          confirmation: {
+            title: "Confirm Deletion",
+            message: "Are you sure you want to delete this comment?",
+          },
+        },
+      },
     },
   },
   attachements: {
-    labels: {
-      title: "Attachments",
-      empty: "No attachments available",
+    media: {
+      image: {
+        label: "Image",
+        placeholder: {
+          upload: "Upload image",
+          update: "Update image",
+        },
+        toastUploading: {
+          error: "Failed to upload image",
+          success: "Image uploaded successfully",
+        },
+        rules: {
+          isRequired: "Image is required",
+        },
+      },
+      labels: {
+        authorizedFiles: "Authorized files",
+        maxFileSize: (size: number) => `Max file size is ${size}MB`,
+      },
+      images: {
+        dropOrSelectImage: "Drop or select image",
+        dropImagesHere: "Drop images here",
+        browse: "Browse",
+        throughYourMachine: "through your machine",
+        selectedImages: "Selected images",
+        remainingImages: (remaining: number) => `${remaining} images remaining`,
+        maxImagesNumber: (max: number) => `Max ${max} images`,
+        maxImageSize: (size: number) => `Max image size is ${size}MB`,
+        uploadingStatus: {
+          error: "Failed to upload images",
+          success: "Images uploaded successfully",
+        },
+        rules: {
+          isRequired: "Images are required",
+        },
+      },
     },
   },
   deathDeclarations: {

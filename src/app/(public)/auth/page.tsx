@@ -1,7 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Card, CardBody, CardHeader, cn } from "@heroui/react";
+import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { useLoadingCallback } from "react-loading-hook";
 import {
   InputText,
@@ -40,7 +40,7 @@ function Page() {
             position: "top-right",
           });
         }
-      } catch (error: any) {
+      } catch (_error: unknown) {
         toast.error(auth?.signIn.toastContents.error, {
           position: "top-right",
         });

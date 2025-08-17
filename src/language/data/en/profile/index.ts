@@ -4,31 +4,19 @@ export const profile: Profile = {
   roles: {
     admin: {
       label: "Administrator",
-      description: "Full system access",
-    },
-    super_admin: {
-      label: "Super Administrator",
-      description: "Complete system control",
+      positions: {
+        super: "Super Admin",
+        manager: "Manager",
+        secretary: "Secretary",
+      },
     },
     user: {
       label: "User",
-      description: "Basic user access",
+      positions: {
+        regular: "Regular User",
+        premium: "Premium User",
+        vip: "VIP User",
+      },
     },
-  },
-  account: {
-    title: "Account Settings",
-    description: "Manage your account information and preferences",
-  },
-  personal: {
-    title: "Personal Information",
-    description: "Update your personal details",
-  },
-  security: {
-    title: "Security Settings",
-    description: "Manage your account security",
-  },
-  notifications: {
-    title: "Notification Preferences",
-    description: "Configure your notification settings",
   },
 };

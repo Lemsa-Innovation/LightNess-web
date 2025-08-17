@@ -6,7 +6,6 @@ import { deleteBlog } from "@/hooks/useSupabaseBlogs";
 import {
   Button,
   Card,
-  CardBody,
   CardFooter,
   CardHeader,
   useDisclosure,
@@ -52,7 +51,7 @@ function BlogCard({ blog, onSuccess }: { blog: Blog; onSuccess?: () => void }) {
         </div>
       </CardHeader>
       <div className="w-full min-h-60">
-        <DisplayImage className="z-0" src={blog.cover_image_url} />
+        <DisplayImage className="z-0" src={blog.cover_image_url || undefined} />
       </div>
       <CardFooter>
         <p className="text-primary">
