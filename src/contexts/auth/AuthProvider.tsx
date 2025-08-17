@@ -1,8 +1,13 @@
 "use client";
-
-import { useAuthUser } from "@/firebase/auth";
+import { useEffect, useState } from "react";
+import { useUser, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { AuthContext, AuthContextType } from "./AuthContext";
-import { useUser } from "@/firebase/firestore/collections/users/hooks";
+import {
+  UserWithRole,
+  getUserWithRole,
+  isAdmin,
+  isSuperAdmin,
+} from "@/lib/supabase";
 
 export interface ProviderProps {
   children: React.ReactNode;
@@ -11,22 +16,39 @@ export interface ProviderProps {
 export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
   children,
 }) => {
-  const { tenant } = useAuthUser();
-  const { data: user, isLoading } = useUser({ uid: tenant?.uid });
+  const supabaseUser = useUser();
+  const supabase = useSupabaseClient();
+  const [user, setUser] = useState<UserWithRole | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadUser() {
+      if (supabaseUser) {
+        try {
+          const { user: userWithRole, error } = await getUserWithRole(
+            supabaseUser.id
+          );
+          if (!error && userWithRole) {
+            setUser({ ...userWithRole, role: userWithRole.role });
+          }
+        } catch (error) {
+          console.error("Error loading user:", error);
+        }
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    }
+
+    loadUser();
+  }, [supabaseUser]);
 
   const authContextValue: AuthContextType = {
-    tenant: tenant || null,
+    user,
     isLoading,
-    currentUser: user,
+    isAdmin: isAdmin(user?.role),
+    isSuperAdmin: isSuperAdmin(user?.role),
   };
-
-  //   useEffect(() => {
-  //     // if (tenant && currentUser)
-  //     //   checkAuthUser({
-  //     //     tenant,
-  //     //     user: currentUser,
-  //     //   });
-  //   }, [tenant]);
 
   return (
     <AuthContext.Provider value={authContextValue}>

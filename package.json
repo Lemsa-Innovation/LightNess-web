@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "@supabase/auth-helpers-nextjs": "^0.8.7",
+    "@supabase/auth-helpers-react": "^0.4.2",
     "@firebase/firestore": "^4.7.10",
     "@firebase/messaging": "^0.12.17",
     "@firebase/storage": "^0.13.7",
@@ -40,7 +43,6 @@
     "react-firebase-hooks": "^5.1.1",
     "react-hook-form": "^7.56.1",
     "react-loading-hook": "^1.1.2",
-    "react-quill": "^2.0.0",
     "react-responsive": "^10.0.1",
     "sonner": "^2.0.3",
     "turndown": "^7.2.0",

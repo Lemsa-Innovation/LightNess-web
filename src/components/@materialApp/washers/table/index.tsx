@@ -25,7 +25,7 @@ import {
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { useTable } from "@/hooks";
 import { searchIn } from "@/utils";
-import { useWashers, Washer } from "@/firebase/firestore";
+import { useSupabaseWashers, SupabaseWasher } from "@/hooks/useSupabaseWashers";
 import clsx from "clsx";
 
 const INITIAL_VISIBLE_COLUMNS: ColumnUID[] = [
@@ -59,7 +59,7 @@ function WashersTable() {
   const [roleFilter, setRoleFilter] = useState<Selection>("all");
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
 
-  const { data: washers, error, isLoading } = useWashers();
+  const { washers, error, isLoading } = useSupabaseWashers();
 
   // const roleOptions = useMemo(() => {
   //   const roleSet = new Set(users?.map(({ role }) => role));
@@ -73,14 +73,14 @@ function WashersTable() {
 
   const filteredData = useMemo(() => {
     if (!washers) return [];
-    const hits = washers.filter(({ email, fullname }) => {
+    const hits = washers.filter(({ user, fullname }) => {
       if (filterValue) {
         searchIn({
           filterValue,
           values: [
-            email,
+            user?.email || "",
             fullname,
-            // phoneNumber ? formatPhoneToLocal(phoneNumber) : undefined,
+            // phone_number ? formatPhoneToLocal(phone_number) : undefined,
           ],
         });
       }
@@ -91,16 +91,9 @@ function WashersTable() {
       statusFilter !== "all" &&
       Array.from(statusFilter).length !== statusOptions.length
         ? hits.filter(({ status }) =>
-            Array.from(statusFilter).includes(status ?? "unverified")
+            Array.from(statusFilter).includes(status ?? "inactive")
           )
         : hits;
-    // const roleFilteredHits =
-    //   roleFilter !== "all" &&
-    //   Array.from(roleFilter).length !== roleOptions.length
-    //     ? statusFilteredHits.filter(({ role }) =>
-    //         Array.from(roleFilter).includes(role)
-    //       )
-    //     : statusFilteredHits;
 
     return statusFilteredHits;
   }, [washers, filterValue, roleFilter, statusFilter]);
@@ -231,7 +224,18 @@ function WashersTable() {
         </div>
       </div>
     );
-  }, [statusOptions, rowsPerPage, roleFilter, filteredData, statusFilter]);
+  }, [
+    statusOptions,
+    rowsPerPage,
+    roleFilter,
+    filteredData,
+    statusFilter,
+    tableLabels,
+    onSearchChange,
+    onClear,
+    onRowsPerPageChange,
+    columns,
+  ]);
 
   const bottomContent = useMemo(() => {
     return (
@@ -249,16 +253,16 @@ function WashersTable() {
     );
   }, [pages, page]);
 
-  const renderCell = useCallback((washer: Washer, columnKey: Key) => {
+  const renderCell = useCallback((washer: SupabaseWasher, columnKey: Key) => {
     const {
-      verifications,
-      createdAt,
+      created_at,
       address,
       gender,
       region,
       image,
       fullname,
-      phoneNumber,
+      phone_number,
+      is_validated_certification,
     } = washer;
     switch (columnKey as ColumnUID) {
       case "name":
@@ -276,17 +280,15 @@ function WashersTable() {
           />
         );
       case "phoneNumber":
-        return <p>{phoneNumber}</p>;
+        return <p>{phone_number}</p>;
       case "status":
         return (
           <StatusChip
-            statusKey={
-              verifications?.certification.isValidated ? "active" : "unverified"
-            }
+            statusKey={is_validated_certification ? "active" : "unverified"}
           />
         );
       case "registeredDate":
-        return <DateChip timestamp={createdAt} />;
+        return <DateChip timestamp={created_at} />;
       case "actions":
         return (
           <div className="relative flex justify-end items-center gap-2">
@@ -295,6 +297,10 @@ function WashersTable() {
         );
     }
   }, []);
+
+  if (error) {
+    return <div>Error loading washers: {error.message}</div>;
+  }
 
   return (
     <Table
@@ -312,11 +318,11 @@ function WashersTable() {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={hits}>
-        {(user) => (
-          <TableRow key={user.ref.id}>
+      <TableBody items={hits} isLoading={isLoading}>
+        {(washer) => (
+          <TableRow key={washer.uid}>
             {(columnKey) => (
-              <TableCell>{renderCell(user, columnKey)}</TableCell>
+              <TableCell>{renderCell(washer, columnKey)}</TableCell>
             )}
           </TableRow>
         )}

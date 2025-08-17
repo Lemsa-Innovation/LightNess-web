@@ -23,7 +23,7 @@ const ICONS: Record<keyof SidebarItems, ReactNode> = {
 
 const NavSection: React.FC<{ isCollapsed: boolean }> = ({ isCollapsed }) => {
   const pathname = usePathname();
-  const { currentUser } = useAuth();
+  const { user } = useAuth();
   const { languageData } = useLanguage();
   const sidebarTranslation = languageData?.commons.sidebar;
 
@@ -48,7 +48,7 @@ const NavSection: React.FC<{ isCollapsed: boolean }> = ({ isCollapsed }) => {
   );
 
   const renderNavItems = () => {
-    if (!currentUser || !languageData)
+    if (!user || !languageData)
       return Array(7)
         .fill(0)
         .map((value, index) => {

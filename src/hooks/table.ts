@@ -40,7 +40,7 @@ export function useTable({
     const newValue = setCookies({
       name: cookiesNames.rowsPerPage,
       value: value,
-    })
+    });
     const newRowValue = newValue
       ?.split(";")
       .find((cookie) => cookie.startsWith(cookiesNames.rowsPerPage))
@@ -71,15 +71,33 @@ export function useTable({
     newColumns && setVisibleColumns(newColumns);
   };
 
+  // Add sorting state management
+  const [sortDescriptor, setSortDescriptor] = useState({
+    column: undefined as string | undefined,
+    direction: "ascending" as "ascending" | "descending",
+  });
+
+  const handleSort = (column: string) => {
+    setSortDescriptor((prev) => ({
+      column,
+      direction:
+        prev.column === column && prev.direction === "ascending"
+          ? "descending"
+          : "ascending",
+    }));
+  };
+
   return {
     page,
     filterValue,
     rowsPerPage,
     visibleColumns,
+    sortDescriptor,
     onClear,
     handleChangePage,
     handleChangeRowsPerPage,
     handleChangeFilterValue,
     handleChangeVisibleColumns,
+    handleSort,
   };
 }

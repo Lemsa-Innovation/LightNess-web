@@ -21,7 +21,9 @@ export default function LanguageSwitch() {
   const handleAction = (key: Key) => {
     const selectedLang = key as Language;
     changeLanguage(selectedLang);
-    auth.languageCode = selectedLang;
+    if (auth) {
+      auth.languageCode = selectedLang;
+    }
     localStorage.setItem("language", selectedLang);
   };
 

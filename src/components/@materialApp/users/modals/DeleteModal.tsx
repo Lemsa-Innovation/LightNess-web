@@ -1,7 +1,7 @@
 import { CancelButton, SubmitButton } from "@/components/@materialUI";
 import { UseDisclosureReturn } from "@/components/types";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { deleteUser, User } from "@/firebase/firestore";
+import { SupabaseUser } from "@/hooks/useSupabaseUsers";
 import {
   Modal,
   ModalBody,
@@ -9,29 +9,28 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@heroui/react";
-import { useLoadingCallback } from "react-loading-hook";
 import { toast } from "sonner";
 
 function DeleteUserModal({
   user,
   disclosureProps,
 }: {
-  user: User;
+  user: SupabaseUser;
   disclosureProps: UseDisclosureReturn;
 }) {
   const { languageData } = useLanguage();
   const { isOpen, onOpenChange, onClose } = disclosureProps;
   const action = languageData?.inputs.users.actions.deleteUser;
 
-  const [handleDelete, isLoading] = useLoadingCallback(async () => {
+  const handleDelete = async () => {
     try {
-      await deleteUser(user.uid);
-      toast.success(action?.toast.success);
+      // TODO: Implement Supabase user deletion
+      toast.info("User deletion functionality coming soon");
       onClose();
     } catch (error) {
-      toast.error(action?.toast.error);
+      toast.error(action?.toast.error || "Failed to delete user");
     }
-  });
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -46,7 +45,7 @@ function DeleteUserModal({
         </ModalBody>
         <ModalFooter>
           <CancelButton onPress={onClose} />
-          <SubmitButton isLoading={isLoading} onPress={handleDelete} />
+          <SubmitButton onPress={handleDelete} />
         </ModalFooter>
       </ModalContent>
     </Modal>

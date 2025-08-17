@@ -7,6 +7,9 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { storage } from "../app";
 export async function loadImage(image_path: string) {
+  if (!storage) {
+    throw new Error("Firebase Storage is not initialized");
+  }
   const imageRef = ref(storage, image_path);
   const file = getDownloadURL(imageRef);
   return file;
@@ -18,6 +21,9 @@ export async function uploadImageBucket({
   image: File;
   imagePath: string;
 }) {
+  if (!storage) {
+    throw new Error("Firebase Storage is not initialized");
+  }
   const storageRef = ref(storage, imagePath);
   const uploadTask = uploadBytesResumable(storageRef, image);
   const result = await uploadTask;

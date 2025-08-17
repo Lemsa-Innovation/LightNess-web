@@ -1,19 +1,23 @@
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { User } from "@/firebase/firestore";
 import { Chip, InputProps } from "@heroui/react";
-import { UserRole } from "@shared/collections";
+import { SupabaseUser } from "@/hooks/useSupabaseUsers";
 
-function UserRoleChip({ user }: { user: User }) {
+function UserRoleChip({ user }: { user: SupabaseUser }) {
   const { role } = user;
   const { languageData } = useLanguage();
   const roles = languageData?.profile.roles;
-  const colors: Record<UserRole, InputProps["color"]> = {
+  const colors: Record<string, InputProps["color"]> = {
     admin: "default",
+    super_admin: "danger",
     user: "success",
   };
   return (
-    <Chip variant="bordered" className="dark:text-black" color={colors[role]}>
-      {roles?.[role ?? "user"].label}
+    <Chip
+      variant="bordered"
+      className="dark:text-black"
+      color={colors[role] || "default"}
+    >
+      {roles?.[role ?? "user"]?.label || role}
     </Chip>
   );
 }

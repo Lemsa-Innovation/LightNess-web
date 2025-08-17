@@ -1,14 +1,13 @@
 "use client";
 
-import { MinimalUser } from "@/components/@materialApp/users/cards";
+import { MinimalFuneralCompany } from "@/components/@materialApp/funeralCompanies/cards";
 import { InputSearch } from "@/components/@materialUI";
 import { DateChip } from "@/components/@materialUI/chips";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { FuneralCompany } from "@/firebase/firestore";
 import {
-  getCollectionRef,
-  useCollectionSnapshots,
-} from "@/firebase/firestore/modules";
+  useSupabaseFuneralCompanies,
+  SupabaseFuneralCompany,
+} from "@/hooks/useSupabaseFuneralCompanies";
 import { useTable } from "@/hooks";
 import { ColumnUID } from "@/language/structure";
 import { searchIn } from "@/utils";
@@ -20,7 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { collectionIds } from "@shared/modules";
 import { Key, useCallback, useMemo } from "react";
 
 const INITIAL_VISIBLE_COLUMNS: Array<ColumnUID> = [
@@ -55,21 +53,20 @@ function Page() {
     INITIAL_VISIBLE_COLUMNS,
   });
 
-  const funeralCompaniesRef = useMemo(
-    () => getCollectionRef(collectionIds.funeralCompanies),
-    []
-  );
-  const { data, isLoading } =
-    useCollectionSnapshots<FuneralCompany>(funeralCompaniesRef);
+  const {
+    funeralCompanies: data,
+    isLoading,
+    error,
+  } = useSupabaseFuneralCompanies();
 
   const filteredData = useMemo(() => {
     if (!data) return [];
     const hits = data.filter(
-      ({ email, address, companyName, phoneNumber, region }) => {
+      ({ email, address, company_name, phone_number, region }) => {
         if (filterValue) {
           return searchIn({
             filterValue,
-            values: [email, address, companyName, phoneNumber, region],
+            values: [email, address, company_name, phone_number, region],
           });
         }
         return data;
@@ -131,25 +128,39 @@ function Page() {
         </div>
       </div>
     );
-  }, [rowsPerPage, filteredData]);
+  }, [
+    rowsPerPage,
+    filteredData,
+    tableLabels,
+    handleChangeFilterValue,
+    onClear,
+    handleChangeRowsPerPage,
+  ]);
 
   const renderCell = useCallback(
-    (funeral: FuneralCompany, columnKey: Key) => {
-      const { userId, phoneNumber, createdAt } = funeral;
+    (funeral: SupabaseFuneralCompany, columnKey: Key) => {
+      const { phone_number, created_at } = funeral;
       switch (columnKey as ColumnUID) {
         case "user": {
-          return <MinimalUser fetch={true} uid={userId} />;
+          return <MinimalFuneralCompany funeralCompany={funeral} />;
         }
 
+        case "name":
+          return <p>{funeral.company_name}</p>;
+
         case "phoneNumber":
-          return <p>{phoneNumber}</p>;
+          return <p>{phone_number}</p>;
 
         case "registeredDate":
-          return <DateChip timestamp={createdAt} />;
+          return <DateChip timestamp={created_at} />;
       }
     },
     [data]
   );
+
+  if (error) {
+    return <div>Error loading funeral companies: {error.message}</div>;
+  }
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
@@ -164,7 +175,7 @@ function Page() {
         </TableHeader>
         <TableBody items={hits} isLoading={isLoading}>
           {(funeralCompany) => (
-            <TableRow key={funeralCompany.ref.id}>
+            <TableRow key={funeralCompany.uid}>
               {(columnKey) => (
                 <TableCell>{renderCell(funeralCompany, columnKey)}</TableCell>
               )}

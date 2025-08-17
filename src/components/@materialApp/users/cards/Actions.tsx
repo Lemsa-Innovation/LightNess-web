@@ -9,18 +9,18 @@ import {
 import { Fragment } from "react";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { useAuth } from "@/contexts/auth/AuthContext";
-import { User } from "@/firebase/firestore";
+import { SupabaseUser } from "@/hooks/useSupabaseUsers";
 import { DeleteUserModal, UpdateUserModal } from "../modals";
 import { Icon } from "@iconify/react";
 
-function UserActionsDropdown({ user }: { user: User }) {
+function UserActionsDropdown({ user }: { user: SupabaseUser }) {
   const deletedProps = useDisclosure();
   const updatedProps = useDisclosure();
-  const { tenant } = useAuth();
+  const { user: currentUser } = useAuth();
   const canBeDeleted = !(
     user.role === "admin" &&
-    tenant?.customClaims.role === "admin" &&
-    tenant.customClaims.position !== "super"
+    currentUser?.role === "admin" &&
+    currentUser.role !== "super_admin"
   );
 
   const { languageData } = useLanguage();

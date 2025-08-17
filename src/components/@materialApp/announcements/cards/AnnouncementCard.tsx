@@ -4,20 +4,28 @@ import {
   ConfirmModal,
 } from "@/components/@materialUI";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { Announcement, deleteAnnouncement } from "@/firebase/firestore";
+import { Announcement } from "@/types/database";
+import { deleteAnnouncement } from "@/hooks/useSupabaseAnnouncements";
 import { Button, Card, CardHeader, useDisclosure } from "@heroui/react";
 import { useLoadingCallback } from "react-loading-hook";
 import { UpdateAnnouncementModal } from "../modals";
 
-const AnnouncementCard = ({ announcement }: { announcement: Announcement }) => {
+const AnnouncementCard = ({
+  announcement,
+  onSuccess,
+}: {
+  announcement: Announcement;
+  onSuccess?: () => void;
+}) => {
   const modalProps = useDisclosure();
   const { languageData } = useLanguage();
   const action = languageData?.inputs.announcements.actions.deleteAnnouncement;
   const [handleConfirm, isLoading] = useLoadingCallback(async () => {
-    await deleteAnnouncement(announcement.ref.id);
-  }, []);
+    await deleteAnnouncement(announcement.id);
+    onSuccess?.();
+  }, [announcement.id, onSuccess]);
   return (
-    <Card key={announcement.ref.id} className="col-span-4">
+    <Card key={announcement.id} className="col-span-4">
       <CardHeader className="absolute z-10 top-1 flex gap-2 justify-end">
         <Button
           color="danger"
@@ -25,7 +33,10 @@ const AnnouncementCard = ({ announcement }: { announcement: Announcement }) => {
           startContent={<TrashIcon />}
           onPress={modalProps.onOpen}
         />
-        <UpdateAnnouncementModal announcement={announcement} />
+        <UpdateAnnouncementModal
+          announcement={announcement}
+          onSuccess={onSuccess}
+        />
         <ConfirmModal
           action={action}
           modalProps={modalProps}

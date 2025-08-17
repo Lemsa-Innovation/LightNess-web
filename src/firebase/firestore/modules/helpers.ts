@@ -7,13 +7,22 @@ import {
 } from "@firebase/firestore";
 
 export function generateDocumentRef(path: string, ...pathSegments: string[]) {
+  if (!firestoreDb) {
+    throw new Error("Firebase Firestore is not initialized");
+  }
   return doc(collection(firestoreDb, path, ...pathSegments));
 }
 export function getDocumentRef(path: string, ...pathSegments: string[]) {
+  if (!firestoreDb) {
+    throw new Error("Firebase Firestore is not initialized");
+  }
   return doc(firestoreDb, path, ...pathSegments);
 }
 
 export function getCollectionRef(path: string, ...pathSegments: string[]) {
+  if (!firestoreDb) {
+    throw new Error("Firebase Firestore is not initialized");
+  }
   return collection(firestoreDb, path, ...pathSegments);
 }
 export const getRefId = (

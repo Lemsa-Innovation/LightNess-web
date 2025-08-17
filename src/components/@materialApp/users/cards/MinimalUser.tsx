@@ -1,28 +1,18 @@
 import { DisplayAvatar } from "@/components/@materialUI";
-import { getUserFullName, User } from "@/firebase/firestore";
-import { useUserQuery } from "@/firebase/firestore/collections/users/hooks";
 import { isNew } from "@/utils/fDate";
 import { Badge, Skeleton } from "@heroui/react";
+import { SupabaseUser } from "@/hooks/useSupabaseUsers";
 
-type Props =
-  | {
-      fetch: true;
-      uid: string;
-    }
-  | {
-      fetch: false;
-      user: User;
-    };
+type Props = {
+  user: SupabaseUser;
+};
+
 function MinimalUser(props: Props) {
-  const { fetch } = props;
-  const { data } = useUserQuery({
-    uid: fetch ? props.uid : undefined,
-  });
+  const { user } = props;
 
-  const user = fetch ? data : props.user;
-
-  const isNewUser = user && isNew({ createdAt: user.createdAt });
-  const userImage = user?.avatarImage || user?.photoUrl;
+  const isNewUser =
+    user && isNew({ createdAt: new Date(user.created_at).getTime() });
+  const userImage = user?.avatar_image || user?.photo_url;
   return (
     <div className="flex flex-row space-x-4 items-center">
       {userImage && (
@@ -35,10 +25,7 @@ function MinimalUser(props: Props) {
       <div className="flex flex-col">
         <Skeleton isLoaded={!!user}>
           <p className="text-bold text-small capitalize">
-            {getUserFullName({
-              firstName: user?.firstName,
-              lastName: user?.lastName,
-            })}
+            {`${user?.first_name || ""} ${user?.last_name || ""}`.trim()}
           </p>
         </Skeleton>
         <p className="text-foreground-700 font-light text-sm">{user?.email}</p>

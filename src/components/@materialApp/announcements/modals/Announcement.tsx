@@ -1,22 +1,19 @@
 import {
   CancelButton,
   EditIcon,
-  InputImageCard,
   InputLanguage,
   PlusIcon,
   SubmitButton,
 } from "@/components/@materialUI";
+import { InputImageCard } from "@/components/@materialUI/inputs/images";
 import { UseDisclosureReturn } from "@/components/types";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { firestoreDb } from "@/firebase/app";
-import { Announcement } from "@/firebase/firestore";
-import { setAnnouncement } from "@/firebase/firestore/collections/announcements/actions";
+import { Announcement } from "@/types/database";
 import {
-  announcementValidation,
-  AnnouncementValidation,
-} from "@/firebase/firestore/collections/announcements/validations";
-import { uploadImageBucket } from "@/firebase/storage";
-import { collection, doc } from "@firebase/firestore";
+  createAnnouncement,
+  updateAnnouncement,
+  uploadImageToStorage,
+} from "@/hooks/useSupabaseAnnouncements";
 import {
   Button,
   Modal,
@@ -28,95 +25,111 @@ import {
   UseDisclosureProps,
 } from "@heroui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { collectionIds } from "@shared/modules";
 import { Fragment } from "react";
 import { useForm } from "react-hook-form";
 import { useLoadingCallback } from "react-loading-hook";
 import { toast } from "sonner";
+import * as z from "zod";
+
+// Validation schema for Supabase announcements
+const announcementValidationSchema = z.object({
+  image: z.union([z.string().min(1, "Image is required"), z.instanceof(File)]),
+  full_image: z.union([z.string(), z.instanceof(File)]).optional(),
+  language: z
+    .enum(["fr", "ar", "en", "es", "de", "it", "pt", "ru", "zh"])
+    .optional(),
+});
+
+type AnnouncementValidation = z.infer<typeof announcementValidationSchema>;
 
 function AnnouncementModal({
   type,
   announcement,
   modalProps: { isOpen, onClose },
+  onSuccess,
 }: {
   type: "add" | "update";
   announcement?: Announcement;
   modalProps: UseDisclosureReturn;
+  onSuccess?: () => void;
 }) {
   const getDefaultValues = (): AnnouncementValidation => {
     if (type === "update" && announcement) {
       return {
-        type: "update",
-        language: announcement.language,
-        path: announcement.ref.path,
         image: announcement.image,
-        fullImage: announcement.fullImage,
+        full_image: announcement.full_image || "",
+        language: announcement.language,
       };
     }
     return {
-      type: "add",
-      path: doc(collection(firestoreDb, collectionIds.announcements)).path,
+      image: "",
+      full_image: "",
+      language: "fr",
     };
   };
+
   const {
     control,
     handleSubmit,
     formState: { dirtyFields },
   } = useForm<AnnouncementValidation>({
-    resolver: zodResolver(announcementValidation("client", type)),
+    resolver: zodResolver(announcementValidationSchema),
     defaultValues: getDefaultValues(),
   });
+
   const { languageData } = useLanguage();
   const announcements = languageData?.inputs.announcements;
   const action =
     announcements?.actions[
       type === "add" ? "addAnnouncement" : "updateAnnouncement"
     ];
-  const [onSubmit, isLoading] = useLoadingCallback(
-    async ({
-      image,
-      fullImage,
-      path,
-      type,
-      language,
-    }: AnnouncementValidation) => {
-      try {
-        const uploadCoverImage = async (
-          image: unknown,
-          type: "banner" | "full"
-        ) => {
-          if (image instanceof File) {
-            const imagePath = await uploadImageBucket({
-              image,
-              imagePath: `${path}/${type}`,
-            });
-            return imagePath;
-          }
-        };
-        const imagePath = dirtyFields.image
-          ? await uploadCoverImage(image, "banner")
-          : undefined;
-        const fullImagePath = dirtyFields.fullImage
-          ? await uploadCoverImage(fullImage, "full")
-          : undefined;
 
-        await setAnnouncement(
-          {
-            path,
-            type,
-            language,
-            image: imagePath,
-            fullImage: fullImagePath,
-          },
-          type
+  const [onSubmit, isLoading] = useLoadingCallback(
+    async (data: AnnouncementValidation) => {
+      try {
+        // Handle image uploads if they are File objects
+        let imageUrl = data.image;
+        let fullImageUrl = data.full_image;
+
+        if (data.image instanceof File) {
+          const imagePath = `announcements/${Date.now()}_${data.image.name}`;
+          imageUrl = await uploadImageToStorage(data.image, imagePath);
+        }
+
+        if (data.full_image instanceof File) {
+          const fullImagePath = `announcements/${Date.now()}_full_${
+            data.full_image.name
+          }`;
+          fullImageUrl = await uploadImageToStorage(
+            data.full_image,
+            fullImagePath
+          );
+        }
+
+        if (type === "add") {
+          await createAnnouncement({
+            image: imageUrl as string,
+            full_image: fullImageUrl as string,
+            language: data.language,
+          });
+        } else if (type === "update" && announcement) {
+          await updateAnnouncement(announcement.id, {
+            image: imageUrl as string,
+            full_image: fullImageUrl as string,
+            language: data.language,
+          });
+        }
+
+        toast.success(
+          action?.toast.success || "Announcement saved successfully"
         );
-        toast.success(action?.toast.success);
         onClose();
+        onSuccess?.();
       } catch (error) {
-        toast.error(action?.toast.error);
+        toast.error(action?.toast.error || "Failed to save announcement");
       }
     },
-    [dirtyFields]
+    [type, announcement, action, onClose, onSuccess]
   );
   return (
     <Modal size="3xl" isOpen={isOpen} onClose={onClose}>
@@ -132,14 +145,40 @@ function AnnouncementModal({
             <InputImageCard
               name="image"
               control={control}
-              field={announcements?.fields.bannerImage}
+              field={{
+                label: "Banner Image",
+                placeholder: {
+                  upload: "Upload banner image",
+                  update: "Update banner image",
+                },
+                toastUploading: {
+                  error: "Failed to upload banner image",
+                  success: "Banner image uploaded successfully",
+                },
+                rules: {
+                  isRequired: "Banner image is required",
+                },
+              }}
             />
           </div>
           <div className="col-span-5">
             <InputImageCard
-              name="fullImage"
+              name="full_image"
               control={control}
-              field={announcements?.fields.fullImage}
+              field={{
+                label: "Full Image",
+                placeholder: {
+                  upload: "Upload full image (optional)",
+                  update: "Update full image",
+                },
+                toastUploading: {
+                  error: "Failed to upload full image",
+                  success: "Full image uploaded successfully",
+                },
+                rules: {
+                  isRequired: "Full image is optional",
+                },
+              }}
             />
           </div>
         </ModalBody>
@@ -157,7 +196,8 @@ function AnnouncementModal({
 
 const UpdateAnnouncementModal: React.FC<{
   announcement: Announcement;
-}> = ({ announcement }) => {
+  onSuccess?: () => void;
+}> = ({ announcement, onSuccess }) => {
   const updateProps = useDisclosure();
   const { onOpen } = updateProps;
   return (
@@ -172,11 +212,12 @@ const UpdateAnnouncementModal: React.FC<{
         type="update"
         announcement={announcement}
         modalProps={updateProps}
+        onSuccess={onSuccess}
       />
     </Fragment>
   );
 };
-const AddAnnouncementModal = () => {
+const AddAnnouncementModal = ({ onSuccess }: { onSuccess?: () => void }) => {
   const modalProps = useDisclosure();
   const { languageData } = useLanguage();
   const announcements = languageData?.inputs.announcements;
@@ -191,7 +232,11 @@ const AddAnnouncementModal = () => {
       >
         {announcements?.actions.addAnnouncement.label}
       </Button>
-      <AnnouncementModal type="add" modalProps={modalProps} />
+      <AnnouncementModal
+        type="add"
+        modalProps={modalProps}
+        onSuccess={onSuccess}
+      />
     </Fragment>
   );
 };

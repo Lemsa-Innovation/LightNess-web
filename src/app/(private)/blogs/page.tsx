@@ -2,29 +2,52 @@
 import { BlogCard } from "@/components/@materialApp/blogs/cards";
 import { PlusIcon } from "@/components/@materialUI/icons/iconify";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { Blog } from "@/firebase/firestore";
-import {
-  getCollectionRef,
-  useCollectionSnapshots,
-} from "@/firebase/firestore/modules";
+import { Blog } from "@/types/database";
+import { useSupabaseBlogs } from "@/hooks/useSupabaseBlogs";
 import { Button } from "@heroui/react";
-import { collectionIds } from "@shared/modules";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+
 function Page() {
+  const { blogs, isLoading, error, refetch } = useSupabaseBlogs();
   const { languageData } = useLanguage();
-  const blogs = languageData?.inputs.blogs;
+  const blogsData = languageData?.inputs.blogs;
   const action = languageData?.inputs.blogs.actions.addBlog;
-  const dataRef = useMemo(() => getCollectionRef(collectionIds.blogs), []);
-  const { data } = useCollectionSnapshots<Blog>(dataRef);
   const { push } = useRouter();
+
   const onCreateBlog = () => {
     push("/blogs/create");
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-4 items-start">
+        <div className="flex flex-row justify-between items-center w-full">
+          <p className="text-2xl font-bold">{blogsData?.labels.title}</p>
+        </div>
+        <div className="w-full p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <p className="text-blue-800">Loading blogs...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col gap-4 items-start">
+        <div className="flex flex-row justify-between items-center w-full">
+          <p className="text-2xl font-bold">{blogsData?.labels.title}</p>
+        </div>
+        <div className="w-full p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-800">Error loading blogs: {error.message}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4 items-start">
       <div className="flex flex-row justify-between items-center w-full">
-        <p className="text-2xl font-bold">{blogs?.labels.title}</p>
+        <p className="text-2xl font-bold">{blogsData?.labels.title}</p>
         <Button
           variant="flat"
           color="primary"
@@ -35,10 +58,12 @@ function Page() {
         </Button>
       </div>
       <div className="grid grid-cols-12 gap-4">
-        {data?.length === 0 ? (
-          <p className="text-sm font-light">{blogs?.labels.empty}</p>
+        {blogs.length === 0 ? (
+          <p className="text-sm font-light">{blogsData?.labels.empty}</p>
         ) : (
-          data?.map((blog) => <BlogCard key={blog.ref.id} blog={blog} />)
+          blogs.map((blog) => (
+            <BlogCard key={blog.id} blog={blog} onSuccess={refetch} />
+          ))
         )}
       </div>
     </div>

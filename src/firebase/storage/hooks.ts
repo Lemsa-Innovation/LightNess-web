@@ -20,6 +20,13 @@ export function useImageUrl({
             setImage(url);
           } catch (error) {
             // console.log("Error fetching image , l'image n'existe pas");
+            // If Firebase is not initialized, don't show any image
+            if (
+              error instanceof Error &&
+              error.message.includes("Firebase Storage is not initialized")
+            ) {
+              setImage(undefined);
+            }
           }
         } else {
           setImage(URL.createObjectURL(src));

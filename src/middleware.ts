@@ -1,88 +1,56 @@
-import { NextRequest, NextResponse } from "next/server";
-import {
-  authMiddleware,
-  redirectToLogin,
-} from "next-firebase-auth-edge/lib/next/middleware";
+import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-import {
-  AUTH_PATHS,
-  MERGED_PUBLIC_PATHS,
-  PROTECTED_PATHS,
-  PUBLIC_PATHS,
-  SIDEBAR_ROUTES,
-} from "./config";
-import { authConfig } from "./config/server-config";
-import { UserRole, UserStatus } from "@shared/collections";
+export async function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+  const supabase = createMiddlewareClient({ req, res });
 
-function notFound(request: NextRequest) {
-  const url = request.nextUrl.clone();
-  url.pathname = "/500";
-  return NextResponse.redirect(url);
-}
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-function alreadyAuthenticated(request: NextRequest) {
-  const redirect = request.nextUrl.searchParams.get("redirect");
-  const url = request.nextUrl.clone();
-  url.pathname = redirect ?? SIDEBAR_ROUTES.users.path;
-  url.search = "";
-  return NextResponse.redirect(url);
-}
+  // Handle authentication logic
+  if (!session && req.nextUrl.pathname.startsWith("/private")) {
+    return NextResponse.redirect(new URL("/auth", req.url));
+  }
 
-function redirectToHome(request: NextRequest) {
-  const url = request.nextUrl.clone();
-  url.pathname = SIDEBAR_ROUTES.users.path;
-  url.search = "";
-  return NextResponse.redirect(url);
-}
-export function middleware(request: NextRequest) {
-  return authMiddleware(request, {
-    loginPath: "/api/login",
-    logoutPath: "/api/logout",
-    ...authConfig,
-    handleValidToken: async ({ decodedToken }, headers) => {
-      console.log("Valid Token");
+  // Check admin access for admin routes
+  if (session && req.nextUrl.pathname.startsWith("/app")) {
+    const { data: role } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", session.user.id)
+      .single();
 
-      const allowedRoutes: string[] = PUBLIC_PATHS;
-      const userRole = decodedToken?.["role"] as UserRole | undefined;
-      const userStatus = decodedToken?.["status"] as UserStatus;
-      if (userRole === "admin") {
-        //Authenticated user should not be able to access auth routes
-        if (AUTH_PATHS.includes(request.nextUrl.pathname)) {
-          return alreadyAuthenticated(request);
-        }
-        if (userStatus === "active") {
-          allowedRoutes.push(...PROTECTED_PATHS);
-        }
-      } else {
-        allowedRoutes.push(...AUTH_PATHS);
-      }
-      if (
-        allowedRoutes.some((path) => request.nextUrl.pathname.startsWith(path))
-      ) {
-        return NextResponse.next({
-          request: {
-            headers, // Pass modified request headers to skip token verification in subsequent getTokens and getTokensFromObject calls
-          },
-        });
-      } else if (request.nextUrl.pathname === "/") {
-        redirectToHome(request);
-      }
-      return notFound(request);
-    },
-    handleInvalidToken: async () => {
-      console.log("InValid Token");
-      return redirectToLogin(request, {
-        path: "/auth",
-        publicPaths: MERGED_PUBLIC_PATHS,
-      });
-    },
-    handleError: async (error) => {
-      return redirectToLogin(request, {
-        path: "/auth",
-        publicPaths: MERGED_PUBLIC_PATHS,
-      });
-    },
-  });
+    if (role?.role !== "admin" && role?.role !== "super_admin") {
+      return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
+  }
+
+  // Check admin access for other protected routes
+  if (
+    session &&
+    (req.nextUrl.pathname.startsWith("/users") ||
+      req.nextUrl.pathname.startsWith("/blogs") ||
+      req.nextUrl.pathname.startsWith("/announcements") ||
+      req.nextUrl.pathname.startsWith("/washers") ||
+      req.nextUrl.pathname.startsWith("/cemeteries") ||
+      req.nextUrl.pathname.startsWith("/funeralServices") ||
+      req.nextUrl.pathname.startsWith("/deathDeclarations"))
+  ) {
+    const { data: role } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", session.user.id)
+      .single();
+
+    if (role?.role !== "admin" && role?.role !== "super_admin") {
+      return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
+  }
+
+  return res;
 }
 
 export const config = {

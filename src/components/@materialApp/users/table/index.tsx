@@ -1,3 +1,4 @@
+"use client";
 import { ColumnUID } from "@/language/structure/commons";
 import {
   Button,
@@ -26,9 +27,7 @@ import { MinimalUser, UserActionsDropdown } from "../cards";
 import { UserRoleChip } from "../chips";
 import { useTable } from "@/hooks";
 import { searchIn } from "@/utils";
-import { User } from "@/firebase/firestore";
-import { useCollectionSnapshots } from "@/firebase/firestore/modules";
-import { getUsersRef } from "@/firebase/firestore/collections/users/helpers";
+import { useSupabaseUsers, SupabaseUser } from "@/hooks/useSupabaseUsers";
 import { CreateUserModal } from "../modals";
 
 function UsersTable() {
@@ -47,6 +46,8 @@ function UsersTable() {
     page,
     rowsPerPage,
     visibleColumns,
+    sortDescriptor,
+    handleSort,
   } = useTable({
     usedFor: "users",
     INITIAL_VISIBLE_COLUMNS: [
@@ -70,11 +71,7 @@ function UsersTable() {
   const [roleFilter, setRoleFilter] = useState<Selection>("all");
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
 
-  const {
-    data: users,
-    error,
-    isLoading,
-  } = useCollectionSnapshots<User>(getUsersRef());
+  const { users, error, isLoading } = useSupabaseUsers();
 
   const roleOptions = useMemo(() => {
     const roleSet = new Set(users?.map(({ role }) => role));
@@ -84,7 +81,7 @@ function UsersTable() {
   const statusOptions = useMemo(() => {
     const statusSet = new Set(
       users
-        ?.map(({ accountStatus }) => accountStatus)
+        ?.map(({ account_status }) => account_status)
         .filter((status) => !!status)
     );
     return Array.from(statusSet);
@@ -92,16 +89,16 @@ function UsersTable() {
 
   const filteredData = useMemo(() => {
     if (!users) return [];
-    const hits = users.filter(({ email, uid, lastName, firstName }) => {
+    const hits = users.filter(({ email, id, last_name, first_name }) => {
       if (filterValue) {
         searchIn({
           filterValue,
           values: [
-            uid,
+            id,
             email,
-            lastName,
-            firstName,
-            // phoneNumber ? formatPhoneToLocal(phoneNumber) : undefined,
+            last_name,
+            first_name,
+            // phone_number ? formatPhoneToLocal(phone_number) : undefined,
           ],
         });
       }
@@ -111,8 +108,8 @@ function UsersTable() {
     const statusFilteredHits =
       statusFilter !== "all" &&
       Array.from(statusFilter).length !== statusOptions.length
-        ? hits.filter(({ accountStatus }) =>
-            Array.from(statusFilter).includes(accountStatus ?? "unverified")
+        ? hits.filter(({ account_status }) =>
+            Array.from(statusFilter).includes(account_status ?? "unverified")
           )
         : hits;
     const roleFilteredHits =
@@ -161,12 +158,12 @@ function UsersTable() {
       sortable?: boolean;
       align?: "center" | "start" | "end";
     }[] = [
-      { uid: "user", sortable: true },
-      { uid: "role", sortable: true },
-      { uid: "phoneNumber" },
-      { uid: "status", sortable: true },
-      { uid: "registeredDate", sortable: true },
-      { uid: "actions" },
+      { uid: "user", sortable: false },
+      { uid: "role", sortable: false },
+      { uid: "phoneNumber", sortable: false },
+      { uid: "status", sortable: false },
+      { uid: "registeredDate", sortable: false },
+      { uid: "actions", sortable: false },
     ];
     return tableColumns;
   };
@@ -278,26 +275,26 @@ function UsersTable() {
     );
   }, [pages, page]);
 
-  const renderCell = useCallback((user: User, columnKey: Key) => {
-    const { verificationSteps, createdAt } = user;
+  const renderCell = useCallback((user: SupabaseUser, columnKey: Key) => {
+    const { verification_steps, created_at } = user;
     switch (columnKey as ColumnUID) {
       case "user": {
-        return <MinimalUser fetch={false} user={user} />;
+        return <MinimalUser user={user} />;
       }
       case "role":
         return <UserRoleChip user={user} />;
       case "phoneNumber":
-        return <p>{user.phoneNumber}</p>;
+        return <p>{user.phone_number}</p>;
       case "status":
         return (
           <StatusChip
             statusKey={
-              verificationSteps?.email?.verified ? "active" : "unverified"
+              verification_steps?.email?.verified ? "active" : "unverified"
             }
           />
         );
       case "registeredDate":
-        return <DateChip timestamp={createdAt} />;
+        return <DateChip timestamp={created_at} />;
       case "actions":
         return (
           <div className="relative flex justify-end items-center gap-2">
@@ -307,11 +304,21 @@ function UsersTable() {
     }
   }, []);
 
+  if (isLoading) {
+    return <div>Loading users...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading users: {error.message}</div>;
+  }
+
   return (
     <Table
       isHeaderSticky
       aria-label="stores"
       selectionMode="single"
+      sortDescriptor={sortDescriptor}
+      onSortChange={handleSort}
       topContent={topContent}
       bottomContent={bottomContent}
       onSelectionChange={handleSelection}
@@ -325,7 +332,7 @@ function UsersTable() {
       </TableHeader>
       <TableBody items={hits}>
         {(user) => (
-          <TableRow key={user.ref.id}>
+          <TableRow key={user.id}>
             {(columnKey) => (
               <TableCell>{renderCell(user, columnKey)}</TableCell>
             )}

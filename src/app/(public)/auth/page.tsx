@@ -8,78 +8,81 @@ import {
   InputPassword,
 } from "@/components/@materialUI/inputs/texts";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { signIn } from "@/firebase/auth";
-import { authFormSchema, AuthSchema } from "@/firebase/auth/validations";
+import { useSupabaseAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { authFormSchema } from "@/firebase/auth";
 
 function Page() {
   const { languageData } = useLanguage();
   const auth = languageData?.auth;
-  const fields = languageData?.inputs.users.fields;
+  const { signIn } = useSupabaseAuth();
 
   const {
     control,
     formState: { isValid },
     handleSubmit,
-  } = useForm<AuthSchema>({
+  } = useForm({
     mode: "onChange",
     resolver: zodResolver(authFormSchema),
   });
 
   const [handleSignIn, isLoading] = useLoadingCallback(
-    async ({ email, password }: AuthSchema) => {
+    async ({ email, password }) => {
       try {
-        await signIn(email, password);
-      } catch (error: any) {
-        switch (error.code) {
-          case "auth/invalid-credential": {
-            toast.error(auth?.errors.invalidCredential, {
-              position: "top-right",
-            });
-          }
-          case "incorrectPassword": {
-            break;
-          }
-          default: {
-            toast.error(auth?.signIn.toastContents.error, {
-              position: "top-right",
-            });
-            break;
-          }
+        const { data, error } = await signIn(email, password);
+        if (error) {
+          toast.error(auth?.errors.invalidCredential, {
+            position: "top-right",
+          });
+        } else if (data?.user) {
+          // Show success message before redirect
+          toast.success(auth?.signIn.toastContents.success, {
+            position: "top-right",
+          });
         }
+      } catch (error: any) {
+        toast.error(auth?.signIn.toastContents.error, {
+          position: "top-right",
+        });
       }
     }
   );
 
   return (
     <div className="flex h-full w-full justify-center items-center overflow-auto p-4">
-      <Card
-        isBlurred
-        className={cn(
-          "w-full h-fit md:p-0 md:w-[600px]",
-          "rounded-2xl border-2 flex justify-center items-center shadow-lg"
-        )}
-      >
-        <CardHeader className="flex-col items-center">
-          <p className="font-extrabold text-lg text-center">
-            {auth?.signIn.header}
-          </p>
-        </CardHeader>
-        <CardBody>
-          <div className="flex-col items-center gap-2 space-y-4">
-            <InputText name="email" field={fields?.email} control={control} />
-            <InputPassword control={control} />
-            <Button
-              className="w-full"
-              color="primary"
-              variant="solid"
-              onPress={() => handleSubmit(handleSignIn)()}
-              isDisabled={!isValid}
-              isLoading={isLoading}
-            >
-              {auth?.signIn.signIn}
-            </Button>
+      <Card className="w-full max-w-md">
+        <CardHeader className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-2xl font-bold">{auth?.signIn.title}</h1>
+            <p className="text-sm text-default-500">
+              {auth?.signIn.description}
+            </p>
           </div>
+        </CardHeader>
+        <CardBody className="flex flex-col gap-4">
+          <form
+            onSubmit={handleSubmit(handleSignIn)}
+            className="flex flex-col gap-4"
+          >
+            <InputText
+              name="email"
+              control={control}
+              field={auth?.fields.email}
+            />
+            <InputPassword
+              name="password"
+              control={control}
+              field={auth?.fields.password}
+            />
+            <Button
+              type="submit"
+              color="primary"
+              isLoading={isLoading}
+              isDisabled={!isValid}
+            >
+              {auth?.signIn.button}
+            </Button>
+          </form>
         </CardBody>
       </Card>
     </div>

@@ -55,6 +55,10 @@ export function useAuthUser() {
   };
 
   useEffect(() => {
+    if (!auth) {
+      setIsLoadingTenant(false);
+      return;
+    }
     return onIdTokenChanged(auth, handleIdTokenChanged);
   }, [pathname]);
 

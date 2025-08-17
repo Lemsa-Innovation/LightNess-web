@@ -1,7 +1,7 @@
 import { CancelButton, SubmitButton } from "@/components/@materialUI/buttons";
 import { UseDisclosureReturn } from "@/components/types";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { rejectDeadDeclarations } from "@/firebase/firestore/collections/deathDeclarations/actions";
+import { rejectDeathDeclaration } from "@/lib/supabase-death-declarations";
 import {
   Modal,
   ModalBody,
@@ -14,12 +14,14 @@ import { toast } from "sonner";
 
 function RejectDeadModal({
   matchedUid,
-  docPaths,
+  declarationUids,
   disclosureProps,
+  onSuccess,
 }: {
   matchedUid: string;
-  docPaths: string[];
+  declarationUids: string[];
   disclosureProps: UseDisclosureReturn;
+  onSuccess?: () => void;
 }) {
   const { languageData } = useLanguage();
   const { isOpen, onOpenChange, onClose } = disclosureProps;
@@ -28,12 +30,14 @@ function RejectDeadModal({
 
   const [onSubmit, isLoading] = useLoadingCallback(async () => {
     try {
-      await rejectDeadDeclarations({
-        matchedUid,
-        declaredDeathsPath: docPaths,
-      });
+      const { error } = await rejectDeathDeclaration(declarationUids);
+      if (error) {
+        throw error;
+      }
       toast.success(action?.toast.success);
       onClose();
+      // Refresh the data to show updated status
+      onSuccess?.();
     } catch (error) {
       toast.error(action?.toast.error);
     }

@@ -1,7 +1,10 @@
 import { CancelButton, SubmitButton } from "@/components/@materialUI/buttons";
 import { UseDisclosureReturn } from "@/components/types";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { markUserAsDeath } from "@/firebase/firestore/collections/deathDeclarations/actions";
+import {
+  validateDeathDeclaration,
+  markUserAsDead,
+} from "@/lib/supabase-death-declarations";
 import {
   Modal,
   ModalBody,
@@ -14,12 +17,14 @@ import { toast } from "sonner";
 
 function ValidateDeathModal({
   matchedUid,
-  docPaths,
+  declarationUids,
   disclosureProps,
+  onSuccess,
 }: {
   matchedUid: string;
-  docPaths: string[];
+  declarationUids: string[];
   disclosureProps: UseDisclosureReturn;
+  onSuccess?: () => void;
 }) {
   const { languageData } = useLanguage();
   const { isOpen, onOpenChange, onClose } = disclosureProps;
@@ -28,12 +33,25 @@ function ValidateDeathModal({
 
   const [onSubmit, isLoading] = useLoadingCallback(async () => {
     try {
-      await markUserAsDeath({
-        matchedUid,
-        declaredDeathsPath: docPaths,
-      });
+      // First validate the death declarations
+      const { error: validationError } = await validateDeathDeclaration(
+        declarationUids,
+        matchedUid
+      );
+      if (validationError) {
+        throw validationError;
+      }
+
+      // Then mark the user as dead
+      const { error: markError } = await markUserAsDead(matchedUid);
+      if (markError) {
+        throw markError;
+      }
+
       toast.success(action?.toast.success);
       onClose();
+      // Refresh the data to show updated status
+      onSuccess?.();
     } catch (error) {
       toast.error(action?.toast.error);
     }

@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { DocumentReference, onSnapshot, Query } from "@firebase/firestore";
 import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 
-export const useCollectionSnapshots = <T>(dataRef: Query) => {
+export const useCollectionSnapshots = <T>(dataRef: Query | null) => {
   const [data, setData] = useState<T[]>([]);
-  const [snapshots, isLoading, error] = useCollection(dataRef);
+  const [snapshots, isLoading, error] = useCollection(dataRef || null);
   useEffect(() => {
     if (snapshots && !isLoading && !error) {
       setData(

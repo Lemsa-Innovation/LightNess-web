@@ -1,7 +1,8 @@
 import { ConfirmModal, TrashIcon } from "@/components/@materialUI";
 import { DisplayImage } from "@/components/@materialUI/images";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { Blog, deleteBlog } from "@/firebase/firestore";
+import { Blog } from "@/types/database";
+import { deleteBlog } from "@/hooks/useSupabaseBlogs";
 import {
   Button,
   Card,
@@ -14,11 +15,7 @@ import { formatDate } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useLoadingCallback } from "react-loading-hook";
 
-function BlogCard({
-  blog: { createdAt, readTime, title, ref, coverImageUrl },
-}: {
-  blog: Blog;
-}) {
+function BlogCard({ blog, onSuccess }: { blog: Blog; onSuccess?: () => void }) {
   const { push } = useRouter();
   const deletModalProps = useDisclosure();
 
@@ -26,18 +23,19 @@ function BlogCard({
   const action = languageData?.inputs.blogs.actions.deleteBlog;
 
   const [handleConfirmDelete, isLoading] = useLoadingCallback(async () => {
-    await deleteBlog(ref.id);
-  }, []);
+    await deleteBlog(blog.id);
+    onSuccess?.();
+  }, [blog.id, onSuccess]);
 
   return (
     <Card
       isPressable
-      key={ref.id}
+      key={blog.id}
       className="col-span-4"
-      onPress={() => push(`/blogs/${ref.id}`)}
+      onPress={() => push(`/blogs/${blog.id}`)}
     >
       <CardHeader className="flex justify-between text-start absolute z-10 top-1 font-semibold">
-        {title}
+        {blog.title}
         <div>
           <Button
             color="danger"
@@ -54,12 +52,14 @@ function BlogCard({
         </div>
       </CardHeader>
       <div className="w-full min-h-60">
-        <DisplayImage className="z-0" src={coverImageUrl} />
+        <DisplayImage className="z-0" src={blog.cover_image_url} />
       </div>
       <CardFooter>
         <p className="text-primary">
-          {formatDate(createdAt.toDate(), "MMM dd")}
-          <span> - {readTime} min de lecture</span>
+          {blog.created_at
+            ? formatDate(new Date(blog.created_at), "MMM dd")
+            : ""}
+          <span> - {blog.read_time || 0} min de lecture</span>
         </p>
       </CardFooter>
     </Card>
