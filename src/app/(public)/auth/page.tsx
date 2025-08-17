@@ -72,7 +72,7 @@ function Page() {
             <InputPassword
               name="password"
               control={control}
-              field={auth?.fields.password}
+              isRequired={true}
             />
             <Button
               type="submit"
