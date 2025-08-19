@@ -9,6 +9,7 @@ const ROOTS_AUTH = "/auth";
 export const AUTH_ROUTES = {
   auth: ROOTS_AUTH,
   resetPassword: path(ROOTS_AUTH, "/reset-password"),
+  resetPasswordConfirm: path(ROOTS_AUTH, "/reset-password/confirm"),
 };
 
 export const AUTH_PATHS = Object.values(AUTH_ROUTES);

@@ -43,6 +43,36 @@ export interface Auth {
     description: string;
     button: string;
   };
+  resetPassword: {
+    title: string;
+    description: string;
+    button: string;
+    backToLogin: string;
+    forgotPassword: string;
+    toastContents: ToastContents;
+    success: {
+      title: string;
+      description: string;
+      button: string;
+    };
+  };
+  confirmPassword: {
+    title: string;
+    description: string;
+    button: string;
+    backToLogin: string;
+    loading: string;
+    invalidLink: string;
+    success: {
+      title: string;
+      description: string;
+      button: string;
+    };
+    errors: {
+      invalidToken: string;
+      updateFailed: string;
+    };
+  };
   signOut: {
     logout: string;
     toast: ToastContents;
@@ -57,6 +87,10 @@ export interface Auth {
       label: string;
       placeholder: string;
     };
+    confirmPassword: {
+      label: string;
+      placeholder: string;
+    };
   };
   errors: {
     networkRequestFailed: string;
@@ -65,6 +99,8 @@ export interface Auth {
     userNotFound: string;
     incorrectPassword: string;
     invalidCredential: string;
+    passwordsDoNotMatch: string;
+    emailNotFound: string;
   };
   welcome: string;
 }

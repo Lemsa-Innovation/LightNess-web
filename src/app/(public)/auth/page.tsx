@@ -11,6 +11,7 @@ import { useLanguage } from "@/contexts/language/LanguageContext";
 import { useSupabaseAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { authFormSchema } from "@/firebase/auth";
+import Link from "next/link";
 
 function Page() {
   const { languageData } = useLanguage();
@@ -74,6 +75,14 @@ function Page() {
               control={control}
               isRequired={true}
             />
+            <div className="text-right">
+              <Link 
+                href="/auth/reset-password" 
+                className="text-sm text-primary hover:underline"
+              >
+                {auth?.resetPassword?.forgotPassword}
+              </Link>
+            </div>
             <Button
               type="submit"
               color="primary"

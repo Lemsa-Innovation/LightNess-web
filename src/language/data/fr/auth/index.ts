@@ -64,6 +64,46 @@ export const auth: Auth = {
       success: "Waouh, c'est facile ! Vous êtes connecté !",
     },
   },
+  resetPassword: {
+    title: "Réinitialiser le mot de passe",
+    description:
+      "Entrez votre nouvelle adresse e-mail pour recevoir un lien de réinitialisation",
+    button: "Envoyer le lien de réinitialisation",
+    backToLogin: "Retour à la connexion",
+    forgotPassword: "Mot de passe oublié ?",
+    toastContents: {
+      success:
+        "Lien de réinitialisation envoyé avec succès ! Vérifiez votre e-mail.",
+      error:
+        "Échec de l'envoi du lien de réinitialisation. Veuillez réessayer.",
+    },
+    success: {
+      title: "E-mail envoyé !",
+      description:
+        "Nous avons envoyé un lien de réinitialisation à votre adresse e-mail. Vérifiez votre boîte de réception et suivez les instructions.",
+      button: "Retour à la connexion",
+    },
+  },
+  confirmPassword: {
+    title: "Définir un nouveau mot de passe",
+    description: "Entrez votre nouveau mot de passe ci-dessous",
+    button: "Mettre à jour le mot de passe",
+    backToLogin: "Retour à la connexion",
+    loading: "Validation du lien de réinitialisation...",
+    invalidLink: "Lien de réinitialisation invalide. Redirection...",
+    success: {
+      title: "Mot de passe mis à jour !",
+      description:
+        "Votre mot de passe a été mis à jour avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+      button: "Se connecter",
+    },
+    errors: {
+      invalidToken:
+        "Lien de réinitialisation invalide ou expiré. Veuillez demander un nouveau lien.",
+      updateFailed:
+        "Échec de la mise à jour du mot de passe. Veuillez réessayer.",
+    },
+  },
   signOut: {
     logout: "Se déconnecter",
     toast: {
@@ -81,6 +121,10 @@ export const auth: Auth = {
       label: "Mot de passe",
       placeholder: "Entrez votre mot de passe",
     },
+    confirmPassword: {
+      label: "Confirmer le mot de passe",
+      placeholder: "Confirmez votre mot de passe",
+    },
   },
   welcome: "Bienvenu de retour",
   errors: {
@@ -92,5 +136,7 @@ export const auth: Auth = {
     incorrectPassword: "Mot de passe incorrect.",
     invalidCredential:
       "Les informations d'identification fournies ne sont pas valides. Veuillez vérifier et réessayer.",
+    passwordsDoNotMatch: "Les mots de passe ne correspondent pas.",
+    emailNotFound: "Aucun compte trouvé avec cette adresse e-mail.",
   },
 };

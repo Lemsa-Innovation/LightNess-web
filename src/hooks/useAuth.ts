@@ -41,6 +41,13 @@ export function useSupabaseAuth() {
     return { data, error };
   };
 
+  const resetPassword = async (email: string) => {
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password/confirm`,
+    });
+    return { data, error };
+  };
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (!error) {
@@ -50,7 +57,7 @@ export function useSupabaseAuth() {
     return { error };
   };
 
-  return { user, signIn, signOut };
+  return { user, signIn, resetPassword, signOut };
 }
 
 export function useAuth() {
