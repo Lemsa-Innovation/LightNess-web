@@ -1,12 +1,10 @@
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { LanguageValidation } from "@/firebase/firestore/modules";
 import { Select, SelectItem } from "@heroui/react";
 import { Control, useController } from "react-hook-form";
 
 function InputLanguage({ control }: { control: Control<any> }) {
   const { languageData } = useLanguage();
   const languages = languageData?.commons.languages;
-  const field = languageData?.inputs.blogs.fields.language;
 
   const {
     field: { onChange, value },
@@ -17,8 +15,7 @@ function InputLanguage({ control }: { control: Control<any> }) {
 
   return (
     <Select
-      label={field?.label}
-      description={field?.description}
+      label="Language"
       selectionMode="single"
       selectedKeys={[value]}
       onSelectionChange={(keys) => {

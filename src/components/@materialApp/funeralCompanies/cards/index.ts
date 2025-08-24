@@ -1,1 +1,0 @@
-export { MinimalFuneralCompany } from "./MinimalFuneralCompany";

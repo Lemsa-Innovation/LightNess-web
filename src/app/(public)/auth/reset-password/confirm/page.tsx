@@ -8,8 +8,8 @@ import { InputPassword } from "@/components/@materialUI/inputs/texts";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { useSupabaseAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { newPasswordFormSchema } from "@/firebase/auth";
-import Link from "next/link";
+import { newPasswordFormSchema } from "@/lib/validations";
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
@@ -174,11 +174,9 @@ function ConfirmResetPasswordPage() {
             </div>
           </CardHeader>
           <CardBody className="flex flex-col gap-4">
-            <Link href="/auth">
-              <Button color="primary" className="w-full">
-                {auth?.confirmPassword?.success.button}
-              </Button>
-            </Link>
+            <Button color="primary" className="w-full">
+              {auth?.confirmPassword?.success.button}
+            </Button>
           </CardBody>
         </Card>
       </div>
@@ -222,14 +220,6 @@ function ConfirmResetPasswordPage() {
               {auth?.confirmPassword?.button}
             </Button>
           </form>
-          <div className="text-center">
-            <Link
-              href="/auth"
-              className="text-sm text-default-500 hover:text-primary"
-            >
-              {auth?.confirmPassword?.backToLogin}
-            </Link>
-          </div>
         </CardBody>
       </Card>
     </div>

@@ -10,54 +10,20 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // Handle authentication logic
-  if (!session && req.nextUrl.pathname.startsWith("/private")) {
-    return NextResponse.redirect(new URL("/auth", req.url));
-  }
+  // Only allow access to reset password routes
+  const allowedPaths = ["/auth/reset-password", "/auth/reset-password/confirm"];
+  const isAllowedPath = allowedPaths.some((path) =>
+    req.nextUrl.pathname.startsWith(path)
+  );
 
-  // Check admin access for admin routes
-  if (session && req.nextUrl.pathname.startsWith("/app")) {
-    const { data: role } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", session.user.id)
-      .single();
-
-    if (role?.role !== "admin" && role?.role !== "super_admin") {
-      return NextResponse.redirect(new URL("/unauthorized", req.url));
-    }
-  }
-
-  // Check admin access for other protected routes
-  if (
-    session &&
-    (req.nextUrl.pathname.startsWith("/users") ||
-      req.nextUrl.pathname.startsWith("/blogs") ||
-      req.nextUrl.pathname.startsWith("/announcements") ||
-      req.nextUrl.pathname.startsWith("/washers") ||
-      req.nextUrl.pathname.startsWith("/cemeteries") ||
-      req.nextUrl.pathname.startsWith("/funeralServices") ||
-      req.nextUrl.pathname.startsWith("/deathDeclarations"))
-  ) {
-    const { data: role } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", session.user.id)
-      .single();
-
-    if (role?.role !== "admin" && role?.role !== "super_admin") {
-      return NextResponse.redirect(new URL("/unauthorized", req.url));
-    }
+  if (!isAllowedPath) {
+    // Redirect all other routes to a simple page or return 404
+    return NextResponse.redirect(new URL("/auth/reset-password", req.url));
   }
 
   return res;
 }
 
 export const config = {
-  matcher: [
-    "/",
-    "/((?!_next|favicon.ico|api|.*\\.).*)",
-    "/api/login",
-    "/api/logout",
-  ],
+  matcher: ["/((?!_next|favicon.ico|api|.*\\.).*)"],
 };

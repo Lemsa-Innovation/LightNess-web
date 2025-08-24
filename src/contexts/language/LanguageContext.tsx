@@ -4,7 +4,6 @@ import {
   Commons,
   Inputs,
   Notifications,
-  Profile,
   Rules,
 } from "@/language/structure";
 import { createContext, useContext } from "react";
@@ -38,7 +37,6 @@ export type LanguageData = {
   rules: Rules;
   inputs: Inputs;
   commons: Commons;
-  profile: Profile;
   notifications: Notifications;
 };
 interface LanguageContextType {

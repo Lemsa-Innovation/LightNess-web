@@ -1,10 +1,1 @@
-export * from "./users";
-export * from "./washer";
-export * from "./debts";
-export * from "./blogs";
-export * from "./funeral";
-export * from "./testaments";
-export * from "./suggestions";
-export * from "./announcements";
-export * from "./conversations";
-export * from "./deathDeclarations";
+// Collections removed - only auth functionality remains

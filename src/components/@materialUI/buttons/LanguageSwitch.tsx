@@ -13,7 +13,6 @@ import {
 } from "@/contexts/language/LanguageContext";
 import Image from "next/image";
 import { Key } from "react";
-import { auth } from "@/firebase/app";
 
 export default function LanguageSwitch() {
   const { language, changeLanguage } = useLanguage();
@@ -21,9 +20,6 @@ export default function LanguageSwitch() {
   const handleAction = (key: Key) => {
     const selectedLang = key as Language;
     changeLanguage(selectedLang);
-    if (auth) {
-      auth.languageCode = selectedLang;
-    }
     localStorage.setItem("language", selectedLang);
   };
 
