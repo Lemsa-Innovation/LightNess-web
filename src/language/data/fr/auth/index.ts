@@ -64,6 +64,32 @@ export const auth: Auth = {
       success: "Waouh, c'est facile ! Vous êtes connecté !",
     },
   },
+  signup: {
+    title: "Complétez Votre Inscription",
+    description:
+      "Veuillez remplir vos détails pour finaliser la configuration de votre compte",
+    button: "Créer le Compte",
+    loading: "Validation de l'invitation...",
+    invalidToken: "Invitation invalide ou expirée",
+    success: {
+      title: "Compte Créé avec Succès !",
+      description:
+        "Votre compte a été créé et vous pouvez maintenant accéder à la plateforme.",
+      button: "Continuer vers la Connexion",
+    },
+    errors: {
+      invalidToken: "Jeton d'invitation invalide",
+      tokenExpired: "Le jeton d'invitation a expiré",
+      tokenAlreadyUsed: "Le jeton d'invitation a déjà été utilisé",
+      signupFailed: "Échec de la création du compte. Veuillez réessayer.",
+    },
+    appDownload: {
+      title:
+        "Téléchargez notre application mobile pour une expérience complète :",
+      androidButton: "Télécharger pour Android",
+      iosButton: "Télécharger pour iOS",
+    },
+  },
   resetPassword: {
     title: "Réinitialiser le mot de passe",
     description:
@@ -124,6 +150,26 @@ export const auth: Auth = {
     confirmPassword: {
       label: "Confirmer le mot de passe",
       placeholder: "Confirmez votre mot de passe",
+    },
+    fullName: {
+      label: "Nom complet",
+      placeholder: "Entrez votre nom complet",
+    },
+    birthday: {
+      label: "Date de naissance",
+      placeholder: "Sélectionnez votre date de naissance",
+    },
+    gender: {
+      label: "Genre",
+      placeholder: "Sélectionnez votre genre",
+    },
+    phoneNumber: {
+      label: "Numéro de téléphone",
+      placeholder: "Entrez votre numéro de téléphone",
+    },
+    country: {
+      label: "Pays",
+      placeholder: "Sélectionnez votre pays",
     },
   },
   welcome: "Bienvenu de retour",

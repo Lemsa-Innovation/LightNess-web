@@ -46,6 +46,29 @@ export interface Auth {
     description: string;
     button: string;
   };
+  signup: {
+    title: string;
+    description: string;
+    button: string;
+    loading: string;
+    invalidToken: string;
+    success: {
+      title: string;
+      description: string;
+      button: string;
+    };
+    errors: {
+      invalidToken: string;
+      tokenExpired: string;
+      tokenAlreadyUsed: string;
+      signupFailed: string;
+    };
+    appDownload: {
+      title: string;
+      androidButton: string;
+      iosButton: string;
+    };
+  };
   resetPassword: {
     title: string;
     description: string;
@@ -91,6 +114,26 @@ export interface Auth {
       placeholder: string;
     };
     confirmPassword: {
+      label: string;
+      placeholder: string;
+    };
+    fullName: {
+      label: string;
+      placeholder: string;
+    };
+    birthday: {
+      label: string;
+      placeholder: string;
+    };
+    gender: {
+      label: string;
+      placeholder: string;
+    };
+    phoneNumber: {
+      label: string;
+      placeholder: string;
+    };
+    country: {
       label: string;
       placeholder: string;
     };

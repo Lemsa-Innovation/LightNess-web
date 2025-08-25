@@ -10,15 +10,19 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // Only allow access to reset password routes
-  const allowedPaths = ["/auth/reset-password", "/auth/reset-password/confirm"];
+  // Allow access to auth routes only
+  const allowedPaths = [
+    "/auth/reset-password",
+    "/auth/reset-password/confirm",
+    "/auth/signup",
+  ];
   const isAllowedPath = allowedPaths.some((path) =>
     req.nextUrl.pathname.startsWith(path)
   );
 
   if (!isAllowedPath) {
-    // Redirect all other routes to a simple page or return 404
-    return NextResponse.redirect(new URL("/auth/reset-password", req.url));
+    // Redirect all other routes to the external Lightness website
+    return NextResponse.redirect("https://lightness.world/");
   }
 
   return res;

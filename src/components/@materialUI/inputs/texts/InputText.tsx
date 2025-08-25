@@ -63,7 +63,6 @@ const InputText: React.FC<Props> = (props) => {
 
   return (
     <Input
-      {...field}
       {...restProps}
       ref={ref}
       size={size ?? "md"}
@@ -71,6 +70,8 @@ const InputText: React.FC<Props> = (props) => {
       classNames={{
         label: "top-1",
       }}
+      label={field?.label}
+      placeholder={field?.placeholder}
       //defaultValue={value}
       value={value ?? ""}
       onValueChange={(value) => {

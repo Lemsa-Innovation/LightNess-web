@@ -61,6 +61,30 @@ export const auth: Auth = {
       success: "Wow, that's easy! You're logged in!",
     },
   },
+  signup: {
+    title: "Complete Your Registration",
+    description: "Please fill in your details to complete your account setup",
+    button: "Create Account",
+    loading: "Validating invitation...",
+    invalidToken: "Invalid or expired invitation",
+    success: {
+      title: "Account Created Successfully!",
+      description:
+        "Your account has been created and you can now access the platform.",
+      button: "Continue to Login",
+    },
+    errors: {
+      invalidToken: "Invalid invitation token",
+      tokenExpired: "Invitation token has expired",
+      tokenAlreadyUsed: "Invitation token has already been used",
+      signupFailed: "Failed to create account. Please try again.",
+    },
+    appDownload: {
+      title: "Download our mobile app to get the full experience:",
+      androidButton: "Download for Android",
+      iosButton: "Download for iOS",
+    },
+  },
   resetPassword: {
     title: "Reset Password",
     description: "Enter your email address to receive a reset link",
@@ -116,6 +140,26 @@ export const auth: Auth = {
     confirmPassword: {
       label: "Confirm Password",
       placeholder: "Confirm your password",
+    },
+    fullName: {
+      label: "Full Name",
+      placeholder: "Enter your full name",
+    },
+    birthday: {
+      label: "Date of Birth",
+      placeholder: "Select your date of birth",
+    },
+    gender: {
+      label: "Gender",
+      placeholder: "Select your gender",
+    },
+    phoneNumber: {
+      label: "Phone Number",
+      placeholder: "Enter your phone number",
+    },
+    country: {
+      label: "Country",
+      placeholder: "Select your country",
     },
   },
   welcome: "Welcome back",

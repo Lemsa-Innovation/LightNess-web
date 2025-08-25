@@ -1,6 +1,8 @@
 import { ReactNode } from "react";
 import { Input, InputVariantProps } from "@heroui/react";
 import { Control, useController } from "react-hook-form";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 type Props = {
   control: Control<any>;
@@ -10,6 +12,10 @@ type Props = {
   status?: InputVariantProps["color"];
   endContent?: ReactNode;
   handleKeyUp?: () => void;
+  field?: {
+    label?: string;
+    placeholder?: string;
+  };
 };
 
 function InputPhoneNumber({
@@ -20,11 +26,8 @@ function InputPhoneNumber({
   endContent,
   status,
   handleKeyUp,
+  field,
 }: Props) {
-  const field = {
-    label: "Phone Number",
-    placeholder: "Enter your phone number",
-  };
   const {
     field: { onChange, value },
     fieldState: { error },
@@ -34,37 +37,40 @@ function InputPhoneNumber({
   });
 
   const errorMessage = error?.message;
+
+  const handlePhoneChange = (phoneValue: string | undefined) => {
+    if (phoneValue) {
+      // Store the E.164 format for the component, but format for display
+      onChange(phoneValue);
+    } else {
+      onChange(phoneValue);
+    }
+  };
+
   return (
-    <Input
-      size="md"
-      value={value ?? ""}
-      inputMode="tel"
-      type="phone"
-      variant="bordered"
-      onValueChange={onChange}
-      label={field?.label}
-      classNames={{
-        label: "top-1",
-        errorMessage: "text-sm text-danger",
-      }}
-      isInvalid={!!errorMessage}
-      errorMessage={errorMessage}
-      placeholder={field?.placeholder}
-      color={error ? "danger" : status}
-      // startContent={<p className="text-sm">+213</p>}
-      endContent={endContent}
-      isRequired={isRequired}
-      isReadOnly={isReadOnly}
-      {...(handleKeyUp
-        ? {
-            onKeyUp: (event) => {
-              if (event.code === "Enter" || event.code === "NumpadEnter") {
-                handleKeyUp();
-              }
-            },
-          }
-        : {})}
-    />
+    <div className="w-full">
+      <label className="text-sm font-medium text-foreground mb-3 block">
+        {field?.label || "Phone Number"}
+        {isRequired && <span className="text-danger ml-1">*</span>}
+      </label>
+      <div className="mt-2">
+        <PhoneInput
+          international
+          countryCallingCodeEditable={false}
+          defaultCountry="DZ"
+          value={value}
+          onChange={handlePhoneChange}
+          placeholder={field?.placeholder || "Enter your phone number"}
+          disabled={isReadOnly}
+          className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-colors ${
+            error ? "border-danger" : "border-default-300"
+          }`}
+        />
+      </div>
+      {errorMessage && (
+        <p className="text-sm text-danger mt-1">{errorMessage}</p>
+      )}
+    </div>
   );
 }
 
