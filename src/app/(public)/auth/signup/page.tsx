@@ -14,7 +14,7 @@ import InputGender from "@/components/@materialUI/inputs/select/gender";
 import InputCountry from "@/components/@materialUI/inputs/select/country";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { toast } from "sonner";
-import { signupFormSchema } from "@/lib/validations";
+import { signupFormSchema, SignupSchema } from "@/lib/validations";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
@@ -27,16 +27,26 @@ function SignupPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isValidToken, setIsValidToken] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [invitedUser, setInvitedUser] = useState<any>(null);
+  const [invitedUser, setInvitedUser] = useState<{
+    id: string;
+    email: string;
+    token: string;
+    expires_at: string;
+    accepted: boolean;
+    invited_by: string;
+  } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const {
     control,
     formState: { isValid },
     handleSubmit,
-  } = useForm({
+  } = useForm<SignupSchema>({
     mode: "onChange",
     resolver: zodResolver(signupFormSchema),
+    defaultValues: {
+      gender: "men",
+    },
   });
 
   // Language switcher component
@@ -123,88 +133,92 @@ function SignupPage() {
     validateInvitationToken();
   }, [searchParams, supabase]);
 
-  const [handleSignup, isSigningUp] = useLoadingCallback(async (formData) => {
-    try {
-      const token = searchParams.get("token");
-      if (!token || !invitedUser) {
-        toast.error(auth?.signup?.errors.invalidToken, {
-          position: "top-right",
-        });
-        return;
-      }
-
-      const firstName = formData.fullName.trim();
-
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: invitedUser.email,
-        password: formData.password,
-      });
-
-      if (authError) {
-        console.error("Auth error:", authError);
-        toast.error(auth?.signup?.errors.signupFailed, {
-          position: "top-right",
-        });
-        return;
-      }
-
-      if (authData.user) {
-        // Format phone number for storage (keep E.164 format)
-        let formattedPhoneNumber = formData.phoneNumber;
-
-        // Get country code with + for country_code field
-        let countryCodeWithPlus = "";
-        if (formData.phoneNumber && formData.phoneNumber.startsWith("+")) {
-          // Extract country code with + (e.g., "+213", "+33")
-          const match = formData.phoneNumber.match(/^\+(\d{1,3})/);
-          if (match) {
-            countryCodeWithPlus = `+${match[1]}`;
-          }
+  const [handleSignup, isSigningUp] = useLoadingCallback(
+    async (formData: SignupSchema) => {
+      try {
+        const token = searchParams.get("token");
+        if (!token || !invitedUser) {
+          toast.error(auth?.signup?.errors.invalidToken, {
+            position: "top-right",
+          });
+          return;
         }
 
-        const { error: userError } = await supabase.from("users").insert({
-          id: authData.user.id,
-          uid: authData.user.id,
-          email: invitedUser.email,
-          first_name: firstName,
-          last_name: "",
-          phone_number: formattedPhoneNumber, // Keep E.164 format like "+33 0636752182"
-          country_code: countryCodeWithPlus, // Store "+213" format
-          country_id: formData.country, // Store "DZ" format
-          birthday: formData.birthday,
-          gender: formData.gender,
-          invited_by: invitedUser.invited_by,
-        });
+        const firstName = formData.fullName.trim();
 
-        if (userError) {
-          console.error("User insert error:", userError);
+        const { data: authData, error: authError } = await supabase.auth.signUp(
+          {
+            email: invitedUser.email,
+            password: formData.password,
+          }
+        );
+
+        if (authError) {
+          console.error("Auth error:", authError);
           toast.error(auth?.signup?.errors.signupFailed, {
             position: "top-right",
           });
           return;
         }
 
-        const { error: updateError } = await supabase
-          .from("invited_users")
-          .update({ accepted: true })
-          .eq("token", token);
+        if (authData.user) {
+          // Format phone number for storage (keep E.164 format)
+          const formattedPhoneNumber = formData.phoneNumber;
 
-        if (updateError) {
-          console.error("Update invitation error:", updateError);
+          // Get country code with + for country_code field
+          let countryCodeWithPlus = "";
+          if (formData.phoneNumber && formData.phoneNumber.startsWith("+")) {
+            // Extract country code with + (e.g., "+213", "+33")
+            const match = formData.phoneNumber.match(/^\+(\d{1,3})/);
+            if (match) {
+              countryCodeWithPlus = `+${match[1]}`;
+            }
+          }
+
+          const { error: userError } = await supabase.from("users").insert({
+            id: authData.user.id,
+            uid: authData.user.id,
+            email: invitedUser.email,
+            first_name: firstName,
+            last_name: "",
+            phone_number: formattedPhoneNumber, // Keep E.164 format like "+33 0636752182"
+            country_code: countryCodeWithPlus, // Store "+213" format
+            country_id: formData.country, // Store "DZ" format
+            birthday: formData.birthday,
+            gender: formData.gender,
+            invited_by: invitedUser.invited_by,
+          });
+
+          if (userError) {
+            console.error("User insert error:", userError);
+            toast.error(auth?.signup?.errors.signupFailed, {
+              position: "top-right",
+            });
+            return;
+          }
+
+          const { error: updateError } = await supabase
+            .from("invited_users")
+            .update({ accepted: true })
+            .eq("token", token);
+
+          if (updateError) {
+            console.error("Update invitation error:", updateError);
+          }
+
+          setIsSuccess(true);
+          toast.success("Account created successfully!", {
+            position: "top-right",
+          });
         }
-
-        setIsSuccess(true);
-        toast.success("Account created successfully!", {
+      } catch (error) {
+        console.error("Signup error:", error);
+        toast.error(auth?.signup?.errors.signupFailed, {
           position: "top-right",
         });
       }
-    } catch (error) {
-      console.error("Signup error:", error);
-      toast.error(auth?.signup?.errors.signupFailed, {
-        position: "top-right",
-      });
     }
-  });
+  );
 
   if (isLoading) {
     return (

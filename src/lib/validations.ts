@@ -26,7 +26,7 @@ export const signupFormSchema = zod
       .string({ required_error: "Full name is required" })
       .min(2, { message: "Full name must be at least 2 characters" }),
     birthday: zod.date().optional(),
-    gender: zod.enum(["men", "women"]).default("men"),
+    gender: zod.enum(["men", "women"]),
     phoneNumber: zod.string().optional(),
     country: zod.string().optional(),
     password: zod

@@ -160,9 +160,7 @@ function InputCountry({
   name,
   isRequired,
   isReadOnly,
-  endContent,
   status,
-  handleKeyUp,
   field,
 }: Props) {
   const {
@@ -197,9 +195,7 @@ function InputCountry({
       }}
     >
       {countries.map((country) => (
-        <SelectItem key={country.code} value={country.code}>
-          {country.name}
-        </SelectItem>
+        <SelectItem key={country.code}>{country.name}</SelectItem>
       ))}
     </Select>
   );

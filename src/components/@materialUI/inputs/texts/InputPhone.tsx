@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Input, InputVariantProps } from "@heroui/react";
+import { InputVariantProps } from "@heroui/react";
 import { Control, useController } from "react-hook-form";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -23,9 +23,6 @@ function InputPhoneNumber({
   name,
   isRequired,
   isReadOnly,
-  endContent,
-  status,
-  handleKeyUp,
   field,
 }: Props) {
   const {

@@ -21,9 +21,7 @@ function InputGender({
   name,
   isRequired,
   isReadOnly,
-  endContent,
   status,
-  handleKeyUp,
   field,
 }: Props) {
   const {
