@@ -1,4 +1,7 @@
-import { ToastContents } from "../inputs";
+interface ToastContents {
+  success: string;
+  error: string;
+}
 
 export interface Auth {
   signInProviders: {

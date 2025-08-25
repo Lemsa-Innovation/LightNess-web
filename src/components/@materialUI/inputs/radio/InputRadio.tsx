@@ -1,7 +1,6 @@
 import { InputVariantProps, Radio, RadioGroup } from "@heroui/react";
 import { ReactNode } from "react";
 import { Control, useController } from "react-hook-form";
-import { useLanguage } from "@/contexts/language/LanguageContext";
 import { RadioOption } from "@/utils";
 export type InputRadioProps = {
   name: string;
@@ -85,15 +84,17 @@ const InputRadio: React.FC<InputRadioProps> = ({
 const InputBooleanRadio: React.FC<Omit<InputRadioProps, "values">> = (
   props
 ) => {
-  const { languageData } = useLanguage();
-  const choice = languageData?.inputs.commons.choice;
+  const choice = {
+    yes: "Yes",
+    no: "No",
+  };
   return (
     <InputRadio
       {...props}
       asBoolean
       values={[
-        { value: "true", label: choice?.yes },
-        { value: "false", label: choice?.no },
+        { value: "true", label: choice.yes },
+        { value: "false", label: choice.no },
       ]}
     />
   );

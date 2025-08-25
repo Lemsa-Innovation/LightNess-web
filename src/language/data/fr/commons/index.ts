@@ -8,6 +8,7 @@ export const commons: Commons = {
   buttons: {
     submit: "Soumettre",
     back: "Retour",
+    next: "Suivant",
     cancel: "Annuler",
     confirm: "Confirmer",
     continue: "Continuer",

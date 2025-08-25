@@ -1,8 +1,6 @@
 import { ReactNode } from "react";
 import { Input, InputVariantProps } from "@heroui/react";
 import { Control, useController } from "react-hook-form";
-import { useLanguage } from "@/contexts/language/LanguageContext";
-import { getRuleErrors } from "@/utils/rules";
 
 type Props = {
   control: Control<any>;
@@ -23,8 +21,10 @@ function InputPhoneNumber({
   status,
   handleKeyUp,
 }: Props) {
-  const { languageData } = useLanguage();
-  const field = languageData?.inputs.users.fields.phoneNumber;
+  const field = {
+    label: "Phone Number",
+    placeholder: "Enter your phone number",
+  };
   const {
     field: { onChange, value },
     fieldState: { error },
@@ -33,12 +33,7 @@ function InputPhoneNumber({
     name: name ?? "phoneNumber",
   });
 
-  const errorMessage =
-    error?.message &&
-    getRuleErrors({
-      errorMessage: error.message,
-      rules: languageData?.rules,
-    });
+  const errorMessage = error?.message;
   return (
     <Input
       size="md"

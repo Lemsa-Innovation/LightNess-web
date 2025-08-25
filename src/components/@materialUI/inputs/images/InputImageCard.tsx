@@ -4,8 +4,14 @@ import { Control, useController } from "react-hook-form";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { Fragment } from "react";
 import { varFadeInLeft } from "../../animate/variants/fade";
-import { useLanguage } from "@/contexts/language/LanguageContext";
-import { ImageField } from "@/language/structure/inputs/attachements";
+
+interface ImageField {
+  label: string;
+  placeholder?: {
+    upload: string;
+    update: string;
+  };
+}
 
 type Props = {
   isDisabled?: boolean;
@@ -26,8 +32,13 @@ const InputImageCard: React.FC<Props> = ({
     control,
   });
 
-  const { languageData } = useLanguage();
-  const imageLabels = languageData?.inputs.attachements.media.labels;
+  const imageLabels = {
+    image: "Image",
+    video: "Video",
+    audio: "Audio",
+    authorizedFiles: "Authorized files:",
+    maxFileSize: (size: number) => `Max file size: ${size}MB`,
+  };
   return (
     <Card className="bg-transparent border-2 border-foreground-200 select-none ">
       <CardHeader className="flex flex-row justify-center">

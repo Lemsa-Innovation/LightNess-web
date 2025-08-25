@@ -6,7 +6,7 @@ import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { useLoadingCallback } from "react-loading-hook";
 import { InputPassword } from "@/components/@materialUI/inputs/texts";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { useSupabaseAuth } from "@/hooks/useAuth";
+
 import { toast } from "sonner";
 import { newPasswordFormSchema } from "@/lib/validations";
 
@@ -100,7 +100,7 @@ function ConfirmResetPasswordPage() {
   const [handleUpdatePassword, isUpdating] = useLoadingCallback(
     async ({ password }) => {
       try {
-        const { data, error } = await supabase.auth.updateUser({
+        const { error } = await supabase.auth.updateUser({
           password: password,
         });
 
@@ -118,8 +118,8 @@ function ConfirmResetPasswordPage() {
           // Sign out the user after successful password update
           await supabase.auth.signOut();
         }
-      } catch (_error: unknown) {
-        console.error("Password update error:", _error);
+      } catch (error) {
+        console.error("Password update error:", error);
         toast.error(auth?.confirmPassword?.errors.updateFailed, {
           position: "top-right",
         });

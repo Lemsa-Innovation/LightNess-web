@@ -1,8 +1,15 @@
 import { Checkbox, CheckboxGroup } from "@heroui/react";
-import { FieldWithValues } from "@/language/structure";
 import { Control, useController } from "react-hook-form";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { getRuleErrors } from "@/utils/rules";
+
+interface FieldWithValues {
+  label: string;
+  placeholder?: string;
+  description?: string;
+  values: Record<string, string>;
+}
+
 function InputCheckboxGroup({
   control,
   name,

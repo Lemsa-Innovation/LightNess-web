@@ -1,1 +1,1 @@
-export * from "./validations";
+// No exports needed for simplified auth

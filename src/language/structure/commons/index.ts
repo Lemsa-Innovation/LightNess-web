@@ -15,6 +15,7 @@ export type Languages = {
 export interface ButtonItems {
   submit: string;
   back: string;
+  next: string;
   cancel: string;
   confirm: string;
   continue: string;

@@ -1,5 +1,7 @@
 import { Avatar } from "@heroui/react";
-import { UserGender } from "@shared/collections";
+
+type UserGender = "men" | "women";
+
 function DisplayAvatar({
   src,
   gender,

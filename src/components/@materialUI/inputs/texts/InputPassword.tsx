@@ -2,15 +2,16 @@ import { useState } from "react";
 import { Input } from "@heroui/react";
 import { Control, useController } from "react-hook-form";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "../../icons";
-import { useLanguage } from "@/contexts/language/LanguageContext";
 
 const InputPassword: React.FC<{
   name?: string;
   control: Control<any>;
   isRequired?: boolean;
 }> = ({ name, control, isRequired }) => {
-  const { languageData } = useLanguage();
-  const password = languageData?.inputs.users.fields.password;
+  const password = {
+    label: "Password",
+    placeholder: "Enter your password",
+  };
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 

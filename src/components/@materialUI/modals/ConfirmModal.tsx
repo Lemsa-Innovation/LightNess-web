@@ -7,8 +7,16 @@ import {
 } from "@heroui/react";
 import { CancelButton, SubmitButton } from "../buttons";
 import { ReactNode } from "react";
-import { Action } from "@/language/structure";
 import { UseDisclosureReturn } from "@/components/types";
+
+interface Action {
+  title: string;
+  description?: string;
+  confirmation?: {
+    title: string;
+    message: string;
+  };
+}
 
 function ConfirmModal({
   action,

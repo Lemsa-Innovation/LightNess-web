@@ -1,4 +1,3 @@
-import { useLanguage } from "@/contexts/language/LanguageContext";
 import { Control } from "react-hook-form";
 import { InputRadio } from "./InputRadio";
 
@@ -15,11 +14,9 @@ function InputGender({
   control: Control<any>;
   readOnly?: boolean;
 }) {
-  const { languageData } = useLanguage();
-  const field = languageData?.inputs.commons.gender;
-  let values = [
-    { label: field?.values.men, value: "men" },
-    { label: field?.values.women, value: "women" },
+  const values = [
+    { label: "Men", value: "men" },
+    { label: "Women", value: "women" },
   ];
   return (
     <InputRadio
@@ -28,7 +25,7 @@ function InputGender({
       readOnly={readOnly}
       name={name ?? "gender"}
       orientation="horizontal"
-      label={label ?? field?.label.unique}
+      label={label ?? "Gender"}
     />
   );
 }

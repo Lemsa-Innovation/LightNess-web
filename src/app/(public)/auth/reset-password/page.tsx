@@ -28,7 +28,7 @@ function ResetPasswordPage() {
   const [handleResetPassword, isLoading] = useLoadingCallback(
     async ({ email }) => {
       try {
-        const { data, error } = await resetPassword(email);
+        const { error } = await resetPassword(email);
         if (error) {
           if (error.message.includes("User not found")) {
             toast.error(auth?.errors.emailNotFound, {
@@ -45,7 +45,7 @@ function ResetPasswordPage() {
             position: "top-right",
           });
         }
-      } catch (_error: unknown) {
+      } catch {
         toast.error(auth?.resetPassword?.toastContents.error, {
           position: "top-right",
         });

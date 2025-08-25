@@ -2,8 +2,11 @@ import { Control, useController } from "react-hook-form";
 import { useDropzone } from "react-dropzone";
 import { Avatar, cn } from "@heroui/react";
 import { CameraIcon } from "../../icons";
-import { ImageField } from "@/language/structure/inputs/attachements";
-import { useLanguage } from "@/contexts/language/LanguageContext";
+
+interface ImagePlaceholder {
+  upload: string;
+  update: string;
+}
 
 interface AvatarProps {
   control: Control<any>;
@@ -12,7 +15,7 @@ interface AvatarProps {
   bordered?: boolean;
   zoomed?: boolean;
   isDisabled?: boolean;
-  imagePlaceholder?: ImageField["placeholder"];
+  imagePlaceholder?: ImagePlaceholder;
 }
 const InputAvatar: React.FC<AvatarProps> = ({
   control,
@@ -21,9 +24,10 @@ const InputAvatar: React.FC<AvatarProps> = ({
   isDisabled,
   imagePlaceholder,
 }) => {
-  const { languageData } = useLanguage();
-  const defaultImagePlaceholder =
-    languageData?.inputs.attachements.media.image.placeholder;
+  const defaultImagePlaceholder = {
+    upload: "Upload image",
+    update: "Update image",
+  };
   const activePlaceholder = imagePlaceholder ?? defaultImagePlaceholder;
   const {
     field: { value, onChange },
