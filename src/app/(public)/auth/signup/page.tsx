@@ -204,15 +204,6 @@ function SignupPage() {
             return;
           }
 
-          const { error: updateError } = await supabase
-            .from("invited_users")
-            .update({ accepted: true })
-            .eq("token", token);
-
-          if (updateError) {
-            console.error("Update invitation error:", updateError);
-          }
-
           setIsSuccess(true);
           toast.success("Account created successfully!", {
             position: "top-right",
