@@ -68,14 +68,6 @@ function SignupPage() {
     console.log("🔍 Token from URL:", token);
     console.log("🔍 Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
     console.log("🔍 Supabase client:", supabase);
-    console.log("📱 Mobile Detection:", {
-      userAgent: navigator.userAgent,
-      isMobile:
-        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
-        ),
-      viewport: window.innerWidth + "x" + window.innerHeight,
-    });
 
     const validateInvitationToken = async () => {
       try {
@@ -145,13 +137,8 @@ function SignupPage() {
   const [handleSignup, isSigningUp] = useLoadingCallback(
     async (formData: SignupSchema) => {
       try {
-        console.log("🚀 Starting signup process...");
-        console.log("📱 User Agent:", navigator.userAgent);
-        console.log("📋 Form Data:", formData);
-
         const token = searchParams.get("token");
         if (!token || !invitedUser) {
-          console.error("❌ Missing token or invited user");
           toast.error(auth?.signup?.errors.invalidToken, {
             position: "top-right",
           });
@@ -159,9 +146,7 @@ function SignupPage() {
         }
 
         const firstName = formData.fullName.trim();
-        console.log("👤 First Name:", firstName);
 
-        console.log("🔐 Creating Supabase auth user...");
         const { data: authData, error: authError } = await supabase.auth.signUp(
           {
             email: invitedUser.email,
@@ -170,19 +155,19 @@ function SignupPage() {
         );
 
         if (authError) {
-          console.error("❌ Auth error:", authError);
-          toast.error(auth?.signup?.errors.signupFailed, {
-            position: "top-right",
-          });
+          console.error("Auth error:", authError);
+          toast.error(
+            `${auth?.signup?.errors.signupFailed}: ${authError.message}`,
+            {
+              position: "top-right",
+            }
+          );
           return;
         }
-
-        console.log("✅ Auth user created:", authData.user?.id);
 
         if (authData.user) {
           // Format phone number for storage (keep E.164 format)
           const formattedPhoneNumber = formData.phoneNumber;
-          console.log("📞 Phone Number:", formattedPhoneNumber);
 
           // Get country code with + for country_code field
           let countryCodeWithPlus = "";
@@ -193,12 +178,7 @@ function SignupPage() {
               countryCodeWithPlus = `+${match[1]}`;
             }
           }
-          console.log("🌍 Country Code:", countryCodeWithPlus);
-          console.log("🏳️ Country ID:", formData.country);
-          console.log("🎂 Birthday:", formData.birthday);
-          console.log("👫 Gender:", formData.gender);
 
-          console.log("💾 Inserting user data...");
           const { error: userError } = await supabase.from("users").insert({
             id: authData.user.id,
             uid: authData.user.id,
@@ -214,41 +194,35 @@ function SignupPage() {
           });
 
           if (userError) {
-            console.error("❌ User insert error:", userError);
-            toast.error(auth?.signup?.errors.signupFailed, {
-              position: "top-right",
-            });
+            console.error("User insert error:", userError);
+            toast.error(
+              `${auth?.signup?.errors.signupFailed}: ${userError.message}`,
+              {
+                position: "top-right",
+              }
+            );
             return;
           }
 
-          console.log("✅ User data inserted successfully");
-
-          console.log("🔄 Updating invitation status...");
           const { error: updateError } = await supabase
             .from("invited_users")
             .update({ accepted: true })
             .eq("token", token);
 
           if (updateError) {
-            console.error("⚠️ Update invitation error:", updateError);
-          } else {
-            console.log("✅ Invitation updated successfully");
+            console.error("Update invitation error:", updateError);
           }
 
           setIsSuccess(true);
           toast.success("Account created successfully!", {
             position: "top-right",
           });
-          console.log("🎉 Signup completed successfully!");
         }
       } catch (error) {
-        console.error("❌ Signup error:", error);
-        console.error("❌ Error details:", {
-          name: error instanceof Error ? error.name : "Unknown",
-          message: error instanceof Error ? error.message : "Unknown error",
-          stack: error instanceof Error ? error.stack : "No stack trace",
-        });
-        toast.error(auth?.signup?.errors.signupFailed, {
+        console.error("Signup error:", error);
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error occurred";
+        toast.error(`${auth?.signup?.errors.signupFailed}: ${errorMessage}`, {
           position: "top-right",
         });
       }
@@ -528,12 +502,6 @@ function SignupPage() {
               color="primary"
               isLoading={isSigningUp}
               isDisabled={!isValid}
-              onClick={() => {
-                console.log("🔍 Form validation check:", {
-                  isValid,
-                  formState: control._formState,
-                });
-              }}
             >
               {auth?.signup?.button}
             </Button>
