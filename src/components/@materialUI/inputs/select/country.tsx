@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { Select, SelectItem, SelectVariantProps } from "@heroui/react";
 import { Control, useController } from "react-hook-form";
 
@@ -8,8 +7,6 @@ type Props = {
   isReadOnly?: boolean;
   name?: string;
   status?: SelectVariantProps["color"];
-  endContent?: ReactNode;
-  handleKeyUp?: () => void;
   field?: {
     label?: string;
     placeholder?: string;

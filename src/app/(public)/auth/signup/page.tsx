@@ -382,13 +382,6 @@ function SignupPage() {
                 </Button>
               </div>
             </div>
-            <Button
-              color="primary"
-              className="w-full"
-              onClick={() => router.push("/auth/reset-password")}
-            >
-              {auth?.signup?.success.button}
-            </Button>
           </CardBody>
         </Card>
       </div>

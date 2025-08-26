@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-import { InputVariantProps } from "@heroui/react";
 import { Control, useController } from "react-hook-form";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -9,9 +7,6 @@ type Props = {
   isRequired?: boolean;
   isReadOnly?: boolean;
   name?: string;
-  status?: InputVariantProps["color"];
-  endContent?: ReactNode;
-  handleKeyUp?: () => void;
   field?: {
     label?: string;
     placeholder?: string;
