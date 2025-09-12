@@ -6,6 +6,18 @@ export const resetPasswordFormSchema = zod.object({
     .email({ message: "Invalid email address" }),
 });
 
+export const verifyResetTokenSchema = zod.object({
+  email: zod
+    .string({ required_error: "Email is required" })
+    .email({ message: "Invalid email address" }),
+  token: zod
+    .string({ required_error: "Verification code is required" })
+    .length(6, { message: "Verification code must be 6 digits" })
+    .regex(/^\d{6}$/, {
+      message: "Verification code must contain only numbers",
+    }),
+});
+
 export const newPasswordFormSchema = zod
   .object({
     password: zod
@@ -42,5 +54,6 @@ export const signupFormSchema = zod
   });
 
 export type ResetPasswordSchema = zod.infer<typeof resetPasswordFormSchema>;
+export type VerifyResetTokenSchema = zod.infer<typeof verifyResetTokenSchema>;
 export type NewPasswordSchema = zod.infer<typeof newPasswordFormSchema>;
 export type SignupSchema = zod.infer<typeof signupFormSchema>;

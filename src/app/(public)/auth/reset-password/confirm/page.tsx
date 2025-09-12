@@ -6,120 +6,96 @@ import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { useLoadingCallback } from "react-loading-hook";
 import { InputPassword } from "@/components/@materialUI/inputs/texts";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-
+import { useSupabaseAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { newPasswordFormSchema } from "@/lib/validations";
-
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
 
 function ConfirmResetPasswordPage() {
   const { languageData } = useLanguage();
   const auth = languageData?.auth;
-  const supabase = useSupabaseClient();
+  const { verifyResetToken, updatePassword } = useSupabaseAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isValidToken, setIsValidToken] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [step, setStep] = useState<"loading" | "password" | "success">(
+    "loading"
+  );
+  const [email, setEmail] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
 
+  // Form for password update
   const {
-    control,
-    formState: { isValid },
-    handleSubmit,
+    control: passwordControl,
+    formState: { isValid: isPasswordValid },
+    handleSubmit: handlePasswordSubmit,
   } = useForm({
     mode: "onChange",
     resolver: zodResolver(newPasswordFormSchema),
   });
 
+  // Auto-verify token from URL on component mount
   useEffect(() => {
-    // Check for access token and refresh token in URL params
-    const accessToken = searchParams.get("access_token");
-    const refreshToken = searchParams.get("refresh_token");
-    const type = searchParams.get("type");
+    const verifyTokenFromUrl = async () => {
+      const token = searchParams.get("token");
+      const email = searchParams.get("email");
 
-    const validateResetToken = async () => {
-      try {
-        if (type === "recovery" && accessToken && refreshToken) {
-          // Set the session using the tokens from URL
-          const { data, error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-          });
-
-          if (error) {
-            console.error("Session error:", error);
-            toast.error(auth?.confirmPassword?.errors.invalidToken, {
-              position: "top-right",
-            });
-            router.push("/auth/reset-password");
-            return;
-          }
-
-          if (data.session) {
-            setIsValidToken(true);
-          } else {
-            toast.error(auth?.confirmPassword?.errors.invalidToken, {
-              position: "top-right",
-            });
-            router.push("/auth/reset-password");
-          }
-        } else {
-          // Check if user already has a valid session
-          const {
-            data: { session },
-          } = await supabase.auth.getSession();
-          if (session) {
-            setIsValidToken(true);
-          } else {
-            toast.error(auth?.confirmPassword?.errors.invalidToken, {
-              position: "top-right",
-            });
-            router.push("/auth/reset-password");
-          }
-        }
-      } catch (error) {
-        console.error("Token validation error:", error);
+      if (!token || !email) {
         toast.error(auth?.confirmPassword?.errors.invalidToken, {
           position: "top-right",
         });
         router.push("/auth/reset-password");
+        return;
+      }
+
+      setIsVerifying(true);
+      try {
+        const { data, error } = await verifyResetToken(email, token);
+
+        if (error) {
+          toast.error(auth?.confirmPassword?.errors.invalidToken, {
+            position: "top-right",
+          });
+          router.push("/auth/reset-password");
+        } else {
+          setEmail(email);
+          setStep("password");
+          toast.success("Verification successful! Now set your new password.", {
+            position: "top-right",
+          });
+        }
+      } catch (error) {
+        toast.error(auth?.confirmPassword?.errors.updateFailed, {
+          position: "top-right",
+        });
+        router.push("/auth/reset-password");
       } finally {
-        setIsLoading(false);
+        setIsVerifying(false);
       }
     };
 
-    validateResetToken();
-  }, [
-    searchParams,
-    supabase.auth,
-    router,
-    auth?.confirmPassword?.errors.invalidToken,
-  ]);
+    verifyTokenFromUrl();
+  }, [searchParams, verifyResetToken, router]);
 
   const [handleUpdatePassword, isUpdating] = useLoadingCallback(
     async ({ password }) => {
       try {
-        const { error } = await supabase.auth.updateUser({
-          password: password,
-        });
+        const { error } = await updatePassword(password);
 
         if (error) {
-          console.error("Password update error:", error);
           toast.error(auth?.confirmPassword?.errors.updateFailed, {
             position: "top-right",
           });
         } else {
-          setIsSuccess(true);
-          toast.success("Password updated successfully!", {
-            position: "top-right",
-          });
-
-          // Sign out the user after successful password update
-          await supabase.auth.signOut();
+          setStep("success");
+          toast.success(
+            auth?.confirmPassword?.success?.title ||
+              "Password updated successfully!",
+            {
+              position: "top-right",
+            }
+          );
         }
       } catch (error) {
-        console.error("Password update error:", error);
         toast.error(auth?.confirmPassword?.errors.updateFailed, {
           position: "top-right",
         });
@@ -127,14 +103,14 @@ function ConfirmResetPasswordPage() {
     }
   );
 
-  if (isLoading) {
+  if (step === "loading") {
     return (
       <div className="flex h-full w-full justify-center items-center overflow-auto p-4">
         <Card className="w-full max-w-md">
           <CardBody className="flex flex-col gap-4">
             <div className="text-center">
               <p className="text-sm text-default-500">
-                {auth?.confirmPassword?.loading}
+                {isVerifying ? auth?.confirmPassword?.loading : "Loading..."}
               </p>
             </div>
           </CardBody>
@@ -143,39 +119,27 @@ function ConfirmResetPasswordPage() {
     );
   }
 
-  if (!isValidToken) {
-    return (
-      <div className="flex h-full w-full justify-center items-center overflow-auto p-4">
-        <Card className="w-full max-w-md">
-          <CardBody className="flex flex-col gap-4">
-            <div className="text-center">
-              <p className="text-sm text-default-500">
-                {auth?.confirmPassword?.invalidLink}
-              </p>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
-    );
-  }
-
-  if (isSuccess) {
+  if (step === "success") {
     return (
       <div className="flex h-full w-full justify-center items-center overflow-auto p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="flex flex-col gap-3">
             <div className="flex flex-col gap-2">
               <h1 className="text-2xl font-bold">
-                {auth?.confirmPassword?.success.title}
+                {auth?.confirmPassword?.success?.title}
               </h1>
               <p className="text-sm text-default-500">
-                {auth?.confirmPassword?.success.description}
+                {auth?.confirmPassword?.success?.description}
               </p>
             </div>
           </CardHeader>
           <CardBody className="flex flex-col gap-4">
-            <Button color="primary" className="w-full">
-              {auth?.confirmPassword?.success.button}
+            <Button
+              color="primary"
+              className="w-full"
+              onClick={() => router.push("/auth/signin")}
+            >
+              {auth?.confirmPassword?.success?.button}
             </Button>
           </CardBody>
         </Card>
@@ -198,24 +162,24 @@ function ConfirmResetPasswordPage() {
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
           <form
-            onSubmit={handleSubmit(handleUpdatePassword)}
+            onSubmit={handlePasswordSubmit(handleUpdatePassword)}
             className="flex flex-col gap-4"
           >
             <InputPassword
               name="password"
-              control={control}
+              control={passwordControl}
               isRequired={true}
             />
             <InputPassword
               name="confirmPassword"
-              control={control}
+              control={passwordControl}
               isRequired={true}
             />
             <Button
               type="submit"
               color="primary"
               isLoading={isUpdating}
-              isDisabled={!isValid}
+              isDisabled={!isPasswordValid}
             >
               {auth?.confirmPassword?.button}
             </Button>
