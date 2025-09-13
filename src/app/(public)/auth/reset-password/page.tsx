@@ -62,22 +62,14 @@ function ResetPasswordPage() {
               <h1 className="text-2xl font-bold">
                 {auth?.resetPassword?.success.title}
               </h1>
-              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                <p className="text-sm text-blue-700 dark:text-blue-300">
-                  {auth?.resetPassword?.success?.description}
-                </p>
-              </div>
+              <p className="text-sm text-default-500">
+                {auth?.resetPassword?.success.description}
+              </p>
             </div>
           </CardHeader>
           <CardBody className="flex flex-col gap-4">
-            <Button
-              color="primary"
-              className="w-full"
-              onClick={() =>
-                (window.location.href = "/auth/reset-password/confirm")
-              }
-            >
-              Continue to Password Reset
+            <Button color="primary" className="w-full">
+              {auth?.resetPassword?.success.button}
             </Button>
           </CardBody>
         </Card>
