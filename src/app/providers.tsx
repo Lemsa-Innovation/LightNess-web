@@ -9,8 +9,6 @@ import {
   ThemeProviderProps,
 } from "next-themes";
 import { AuthProvider } from "@/contexts/auth/AuthProvider";
-import { SessionContextProvider } from "@supabase/auth-helpers-react";
-import { supabase } from "@/lib/supabase";
 type ProvidersProps = {
   children: React.ReactNode;
   themeProps?: ThemeProviderProps;
@@ -19,20 +17,18 @@ function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
   const queryClient = new QueryClient();
   return (
-    <SessionContextProvider supabaseClient={supabase}>
-      <HeroUIProvider navigate={router.push}>
-        <QueryClientProvider client={queryClient}>
-          <LanguageProvider>
-            <AuthProvider>
-              <NextThemesProvider {...themeProps}>
-                {children}
-                <Toaster richColors />
-              </NextThemesProvider>
-            </AuthProvider>
-          </LanguageProvider>
-        </QueryClientProvider>
-      </HeroUIProvider>
-    </SessionContextProvider>
+    <HeroUIProvider navigate={router.push}>
+      <QueryClientProvider client={queryClient}>
+        <LanguageProvider>
+          <AuthProvider>
+            <NextThemesProvider {...themeProps}>
+              {children}
+              <Toaster richColors />
+            </NextThemesProvider>
+          </AuthProvider>
+        </LanguageProvider>
+      </QueryClientProvider>
+    </HeroUIProvider>
   );
 }
 

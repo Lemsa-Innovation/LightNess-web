@@ -3080,26 +3080,6 @@
   resolved "https://registry.npmjs.org/@standard-schema/utils/-/utils-0.3.0.tgz"
   integrity sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==
 
-"@supabase/auth-helpers-nextjs@^0.8.7":
-  version "0.8.7"
-  resolved "https://registry.npmjs.org/@supabase/auth-helpers-nextjs/-/auth-helpers-nextjs-0.8.7.tgz"
-  integrity sha512-iYdOjFo0GkRvha340l8JdCiBiyXQuG9v8jnq7qMJ/2fakrskRgHTCOt7ryWbip1T6BExcWKC8SoJrhCzPOxhhg==
-  dependencies:
-    "@supabase/auth-helpers-shared" "0.6.3"
-    set-cookie-parser "^2.6.0"
-
-"@supabase/auth-helpers-react@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.npmjs.org/@supabase/auth-helpers-react/-/auth-helpers-react-0.4.2.tgz"
-  integrity sha512-zRj1leYMKJVYQeHFvZiUzlmHM+ATWFR/V7Q9F0yXSWEnMcNHL0CKnIBqhkjtSQ2trE+YaoCvFEHjxISppxIZXQ==
-
-"@supabase/auth-helpers-shared@0.6.3":
-  version "0.6.3"
-  resolved "https://registry.npmjs.org/@supabase/auth-helpers-shared/-/auth-helpers-shared-0.6.3.tgz"
-  integrity sha512-xYQRLFeFkL4ZfwC7p9VKcarshj3FB2QJMgJPydvOY7J5czJe6xSG5/wM1z63RmAzGbCkKg+dzpq61oeSyWiGBQ==
-  dependencies:
-    jose "^4.14.4"
-
 "@supabase/auth-js@2.71.1":
   version "2.71.1"
   resolved "https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.71.1.tgz"
@@ -3138,6 +3118,13 @@
     "@types/ws" "^8.18.1"
     ws "^8.18.2"
 
+"@supabase/ssr@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/@supabase/ssr/-/ssr-0.7.0.tgz"
+  integrity sha512-G65t5EhLSJ5c8hTCcXifSL9Q/ZRXvqgXeNo+d3P56f4U1IxwTqjB64UfmfixvmMcjuxnq2yGqEWVJqUcO+AzAg==
+  dependencies:
+    cookie "^1.0.2"
+
 "@supabase/storage-js@^2.10.4":
   version "2.10.5"
   resolved "https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.10.5.tgz"
@@ -3145,7 +3132,7 @@
   dependencies:
     "@supabase/node-fetch" "^2.6.14"
 
-"@supabase/supabase-js@^2.19.0", "@supabase/supabase-js@^2.39.0":
+"@supabase/supabase-js@^2.39.0", "@supabase/supabase-js@^2.43.4":
   version "2.55.0"
   resolved "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.55.0.tgz"
   integrity sha512-Y1uV4nEMjQV1x83DGn7+Z9LOisVVRlY1geSARrUHbXWgbyKLZ6/08dvc0Us1r6AJ4tcKpwpCZWG9yDQYo1JgHg==
@@ -4070,6 +4057,11 @@ cookie@^0.7.0:
   version "0.7.2"
   resolved "https://registry.npmjs.org/cookie/-/cookie-0.7.2.tgz"
   integrity sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==
+
+cookie@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/cookie/-/cookie-1.0.2.tgz"
+  integrity sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==
 
 core-js@^3.23.5:
   version "3.42.0"
@@ -5372,7 +5364,7 @@ jiti@*, jiti@^2.4.2:
   resolved "https://registry.npmjs.org/jiti/-/jiti-2.4.2.tgz"
   integrity sha512-rg9zJN+G4n2nfJl5MW3BMygZX56zKPNVEYYqq7adpmMh4Jn2QNEwhvQlFy6jPVdcod7txZtKHWnyZiA3a0zP7A==
 
-jose@^4.14.4, jose@^4.15.4:
+jose@^4.15.4:
   version "4.15.9"
   resolved "https://registry.npmjs.org/jose/-/jose-4.15.9.tgz"
   integrity sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==
@@ -6354,11 +6346,6 @@ semver@^7.5.4, semver@^7.6.0, semver@^7.7.1:
   version "7.7.2"
   resolved "https://registry.npmjs.org/semver/-/semver-7.7.2.tgz"
   integrity sha512-RF0Fw+rO5AMf9MAyaRXI4AV0Ulj5lMHqVxxdSgiVbixSCXoEmmX/jk0CuJw4+3SqroYO9VoUh+HcuJivvtJemA==
-
-set-cookie-parser@^2.6.0:
-  version "2.7.1"
-  resolved "https://registry.npmjs.org/set-cookie-parser/-/set-cookie-parser-2.7.1.tgz"
-  integrity sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==
 
 set-function-length@^1.2.2:
   version "1.2.2"

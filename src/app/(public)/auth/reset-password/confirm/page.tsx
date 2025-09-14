@@ -6,17 +6,15 @@ import { Button, Card, CardBody, CardHeader } from "@heroui/react";
 import { useLoadingCallback } from "react-loading-hook";
 import { InputPassword } from "@/components/@materialUI/inputs/texts";
 import { useLanguage } from "@/contexts/language/LanguageContext";
-import { useSupabaseAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { newPasswordFormSchema } from "@/firebase/auth";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { supabase } from "@/lib/supabase";
 
 function ConfirmResetPasswordPage() {
   const { languageData } = useLanguage();
   const auth = languageData?.auth;
-  const supabase = useSupabaseClient();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isSuccess, setIsSuccess] = useState(false);
@@ -100,7 +98,7 @@ function ConfirmResetPasswordPage() {
   const [handleUpdatePassword, isUpdating] = useLoadingCallback(
     async ({ password }) => {
       try {
-        const { data, error } = await supabase.auth.updateUser({
+        const { error } = await supabase.auth.updateUser({
           password: password,
         });
 

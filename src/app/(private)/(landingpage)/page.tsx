@@ -7,7 +7,7 @@ function Page() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push(SIDEBAR_ROUTES.users.path); // Redirige vers /app
+    router.push(SIDEBAR_ROUTES.users.path); // Redirige vers /users
   }, [router]);
 
   return null; // La page racine ne contient rien, car elle redirige immédiatement

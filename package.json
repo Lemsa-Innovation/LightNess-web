@@ -10,9 +10,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.0",
-    "@supabase/auth-helpers-nextjs": "^0.8.7",
-    "@supabase/auth-helpers-react": "^0.4.2",
     "@firebase/firestore": "^4.7.10",
     "@firebase/messaging": "^0.12.17",
     "@firebase/storage": "^0.13.7",
@@ -20,10 +17,12 @@
     "@hookform/resolvers": "^5.0.1",
     "@iconify/react": "^6.0.0",
     "@internationalized/date": "^3.8.0",
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.39.0",
     "@tanstack/react-query": "^5.75.0",
     "@types/uuid": "^10.0.0",
-    "D": "^1.0.0",
     "clsx": "^2.1.1",
+    "D": "^1.0.0",
     "date-fns": "^4.1.0",
     "firebase": "^11.6.0",
     "firebase-admin": "^12.6.0",
