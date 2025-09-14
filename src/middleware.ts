@@ -10,8 +10,28 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // Handle authentication logic
-  if (!session && req.nextUrl.pathname.startsWith("/private")) {
+  // Define protected routes that require authentication
+  const protectedRoutes = [
+    "/", // Root route
+    "/users",
+    "/blogs",
+    "/announcements",
+    "/washers",
+    "/cemeteries",
+    "/funeralServices",
+    "/deathDeclarations",
+    "/app",
+  ];
+
+  // Check if the current path is a protected route
+  const isProtectedRoute = protectedRoutes.some(
+    (route) =>
+      req.nextUrl.pathname === route ||
+      req.nextUrl.pathname.startsWith(route + "/")
+  );
+
+  // Handle authentication logic - redirect to /auth if no session and trying to access protected route
+  if (!session && isProtectedRoute) {
     return NextResponse.redirect(new URL("/auth", req.url));
   }
 
@@ -28,17 +48,22 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Check admin access for other protected routes
-  if (
-    session &&
-    (req.nextUrl.pathname.startsWith("/users") ||
-      req.nextUrl.pathname.startsWith("/blogs") ||
-      req.nextUrl.pathname.startsWith("/announcements") ||
-      req.nextUrl.pathname.startsWith("/washers") ||
-      req.nextUrl.pathname.startsWith("/cemeteries") ||
-      req.nextUrl.pathname.startsWith("/funeralServices") ||
-      req.nextUrl.pathname.startsWith("/deathDeclarations"))
-  ) {
+  // Check admin access for admin-only routes
+  const adminOnlyRoutes = [
+    "/users",
+    "/blogs",
+    "/announcements",
+    "/washers",
+    "/cemeteries",
+    "/funeralServices",
+    "/deathDeclarations",
+  ];
+
+  const isAdminRoute = adminOnlyRoutes.some((route) =>
+    req.nextUrl.pathname.startsWith(route)
+  );
+
+  if (session && isAdminRoute) {
     const { data: role } = await supabase
       .from("user_roles")
       .select("role")
