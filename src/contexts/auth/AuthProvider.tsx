@@ -51,11 +51,22 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
 
     getInitialSession();
 
-    // Listen for auth changes
+    // Listen for auth changes and sync cookies for middleware via route handler
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log(`🔄 Auth state change: ${event}`, session?.user?.id);
+
+      // Sync session cookies server-side so middleware sees session
+      try {
+        await fetch("/auth/callback", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ event, session }),
+        });
+      } catch (_e) {
+        // ignore network errors
+      }
 
       if (session?.user) {
         await loadUser(session.user);
