@@ -24,10 +24,11 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
     // Get initial session
     const getInitialSession = async () => {
       const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session?.user) {
-        await loadUser(session.user);
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+      if (user && !error) {
+        await loadUser(user);
       } else {
         setUser(null);
         setIsLoading(false);
@@ -54,22 +55,25 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
     // Listen for auth changes and sync cookies for middleware via route handler
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log(`🔄 Auth state change: ${event}`, session?.user?.id);
+    } = supabase.auth.onAuthStateChange(async (event, _session) => {
+      const {
+        data: { user: verifiedUser },
+      } = await supabase.auth.getUser();
+      console.log(`🔄 Auth state change: ${event}`, verifiedUser?.id);
 
       // Sync session cookies server-side so middleware sees session
       try {
         await fetch("/auth/callback", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ event, session }),
+          body: JSON.stringify({ event, session: _session }),
         });
       } catch (_e) {
         // ignore network errors
       }
 
-      if (session?.user) {
-        await loadUser(session.user);
+      if (verifiedUser) {
+        await loadUser(verifiedUser);
       } else {
         setUser(null);
         setIsLoading(false);

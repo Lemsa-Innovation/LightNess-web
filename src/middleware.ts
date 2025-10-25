@@ -56,13 +56,14 @@ export async function middleware(req: NextRequest) {
   );
 
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
   console.log(
     `🔍 Middleware - Path: ${
       req.nextUrl.pathname
-    }, Has Session: ${!!session}, User ID: ${session?.user?.id || "none"}`
+    }, Has User: ${!!user}, User ID: ${user?.id || "none"}`
   );
 
   // Define protected routes that require authentication
@@ -89,7 +90,7 @@ export async function middleware(req: NextRequest) {
 
   // Handle root route - redirect authenticated users to appropriate page
   if (req.nextUrl.pathname === "/") {
-    if (!session) {
+    if (!user) {
       console.log(
         `🚫 Middleware - Root route: No session, redirecting to /auth`
       );
@@ -99,7 +100,7 @@ export async function middleware(req: NextRequest) {
       const { data: role } = await supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", session.user.id)
+        .eq("user_id", user.id)
         .single();
 
       console.log(
@@ -128,7 +129,7 @@ export async function middleware(req: NextRequest) {
   );
 
   // Handle authentication logic - redirect to /auth if no session and trying to access protected route
-  if (!session && isProtectedRoute) {
+  if (!user && isProtectedRoute) {
     console.log(
       `🚫 Middleware - Protected route ${req.nextUrl.pathname}: No session, redirecting to /auth`
     );
@@ -136,11 +137,11 @@ export async function middleware(req: NextRequest) {
   }
 
   // Check admin access for /app route - redirect to /users
-  if (session && req.nextUrl.pathname.startsWith("/app")) {
+  if (user && req.nextUrl.pathname.startsWith("/app")) {
     const { data: role } = await supabase
       .from("user_roles")
       .select("role")
-      .eq("user_id", session.user.id)
+      .eq("user_id", user.id)
       .single();
 
     console.log(
@@ -165,11 +166,11 @@ export async function middleware(req: NextRequest) {
     req.nextUrl.pathname.startsWith(route)
   );
 
-  if (session && isAdminRoute) {
+  if (user && isAdminRoute) {
     const { data: role } = await supabase
       .from("user_roles")
       .select("role")
-      .eq("user_id", session.user.id)
+      .eq("user_id", user.id)
       .single();
 
     console.log(
