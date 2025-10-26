@@ -30,7 +30,15 @@ export function useSupabaseUsers() {
       try {
         setIsLoading(true);
         setError(null);
-        const { users: fetchedUsers, error: fetchError } = await getAllUsers();
+        const { users: fetchedUsers, error: fetchError } = (await Promise.race([
+          getAllUsers(),
+          new Promise((_, reject) =>
+            setTimeout(
+              () => reject(new Error("useSupabaseUsers timeout")),
+              12000
+            )
+          ),
+        ])) as any;
         console.log(
           "👥 [useSupabaseUsers] fetched:",
           JSON.stringify({

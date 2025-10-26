@@ -60,12 +60,33 @@ export function isSuperAdmin(role?: string): boolean {
 
 // Helper function to get all users with their roles
 export async function getAllUsers() {
-  const { data: users, error } = await supabase.from("users").select(`
+  const start = performance.now?.() ?? Date.now();
+  let users: any[] | null = null;
+  let error: any = null;
+  try {
+    const result = (await Promise.race([
+      supabase.from("users").select(
+        `
       *,
       user_roles (
         role
       )
-    `);
+    `
+      ),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("getAllUsers timeout")), 10000)
+      ),
+    ])) as any;
+    users = result?.data ?? null;
+    error = result?.error ?? null;
+  } catch (e) {
+    error = e instanceof Error ? e : new Error("getAllUsers failed");
+  }
+  const durationMs = (performance.now?.() ?? Date.now()) - start;
+  console.log(
+    "⏱️ [getAllUsers] durationMs, hasError, count",
+    JSON.stringify({ durationMs, hasError: !!error, count: users?.length || 0 })
+  );
 
   if (error) {
     console.error("Error fetching users:", error);
@@ -87,18 +108,37 @@ export async function getAllUsers() {
 
 // Helper function to get a single user by ID
 export async function getUserById(userId: string) {
-  const { data: user, error } = await supabase
-    .from("users")
-    .select(
-      `
+  const start = performance.now?.() ?? Date.now();
+  let user: any = null;
+  let error: any = null;
+  try {
+    const result = (await Promise.race([
+      supabase
+        .from("users")
+        .select(
+          `
       *,
       user_roles (
         role
       )
     `
-    )
-    .eq("id", userId)
-    .single();
+        )
+        .eq("id", userId)
+        .single(),
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("getUserById timeout")), 8000)
+      ),
+    ])) as any;
+    user = result?.data ?? null;
+    error = result?.error ?? null;
+  } catch (e) {
+    error = e instanceof Error ? e : new Error("getUserById failed");
+  }
+  const durationMs = (performance.now?.() ?? Date.now()) - start;
+  console.log(
+    "⏱️ [getUserById] durationMs, hasError",
+    JSON.stringify({ durationMs, hasError: !!error })
+  );
 
   if (error) {
     console.error("Error fetching user:", error);
