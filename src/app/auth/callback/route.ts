@@ -3,6 +3,7 @@ import { createServerClient } from "@supabase/ssr";
 
 export async function POST(request: Request) {
   const { event, session } = await request.json();
+  console.log("🪪 [auth/callback] event:", event, "hasSession:", !!session);
 
   let response = NextResponse.json({ ok: true });
 
@@ -28,13 +29,15 @@ export async function POST(request: Request) {
 
   try {
     if ((event === "SIGNED_IN" || event === "TOKEN_REFRESHED") && session) {
-      await supabase.auth.setSession(session);
+      const result = await supabase.auth.setSession(session);
+      console.log("🪪 [auth/callback] setSession result error:", result.error);
     }
     if (event === "SIGNED_OUT") {
-      await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
+      if (error) console.log("🪪 [auth/callback] signOut error:", error);
     }
   } catch (_e) {
-    // no-op; return ok to avoid client errors
+    console.log("🪪 [auth/callback] unexpected error:", _e);
   }
 
   return response;

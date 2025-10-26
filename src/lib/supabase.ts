@@ -4,9 +4,25 @@ import { Database } from "@/types/database";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
+if (!supabaseUrl || !supabaseAnonKey) {
+  // Log minimal info to avoid leaking secrets
+  console.log(
+    "🔧 [supabase] Missing envs:",
+    JSON.stringify({ hasUrl: !!supabaseUrl, hasAnon: !!supabaseAnonKey })
+  );
+}
+
 export const supabase = createBrowserClient<Database>(
   supabaseUrl,
   supabaseAnonKey
+);
+
+console.log(
+  "🔧 [supabase] Browser client created",
+  JSON.stringify({
+    urlDomain: supabaseUrl?.split("//")[1]?.split(".")?.slice(-2).join("."),
+    hasAnon: !!supabaseAnonKey,
+  })
 );
 
 // Helper function to get user with role
@@ -19,7 +35,7 @@ export async function getUserWithRole(userId: string) {
 
   if (userError) return { user: null, role: null, error: userError };
 
-  const { data: role, error: roleError } = await supabase
+  const { data: roleRow, error: roleError } = await supabase
     .from("user_roles")
     .select("role")
     .eq("user_id", userId)
@@ -27,7 +43,7 @@ export async function getUserWithRole(userId: string) {
 
   return {
     user,
-    role: role?.role || "user",
+    role: (roleRow as any)?.role || "user",
     error: roleError,
   };
 }
@@ -58,10 +74,13 @@ export async function getAllUsers() {
 
   return {
     users:
-      users?.map((user) => ({
-        ...user,
-        role: user.user_roles?.role || "user",
-      })) || [],
+      users?.map((u) => {
+        const base = u as Record<string, unknown>;
+        return {
+          ...base,
+          role: (u as any)?.user_roles?.role || "user",
+        } as any;
+      }) || [],
     error: null,
   };
 }
@@ -88,10 +107,10 @@ export async function getUserById(userId: string) {
 
   return {
     user: user
-      ? {
-          ...user,
-          role: user.user_roles?.role || "user",
-        }
+      ? ({
+          ...(user as Record<string, unknown>),
+          role: (user as any)?.user_roles?.role || "user",
+        } as any)
       : null,
     error: null,
   };

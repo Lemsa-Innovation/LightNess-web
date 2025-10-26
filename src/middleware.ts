@@ -59,6 +59,9 @@ export async function middleware(req: NextRequest) {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
+  if (userError) {
+    console.log("🔍 Middleware - getUser error:", userError.message);
+  }
 
   console.log(
     `🔍 Middleware - Path: ${

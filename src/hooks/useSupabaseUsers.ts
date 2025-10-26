@@ -31,13 +31,22 @@ export function useSupabaseUsers() {
         setIsLoading(true);
         setError(null);
         const { users: fetchedUsers, error: fetchError } = await getAllUsers();
+        console.log(
+          "👥 [useSupabaseUsers] fetched:",
+          JSON.stringify({
+            count: fetchedUsers?.length || 0,
+            hasError: !!fetchError,
+          })
+        );
 
         if (fetchError) {
+          console.log("👥 [useSupabaseUsers] fetch error:", fetchError.message);
           setError(new Error(fetchError.message));
         } else {
           setUsers(fetchedUsers);
         }
       } catch (err) {
+        console.log("👥 [useSupabaseUsers] unexpected error:", err);
         setError(
           err instanceof Error ? err : new Error("Failed to fetch users")
         );

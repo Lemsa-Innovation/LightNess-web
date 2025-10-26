@@ -46,11 +46,24 @@ export async function createBlog(blogData: {
   read_time?: number | null;
   is_featured?: boolean | null;
   count_of_views?: number | null;
-  language?: string | null;
+  language?: Blog["language"];
 }) {
-  const { data, error } = await supabase
+  const insertPayload: Partial<Blog> = {
+    title: blogData.title,
+    content: blogData.content,
+    author: blogData.author ?? null,
+    tags: blogData.tags ?? null,
+    cover_image_url: blogData.cover_image_url ?? null,
+    published: blogData.published ?? null,
+    read_time: blogData.read_time ?? null,
+    is_featured: blogData.is_featured ?? null,
+    count_of_views: blogData.count_of_views ?? null,
+    language: blogData.language ?? null,
+  };
+  const client = supabase as any;
+  const { data, error } = await client
     .from("blogs")
-    .insert([blogData])
+    .insert([insertPayload])
     .select()
     .single();
 
@@ -58,7 +71,7 @@ export async function createBlog(blogData: {
     throw new Error(error.message);
   }
 
-  return data;
+  return data as Blog;
 }
 
 export async function updateBlog(
@@ -73,12 +86,25 @@ export async function updateBlog(
     read_time?: number | null;
     is_featured?: boolean | null;
     count_of_views?: number | null;
-    language?: string | null;
+    language?: Blog["language"];
   }
 ) {
-  const { data, error } = await supabase
+  const updatePayload: Partial<Blog> = {
+    title: blogData.title,
+    content: blogData.content,
+    author: blogData.author,
+    tags: blogData.tags,
+    cover_image_url: blogData.cover_image_url,
+    published: blogData.published,
+    read_time: blogData.read_time,
+    is_featured: blogData.is_featured,
+    count_of_views: blogData.count_of_views,
+    language: blogData.language ?? null,
+  };
+  const client = supabase as any;
+  const { data, error } = await client
     .from("blogs")
-    .update(blogData)
+    .update(updatePayload)
     .eq("id", id)
     .select()
     .single();
@@ -87,7 +113,7 @@ export async function updateBlog(
     throw new Error(error.message);
   }
 
-  return data;
+  return data as Blog;
 }
 
 export async function deleteBlog(id: string) {

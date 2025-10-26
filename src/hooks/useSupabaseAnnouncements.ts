@@ -41,11 +41,17 @@ export function useSupabaseAnnouncements() {
 export async function createAnnouncement(announcementData: {
   image: string;
   full_image?: string;
-  language?: string;
+  language?: Announcement["language"];
 }) {
-  const { data, error } = await supabase
+  const insertPayload: Partial<Announcement> = {
+    image: announcementData.image,
+    full_image: announcementData.full_image,
+    language: announcementData.language,
+  };
+  const client = supabase as any;
+  const { data, error } = await client
     .from("announcements")
-    .insert([announcementData])
+    .insert([insertPayload])
     .select()
     .single();
 
@@ -53,7 +59,7 @@ export async function createAnnouncement(announcementData: {
     throw new Error(error.message);
   }
 
-  return data;
+  return data as Announcement;
 }
 
 export async function uploadImageToStorage(file: File, path: string) {
@@ -93,12 +99,18 @@ export async function updateAnnouncement(
   announcementData: {
     image?: string;
     full_image?: string;
-    language?: string;
+    language?: Announcement["language"];
   }
 ) {
-  const { data, error } = await supabase
+  const updatePayload: Partial<Announcement> = {
+    image: announcementData.image,
+    full_image: announcementData.full_image,
+    language: announcementData.language,
+  };
+  const client = supabase as any;
+  const { data, error } = await client
     .from("announcements")
-    .update(announcementData)
+    .update(updatePayload)
     .eq("id", id)
     .select()
     .single();
@@ -107,7 +119,7 @@ export async function updateAnnouncement(
     throw new Error(error.message);
   }
 
-  return data;
+  return data as Announcement;
 }
 
 export async function deleteAnnouncement(id: string) {

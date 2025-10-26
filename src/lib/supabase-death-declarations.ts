@@ -5,11 +5,13 @@ export async function validateDeathDeclaration(
   declarationUids: string[],
   matchedUid: string
 ) {
-  const { data, error } = await supabase
+  const client = supabase as any;
+  const updatePayload: { status: "approved" } = {
+    status: "approved",
+  };
+  const { data, error } = await client
     .from("death_declarations")
-    .update({
-      status: "approved",
-    })
+    .update(updatePayload)
     .in("uid", declarationUids);
 
   if (error) {
@@ -45,11 +47,13 @@ export async function validateDeathDeclaration(
 
 // Reject death declaration
 export async function rejectDeathDeclaration(declarationUids: string[]) {
-  const { data, error } = await supabase
+  const client = supabase as any;
+  const updatePayload: { status: "rejected" } = {
+    status: "rejected",
+  };
+  const { data, error } = await client
     .from("death_declarations")
-    .update({
-      status: "rejected",
-    })
+    .update(updatePayload)
     .in("uid", declarationUids);
 
   if (error) {
@@ -62,12 +66,14 @@ export async function rejectDeathDeclaration(declarationUids: string[]) {
 
 // Mark user as dead (update user table)
 export async function markUserAsDead(userId: string) {
-  const { data, error } = await supabase
+  const client = supabase as any;
+  const updatePayload: Partial<{ is_dead: boolean; updated_at: string }> = {
+    is_dead: true,
+    updated_at: new Date().toISOString(),
+  };
+  const { data, error } = await client
     .from("users")
-    .update({
-      is_dead: true,
-      updated_at: new Date().toISOString(),
-    })
+    .update(updatePayload)
     .eq("id", userId);
 
   if (error) {

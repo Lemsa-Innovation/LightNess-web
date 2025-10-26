@@ -27,6 +27,9 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
         data: { user },
         error,
       } = await supabase.auth.getUser();
+      if (error) {
+        console.log("🔄 [AuthProvider] getUser error:", error.message);
+      }
       if (user && !error) {
         await loadUser(user);
       } else {
@@ -38,11 +41,16 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
     // Load user data
     const loadUser = async (supabaseUser: User) => {
       try {
-        const { user: userWithRole, error } = await getUserWithRole(
-          supabaseUser.id
-        );
-        if (!error && userWithRole) {
-          setUser({ ...userWithRole, role: userWithRole.role });
+        const result = await getUserWithRole(supabaseUser.id);
+        const userWithRole = result.user;
+        const roleValue = (result.role as unknown as string) || "user";
+        if (!result.error && userWithRole) {
+          const baseUser = userWithRole as Record<string, unknown>;
+          const enrichedUser = {
+            ...baseUser,
+            role: roleValue,
+          } as UserWithRole;
+          setUser(enrichedUser);
         }
       } catch (error) {
         console.error("Error loading user:", error);
@@ -58,7 +66,14 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
     } = supabase.auth.onAuthStateChange(async (event, _session) => {
       const {
         data: { user: verifiedUser },
+        error: verifiedError,
       } = await supabase.auth.getUser();
+      if (verifiedError) {
+        console.log(
+          "🔄 [AuthProvider] onAuthStateChange getUser error:",
+          verifiedError.message
+        );
+      }
       console.log(`🔄 Auth state change: ${event}`, verifiedUser?.id);
 
       // Sync session cookies server-side so middleware sees session
