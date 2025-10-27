@@ -34,9 +34,6 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
           data: { user },
           error,
         } = await supabase.auth.getUser();
-        if (error) {
-          console.log("🔄 [AuthProvider] getUser error:", error.message);
-        }
         if (user && !error) {
           await loadUser(user);
         } else {
@@ -44,7 +41,6 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
           setIsLoading(false);
         }
       } catch (err) {
-        console.log("🔄 [AuthProvider] getInitialSession error:", err);
         setUser(null);
         setIsLoading(false);
       }
@@ -52,16 +48,11 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
 
     // Load user data - NO ASYNC CALLS INSIDE onAuthStateChange
     const loadUser = async (supabaseUser: User) => {
-      console.log(`🔄 [AuthProvider] Loading user: ${supabaseUser.id}`);
-
       try {
         // Fetch the user role first
         let userRole = "user"; // Default role
 
         try {
-          console.log(
-            `🔄 [AuthProvider] Fetching role for user: ${supabaseUser.id}`
-          );
           const { data: roleData, error: roleError } = await supabase
             .from("user_roles")
             .select("role")
@@ -70,15 +61,9 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
 
           if (!roleError && roleData) {
             userRole = (roleData as any)?.role || "user";
-            console.log(`🔄 [AuthProvider] Found role: ${userRole}`);
-          } else {
-            console.log(
-              "🔄 [AuthProvider] Role fetch error:",
-              roleError?.message || "No role data"
-            );
           }
         } catch (roleError) {
-          console.log("🔄 [AuthProvider] Role fetch exception:", roleError);
+          // Silent fail - use default role
         }
 
         // Set the user with the actual role
@@ -88,11 +73,9 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
         };
         setUser(authUser);
         setIsLoading(false);
-        console.log(`🔄 [AuthProvider] User loaded with role: ${userRole}`);
 
         return userRole; // Return the role for redirect logic
       } catch (error) {
-        console.error("🔄 [AuthProvider] Error loading user:", error);
         // Fallback: set user without role
         const authUser: AuthUser = {
           ...supabaseUser,
@@ -110,15 +93,9 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(`🔄 Auth state change: ${event}`, session?.user?.id);
-
       // Use setTimeout(0) to prevent deadlock - this is the official Supabase fix
       setTimeout(() => {
         if (event === "SIGNED_IN" && session?.user) {
-          console.log(
-            `🔄 [AuthProvider] SIGNED_IN event - setting user immediately`
-          );
-
           // Set user immediately with default role to stop loading
           const authUser: AuthUser = {
             ...session.user,
@@ -126,17 +103,12 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
           };
           setUser(authUser);
           setIsLoading(false);
-          console.log(
-            `🔄 [AuthProvider] User set immediately with default role`
-          );
 
           // Handle redirect immediately
           const currentPath = window.location.pathname;
-          console.log(`🔄 [AuthProvider] Current path: ${currentPath}`);
 
           // Only redirect if we're on auth pages
           if (currentPath.startsWith("/auth") || currentPath === "/login") {
-            console.log(`🏠 [AuthProvider] Redirecting to /`);
             router.push("/");
           }
 
@@ -156,21 +128,19 @@ export const AuthProvider: React.FunctionComponent<ProviderProps> = ({
                   role: userRole,
                 };
                 setUser(updatedUser);
-                console.log(
-                  `🔄 [AuthProvider] Updated user with role: ${userRole}`
-                );
               }
             } catch (roleError) {
-              console.log(
-                "🔄 [AuthProvider] Background role fetch failed:",
-                roleError
-              );
+              // Silent fail - user already has default role
             }
           }, 500);
         } else if (event === "SIGNED_OUT") {
-          console.log(`🔄 [AuthProvider] SIGNED_OUT event - clearing user`);
           setUser(null);
           setIsLoading(false);
+          // Redirect to auth page when user signs out
+          const currentPath = window.location.pathname;
+          if (!currentPath.startsWith("/auth")) {
+            router.push("/auth");
+          }
         } else {
           // For other events, just set loading to false
           setIsLoading(false);

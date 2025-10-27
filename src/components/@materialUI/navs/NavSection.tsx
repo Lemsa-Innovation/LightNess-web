@@ -15,7 +15,6 @@ const ICONS: Record<keyof SidebarItems, ReactNode> = {
   announcements: <Icon className="size-6" icon="mdi:announcement" />,
   washers: <Icon className="size-6" icon="mdi:washing-machine" />,
   funeralServices: <Icon className="size-6" icon="streamline:islam" />,
-  cemeteries: <Icon className="size-6" icon="mdi:death-star" />,
   deathDeclarations: (
     <Icon className="size-6" icon="ic:baseline-perm-device-information" />
   ),

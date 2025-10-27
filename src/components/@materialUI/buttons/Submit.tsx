@@ -6,10 +6,11 @@ interface Props {
   isDisabled?: boolean;
   isLoading?: boolean;
   className?: string;
+  label?: string;
 }
-const SubmitButton: React.FC<Props> = (props) => {
+const SubmitButton: React.FC<Props> = ({ label, ...props }) => {
   const { languageData } = useLanguage();
-  const btn = languageData?.commons.buttons.submit;
+  const btn = label || languageData?.commons.buttons.submit;
   return (
     <Button color="primary" {...props}>
       {btn}

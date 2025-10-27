@@ -1,6 +1,7 @@
 import { ColumnUID } from "@/language/structure/commons";
 import {
   Button,
+  Chip,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -27,10 +28,14 @@ import { useTable } from "@/hooks";
 import { searchIn } from "@/utils";
 import { useSupabaseWashers, SupabaseWasher } from "@/hooks/useSupabaseWashers";
 import clsx from "clsx";
+import { ValidateWasherModal } from "../modals";
+import { CheckCircle2 } from "lucide-react";
 
 const INITIAL_VISIBLE_COLUMNS: ColumnUID[] = [
+  "name",
   "phoneNumber",
-  "status",
+  "identityStatus",
+  "certificationStatus",
   "registeredDate",
   "actions",
 ];
@@ -56,8 +61,13 @@ function WashersTable() {
 
   const [roleFilter, setRoleFilter] = useState<Selection>("all");
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
+  const [selectedWasher, setSelectedWasher] = useState<SupabaseWasher | null>(
+    null
+  );
+  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
 
-  const { washers, error, isLoading } = useSupabaseWashers();
+  const { washers, summaryStats, error, isLoading, refetch } =
+    useSupabaseWashers();
 
   // const roleOptions = useMemo(() => {
   //   const roleSet = new Set(users?.map(({ role }) => role));
@@ -71,18 +81,14 @@ function WashersTable() {
 
   const filteredData = useMemo(() => {
     if (!washers) return [];
-    const hits = washers.filter(({ user, fullname }) => {
+    const hits = washers.filter(({ user, fullname, phone_number }) => {
       if (filterValue) {
-        searchIn({
+        return searchIn({
           filterValue,
-          values: [
-            user?.email || "",
-            fullname,
-            // phone_number ? formatPhoneToLocal(phone_number) : undefined,
-          ],
+          values: [user?.email || "", fullname, phone_number || ""],
         });
       }
-      return washers;
+      return true;
     });
 
     const statusFilteredHits =
@@ -94,7 +100,7 @@ function WashersTable() {
         : hits;
 
     return statusFilteredHits;
-  }, [washers, filterValue, statusFilter]);
+  }, [washers, filterValue, statusFilter, statusOptions.length]);
 
   const pages = Math.ceil(filteredData.length / rowsPerPage);
 
@@ -133,7 +139,8 @@ function WashersTable() {
     }[] = [
       { uid: "name", sortable: true, align: "start" },
       { uid: "phoneNumber" },
-      { uid: "status", sortable: true },
+      { uid: "identityStatus", sortable: true },
+      { uid: "certificationStatus", sortable: true },
       { uid: "registeredDate", sortable: true },
       { uid: "actions" },
     ];
@@ -259,6 +266,7 @@ function WashersTable() {
       fullname,
       phone_number,
       is_validated_certification,
+      is_validated_identity,
     } = washer;
     switch (columnKey as ColumnUID) {
       case "name":
@@ -277,53 +285,134 @@ function WashersTable() {
         );
       case "phoneNumber":
         return <p>{phone_number}</p>;
-      case "status":
+      case "identityStatus":
         return (
-          <StatusChip
-            statusKey={is_validated_certification ? "active" : "unverified"}
-          />
+          <Chip
+            size="sm"
+            color={is_validated_identity ? "success" : "warning"}
+            variant="flat"
+          >
+            {is_validated_identity ? (
+              <div className="flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" />
+                Validé
+              </div>
+            ) : (
+              "Non validé"
+            )}
+          </Chip>
+        );
+      case "certificationStatus":
+        return (
+          <Chip
+            size="sm"
+            color={is_validated_certification ? "success" : "warning"}
+            variant="flat"
+          >
+            {is_validated_certification ? (
+              <div className="flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3" />
+                Validé
+              </div>
+            ) : (
+              "Non validé"
+            )}
+          </Chip>
         );
       case "registeredDate":
         return <DateChip timestamp={created_at} />;
       case "actions":
         return (
           <div className="relative flex justify-end items-center gap-2">
-            {/* <UserActionsDropdown user={user} /> */}
+            <Button
+              size="sm"
+              color="primary"
+              variant="flat"
+              onPress={() => {
+                setSelectedWasher(washer);
+                setIsValidationModalOpen(true);
+              }}
+            >
+              Gérer
+            </Button>
           </div>
         );
     }
   }, []);
+
+  const handleRefreshWashers = async () => {
+    // Refetch washers data without full page reload
+    await refetch();
+  };
 
   if (error) {
     return <div>Error loading washers: {error.message}</div>;
   }
 
   return (
-    <Table
-      isHeaderSticky
-      aria-label="stores"
-      selectionMode="single"
-      topContent={topContent}
-      bottomContent={bottomContent}
-      onSelectionChange={handleSelection}
-    >
-      <TableHeader columns={getColumns()}>
-        {({ uid, align, sortable }) => (
-          <TableColumn key={uid} align={align} allowsSorting={sortable}>
-            {columns?.[uid]}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody items={hits} isLoading={isLoading}>
-        {(washer) => (
-          <TableRow key={washer.uid}>
-            {(columnKey) => (
-              <TableCell>{renderCell(washer, columnKey)}</TableCell>
-            )}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <>
+      {/* Summary Counters */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <div className="text-2xl font-bold text-blue-600">
+            {summaryStats.totalWashers}
+          </div>
+          <div className="text-sm text-blue-800">Total Washers</div>
+        </div>
+        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+          <div className="text-2xl font-bold text-green-600">
+            {summaryStats.validated}
+          </div>
+          <div className="text-sm text-green-800">
+            Validated (Identity + Certification)
+          </div>
+        </div>
+        <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+          <div className="text-2xl font-bold text-red-600">
+            {summaryStats.pending}
+          </div>
+          <div className="text-sm text-red-800">Pending Validation</div>
+        </div>
+      </div>
+
+      <Table
+        isHeaderSticky
+        aria-label="stores"
+        selectionMode="single"
+        topContent={topContent}
+        bottomContent={bottomContent}
+        onSelectionChange={handleSelection}
+      >
+        <TableHeader columns={getColumns()}>
+          {({ uid, align, sortable }) => (
+            <TableColumn key={uid} align={align} allowsSorting={sortable}>
+              {columns?.[uid]}
+            </TableColumn>
+          )}
+        </TableHeader>
+        <TableBody items={hits} isLoading={isLoading}>
+          {(washer) => (
+            <TableRow key={washer.uid}>
+              {(columnKey) => (
+                <TableCell>{renderCell(washer, columnKey)}</TableCell>
+              )}
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+
+      {selectedWasher && (
+        <ValidateWasherModal
+          isOpen={isValidationModalOpen}
+          onClose={() => {
+            setIsValidationModalOpen(false);
+            setSelectedWasher(null);
+          }}
+          washer={selectedWasher}
+          onRefresh={handleRefreshWashers}
+        />
+      )}
+    </>
   );
 }
 

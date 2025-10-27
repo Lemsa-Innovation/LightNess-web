@@ -41,8 +41,6 @@ function CreateUserModal() {
       setIsCreating(true);
       const supabase = createClient();
 
-      console.log(`➕ [CreateUserModal] Creating user: ${formData.email}`);
-
       // Create user in auth.users (this will also create the user in public.users via trigger)
       const { data: authData, error: authError } =
         await supabase.auth.admin.createUser({
@@ -56,10 +54,6 @@ function CreateUserModal() {
         });
 
       if (authError) {
-        console.error(
-          "➕ [CreateUserModal] Auth user creation error:",
-          authError
-        );
         throw authError;
       }
 
@@ -74,13 +68,9 @@ function CreateUserModal() {
       } as any);
 
       if (roleError) {
-        console.error("➕ [CreateUserModal] Role creation error:", roleError);
         throw roleError;
       }
 
-      console.log(
-        `✅ [CreateUserModal] Successfully created user: ${authData.user.id}`
-      );
       toast.success("User created successfully");
       onClose();
 
@@ -97,7 +87,6 @@ function CreateUserModal() {
       // Refresh the page to update the user list
       window.location.reload();
     } catch (error) {
-      console.error("➕ [CreateUserModal] Create error:", error);
       toast.error("Failed to create user");
     } finally {
       setIsCreating(false);

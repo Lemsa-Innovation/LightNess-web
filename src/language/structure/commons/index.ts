@@ -43,7 +43,6 @@ export interface SidebarItems {
   announcements: string;
   washers: string;
   funeralServices: string;
-  cemeteries: string;
   // settings: string
   deathDeclarations: string;
 }
@@ -98,6 +97,10 @@ export interface TableDictionnary {
     domaine: string;
     declaredBy: string;
     matchedUser: string;
+    identityStatus: string;
+    certificationStatus: string;
+    identityValidatedCount: string;
+    certificationValidatedCount: string;
   };
 }
 

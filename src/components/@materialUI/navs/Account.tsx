@@ -1,4 +1,4 @@
-import { Key } from "react";
+import { Key, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Avatar,
@@ -7,27 +7,34 @@ import {
   DropdownMenu,
   DropdownTrigger,
   Skeleton,
+  Spinner,
 } from "@heroui/react";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { useAuth } from "@/contexts/auth/AuthContext";
-import { logout } from "@/firebase/auth";
+import { useSupabaseAuth } from "@/hooks/useAuth";
 import { PROTECTED_ROUTES } from "@/config";
 
 function Account() {
   const { push } = useRouter();
   const { user } = useAuth();
   const { languageData } = useLanguage();
+  const { signOut } = useSupabaseAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const signOut = languageData?.auth.signOut;
+  const signOutText = languageData?.auth.signOut;
 
   const imageSrc = user?.avatar_image || user?.photo_url;
 
-  const handleSelect = (key: Key) => {
+  const handleSelect = async (key: Key) => {
     switch (key) {
       case "logout": {
-        if (signOut?.toast) {
-          const { error, success } = signOut.toast;
-          logout();
+        try {
+          setIsLoggingOut(true);
+          await signOut();
+          // The signOut function already handles redirect to /auth
+        } catch (error) {
+          console.error("Logout failed:", error);
+          setIsLoggingOut(false);
         }
         break;
       }
@@ -66,8 +73,15 @@ function Account() {
           <p className="font-semibold">Signed in as</p>
           <p className="font-semibold">{user?.email}</p>
         </DropdownItem>
-        <DropdownItem key="logout" color="danger">
-          {signOut?.logout}
+        <DropdownItem key="logout" color="danger" isDisabled={isLoggingOut}>
+          {isLoggingOut ? (
+            <span className="flex items-center gap-2">
+              <Spinner size="sm" />
+              Logging out...
+            </span>
+          ) : (
+            signOutText?.logout
+          )}
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

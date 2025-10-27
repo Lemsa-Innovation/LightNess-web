@@ -40,9 +40,6 @@ export const SIDEBAR_ROUTES: Record<
   washers: {
     path: "/washers",
   },
-  cemeteries: {
-    path: "/cemeteries",
-  },
   deathDeclarations: {
     path: "/deathDeclarations",
   },

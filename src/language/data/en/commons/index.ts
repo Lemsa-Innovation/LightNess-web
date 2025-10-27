@@ -91,6 +91,10 @@ export const commons: Commons = {
       witnesses: "Witnesses",
       declaredBy: "Declared By",
       matchedUser: "Matched User",
+      identityStatus: "Identity",
+      certificationStatus: "Certification",
+      identityValidatedCount: "Identity Validated",
+      certificationValidatedCount: "Certification Validated",
     },
   },
   labels: {
@@ -106,7 +110,6 @@ export const commons: Commons = {
     blogs: "Blogs",
     announcements: "Announcements",
     washers: "Washers",
-    cemeteries: "Cemeteries",
     funeralServices: "Funeral Services",
     deathDeclarations: "Death Declarations",
   },

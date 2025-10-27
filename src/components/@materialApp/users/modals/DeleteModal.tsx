@@ -30,8 +30,6 @@ function DeleteUserModal({
       setIsDeleting(true);
       const supabase = createClient();
 
-      console.log(`🗑️ [DeleteUserModal] Deleting user: ${user.id}`);
-
       // Delete from user_roles table first
       const { error: roleError } = await supabase
         .from("user_roles")
@@ -39,7 +37,6 @@ function DeleteUserModal({
         .eq("user_id", user.id as any);
 
       if (roleError) {
-        console.error("🗑️ [DeleteUserModal] Role deletion error:", roleError);
         throw roleError;
       }
 
@@ -50,18 +47,15 @@ function DeleteUserModal({
         .eq("id", user.id as any);
 
       if (userError) {
-        console.error("🗑️ [DeleteUserModal] User deletion error:", userError);
         throw userError;
       }
 
-      console.log(`✅ [DeleteUserModal] Successfully deleted user: ${user.id}`);
       toast.success(action?.toast.success || "User deleted successfully");
       onClose();
 
       // Refresh the page to update the user list
       window.location.reload();
     } catch (error) {
-      console.error("🗑️ [DeleteUserModal] Delete error:", error);
       toast.error(action?.toast.error || "Failed to delete user");
     } finally {
       setIsDeleting(false);

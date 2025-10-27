@@ -43,8 +43,6 @@ function UpdateUserModal({
       setIsUpdating(true);
       const supabase = createClient();
 
-      console.log(`✏️ [UpdateUserModal] Updating user: ${user.id}`);
-
       // Update users table
       const result: any = await (supabase as any)
         .from("users")
@@ -59,7 +57,6 @@ function UpdateUserModal({
       const { error: userError } = result;
 
       if (userError) {
-        console.error("✏️ [UpdateUserModal] User update error:", userError);
         throw userError;
       }
 
@@ -71,19 +68,16 @@ function UpdateUserModal({
           .eq("user_id", user.id as any);
 
         if (roleError) {
-          console.error("✏️ [UpdateUserModal] Role update error:", roleError);
           throw roleError;
         }
       }
 
-      console.log(`✅ [UpdateUserModal] Successfully updated user: ${user.id}`);
       toast.success(action?.toast.success || "User updated successfully");
       onClose();
 
       // Refresh the page to update the user list
       window.location.reload();
     } catch (error) {
-      console.error("✏️ [UpdateUserModal] Update error:", error);
       toast.error(action?.toast.error || "Failed to update user");
     } finally {
       setIsUpdating(false);

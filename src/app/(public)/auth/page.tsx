@@ -29,30 +29,20 @@ function Page() {
 
   const [handleSignIn, isLoading] = useLoadingCallback(
     async ({ email, password }) => {
-      console.log(`📝 Auth Page - Form submitted with email: ${email}`);
       try {
         const { data, error } = await signIn(email, password);
-        console.log(`📝 Auth Page - signIn result:`, {
-          data: !!data,
-          error: !!error,
-        });
 
         if (error) {
-          console.log(`📝 Auth Page - Sign in error:`, error.message);
           toast.error(auth?.errors.invalidCredential, {
             position: "top-right",
           });
         } else if (data?.user) {
-          console.log(
-            `📝 Auth Page - Sign in successful, showing success toast`
-          );
           // Show success message before redirect
           toast.success(auth?.signIn.toastContents.success, {
             position: "top-right",
           });
         }
       } catch (_error: unknown) {
-        console.log(`📝 Auth Page - Sign in exception:`, _error);
         toast.error(auth?.signIn.toastContents.error, {
           position: "top-right",
         });

@@ -89,8 +89,12 @@ export const commons: Commons = {
       witnessCount: "Nombre de témoins",
       amount: "Montant",
       witnesses: "Témoins",
-      declaredBy: "Déclaré par", // Nouvelle colonne
-      matchedUser: "Utilisateur correspondant", // Nouvelle colonne
+      declaredBy: "Déclaré par",
+      matchedUser: "Utilisateur correspondant",
+      identityStatus: "Identité",
+      certificationStatus: "Certification",
+      identityValidatedCount: "Identité Validée",
+      certificationValidatedCount: "Certification Validée",
     },
   },
   labels: {
@@ -110,7 +114,6 @@ export const commons: Commons = {
     // testaments: "Testaments",
     // debts: "Dettes",
     washers: "Laveurs",
-    cemeteries: "Cimetières",
     funeralServices: "Pompes funèbres",
     // invitations: "Invitations",
     // reports: "Rapports",

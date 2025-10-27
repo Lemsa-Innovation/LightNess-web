@@ -33,32 +33,13 @@ export function useSupabaseUsers() {
 
         const supabase = createClient();
 
-        console.log("👥 [useSupabaseUsers] Starting fetch...");
-        console.log(
-          "👥 [useSupabaseUsers] Supabase URL:",
-          process.env.NEXT_PUBLIC_SUPABASE_URL
-        );
-        console.log(
-          "👥 [useSupabaseUsers] Supabase Key exists:",
-          !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-        );
-
-        // Try a simpler query first to debug
+        // Fetch users sorted by created_at in descending order (newest first)
         const { data: usersData, error: fetchError } = await supabase
           .from("users")
-          .select("*");
-
-        console.log(
-          "👥 [useSupabaseUsers] fetched:",
-          JSON.stringify({
-            count: usersData?.length || 0,
-            hasError: !!fetchError,
-            errorMessage: fetchError?.message,
-          })
-        );
+          .select("*")
+          .order("created_at", { ascending: false });
 
         if (fetchError) {
-          console.log("👥 [useSupabaseUsers] fetch error:", fetchError.message);
           setError(new Error(fetchError.message));
         } else {
           // For now, set default role since we're not joining with user_roles
@@ -71,12 +52,8 @@ export function useSupabaseUsers() {
               } as SupabaseUser;
             }) || [];
           setUsers(formattedUsers);
-          console.log(
-            `👥 [useSupabaseUsers] Successfully loaded ${formattedUsers.length} users`
-          );
         }
       } catch (err) {
-        console.log("👥 [useSupabaseUsers] unexpected error:", err);
         setError(
           err instanceof Error ? err : new Error("Failed to fetch users")
         );

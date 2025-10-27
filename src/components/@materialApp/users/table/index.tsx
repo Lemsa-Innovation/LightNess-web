@@ -70,10 +70,6 @@ function UsersTable() {
   const [statusFilter, setStatusFilter] = useState<Selection>("all");
 
   const { users, error, isLoading } = useSupabaseUsers();
-  console.log(
-    "📄 [UsersTable] render",
-    JSON.stringify({ isLoading, hasError: !!error, users: users?.length || 0 })
-  );
 
   const roleOptions = useMemo(() => {
     const roleSet = new Set(users?.map(({ role }) => role));
