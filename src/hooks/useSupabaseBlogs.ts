@@ -126,7 +126,7 @@ export async function deleteBlog(id: string) {
   return true;
 }
 
-export async function getBlogById(id: string) {
+export async function getBlogById(id: string): Promise<Blog> {
   const { data, error } = await supabase
     .from("blogs")
     .select("*")
@@ -137,7 +137,7 @@ export async function getBlogById(id: string) {
     throw new Error(error.message);
   }
 
-  return data;
+  return data as Blog;
 }
 
 export async function uploadBlogImageToStorage(file: File, path: string) {

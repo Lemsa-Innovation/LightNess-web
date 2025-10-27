@@ -1,8 +1,9 @@
-import { Button } from "@heroui/react";
+import { Button, ButtonProps } from "@heroui/react";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 
 interface Props {
   onPress: () => void;
+  isDisabled?: boolean;
 }
 const CancelButton: React.FC<Props> = (props) => {
   const { languageData } = useLanguage();

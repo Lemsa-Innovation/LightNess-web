@@ -1,29 +1,7 @@
-import { createBrowserClient } from "@supabase/ssr";
-import { Database } from "@/types/database";
+import { createClient } from "@/utils/supabase/client";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  // Log minimal info to avoid leaking secrets
-  console.log(
-    "🔧 [supabase] Missing envs:",
-    JSON.stringify({ hasUrl: !!supabaseUrl, hasAnon: !!supabaseAnonKey })
-  );
-}
-
-export const supabase = createBrowserClient<Database>(
-  supabaseUrl,
-  supabaseAnonKey
-);
-
-console.log(
-  "🔧 [supabase] Browser client created",
-  JSON.stringify({
-    urlDomain: supabaseUrl?.split("//")[1]?.split(".")?.slice(-2).join("."),
-    hasAnon: !!supabaseAnonKey,
-  })
-);
+// Create a singleton instance for backward compatibility
+export const supabase = createClient();
 
 // Helper function to get user with role
 export async function getUserWithRole(userId: string) {
@@ -60,32 +38,13 @@ export function isSuperAdmin(role?: string): boolean {
 
 // Helper function to get all users with their roles
 export async function getAllUsers() {
-  const start = performance.now?.() ?? Date.now();
-  let users: any[] | null = null;
-  let error: any = null;
-  try {
-    const result = (await Promise.race([
-      supabase.from("users").select(
-        `
+  const { data: users, error } = await supabase.from("users").select(
+    `
       *,
       user_roles (
         role
       )
     `
-      ),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("getAllUsers timeout")), 10000)
-      ),
-    ])) as any;
-    users = result?.data ?? null;
-    error = result?.error ?? null;
-  } catch (e) {
-    error = e instanceof Error ? e : new Error("getAllUsers failed");
-  }
-  const durationMs = (performance.now?.() ?? Date.now()) - start;
-  console.log(
-    "⏱️ [getAllUsers] durationMs, hasError, count",
-    JSON.stringify({ durationMs, hasError: !!error, count: users?.length || 0 })
   );
 
   if (error) {
@@ -108,37 +67,18 @@ export async function getAllUsers() {
 
 // Helper function to get a single user by ID
 export async function getUserById(userId: string) {
-  const start = performance.now?.() ?? Date.now();
-  let user: any = null;
-  let error: any = null;
-  try {
-    const result = (await Promise.race([
-      supabase
-        .from("users")
-        .select(
-          `
+  const { data: user, error } = await supabase
+    .from("users")
+    .select(
+      `
       *,
       user_roles (
         role
       )
     `
-        )
-        .eq("id", userId)
-        .single(),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("getUserById timeout")), 8000)
-      ),
-    ])) as any;
-    user = result?.data ?? null;
-    error = result?.error ?? null;
-  } catch (e) {
-    error = e instanceof Error ? e : new Error("getUserById failed");
-  }
-  const durationMs = (performance.now?.() ?? Date.now()) - start;
-  console.log(
-    "⏱️ [getUserById] durationMs, hasError",
-    JSON.stringify({ durationMs, hasError: !!error })
-  );
+    )
+    .eq("id", userId)
+    .single();
 
   if (error) {
     console.error("Error fetching user:", error);

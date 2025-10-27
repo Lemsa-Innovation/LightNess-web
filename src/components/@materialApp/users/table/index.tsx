@@ -93,7 +93,7 @@ function UsersTable() {
     if (!users) return [];
     const hits = users.filter(({ email, id, last_name, first_name }) => {
       if (filterValue) {
-        searchIn({
+        return searchIn({
           filterValue,
           values: [
             id,
@@ -104,7 +104,7 @@ function UsersTable() {
           ],
         });
       }
-      return users;
+      return true;
     });
 
     const statusFilteredHits =

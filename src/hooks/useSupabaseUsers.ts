@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAllUsers } from "@/lib/supabase";
+import { createClient } from "@/utils/supabase/client";
 
 export interface SupabaseUser {
   id: string;
@@ -30,20 +30,30 @@ export function useSupabaseUsers() {
       try {
         setIsLoading(true);
         setError(null);
-        const { users: fetchedUsers, error: fetchError } = (await Promise.race([
-          getAllUsers(),
-          new Promise((_, reject) =>
-            setTimeout(
-              () => reject(new Error("useSupabaseUsers timeout")),
-              12000
-            )
-          ),
-        ])) as any;
+
+        const supabase = createClient();
+
+        console.log("👥 [useSupabaseUsers] Starting fetch...");
+        console.log(
+          "👥 [useSupabaseUsers] Supabase URL:",
+          process.env.NEXT_PUBLIC_SUPABASE_URL
+        );
+        console.log(
+          "👥 [useSupabaseUsers] Supabase Key exists:",
+          !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+        );
+
+        // Try a simpler query first to debug
+        const { data: usersData, error: fetchError } = await supabase
+          .from("users")
+          .select("*");
+
         console.log(
           "👥 [useSupabaseUsers] fetched:",
           JSON.stringify({
-            count: fetchedUsers?.length || 0,
+            count: usersData?.length || 0,
             hasError: !!fetchError,
+            errorMessage: fetchError?.message,
           })
         );
 
@@ -51,7 +61,19 @@ export function useSupabaseUsers() {
           console.log("👥 [useSupabaseUsers] fetch error:", fetchError.message);
           setError(new Error(fetchError.message));
         } else {
-          setUsers(fetchedUsers);
+          // For now, set default role since we're not joining with user_roles
+          const formattedUsers =
+            usersData?.map((u: any) => {
+              const base = u as Record<string, unknown>;
+              return {
+                ...base,
+                role: "user", // Default role for now
+              } as SupabaseUser;
+            }) || [];
+          setUsers(formattedUsers);
+          console.log(
+            `👥 [useSupabaseUsers] Successfully loaded ${formattedUsers.length} users`
+          );
         }
       } catch (err) {
         console.log("👥 [useSupabaseUsers] unexpected error:", err);

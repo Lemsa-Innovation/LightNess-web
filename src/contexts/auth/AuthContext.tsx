@@ -1,9 +1,16 @@
 "use client";
-import { UserWithRole } from "@/types/database";
 import { createContext, useContext } from "react";
 
+// Define a simple user type for auth context
+interface AuthUser {
+  id: string;
+  email?: string;
+  role: string;
+  [key: string]: any;
+}
+
 export interface AuthContextType {
-  user?: UserWithRole | null;
+  user?: AuthUser | null;
   isLoading: boolean;
   isAdmin: boolean;
   isSuperAdmin: boolean;

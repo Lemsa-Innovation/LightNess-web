@@ -10,6 +10,8 @@ import {
   ModalHeader,
 } from "@heroui/react";
 import { toast } from "sonner";
+import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
 
 function DeleteUserModal({
   user,
@@ -21,14 +23,48 @@ function DeleteUserModal({
   const { languageData } = useLanguage();
   const { isOpen, onOpenChange, onClose } = disclosureProps;
   const action = languageData?.inputs.users.actions.deleteUser;
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
     try {
-      // TODO: Implement Supabase user deletion
-      toast.info("User deletion functionality coming soon");
+      setIsDeleting(true);
+      const supabase = createClient();
+
+      console.log(`🗑️ [DeleteUserModal] Deleting user: ${user.id}`);
+
+      // Delete from user_roles table first
+      const { error: roleError } = await supabase
+        .from("user_roles")
+        .delete()
+        .eq("user_id", user.id as any);
+
+      if (roleError) {
+        console.error("🗑️ [DeleteUserModal] Role deletion error:", roleError);
+        throw roleError;
+      }
+
+      // Delete from users table
+      const { error: userError } = await supabase
+        .from("users")
+        .delete()
+        .eq("id", user.id as any);
+
+      if (userError) {
+        console.error("🗑️ [DeleteUserModal] User deletion error:", userError);
+        throw userError;
+      }
+
+      console.log(`✅ [DeleteUserModal] Successfully deleted user: ${user.id}`);
+      toast.success(action?.toast.success || "User deleted successfully");
       onClose();
-    } catch (_error) {
+
+      // Refresh the page to update the user list
+      window.location.reload();
+    } catch (error) {
+      console.error("🗑️ [DeleteUserModal] Delete error:", error);
       toast.error(action?.toast.error || "Failed to delete user");
+    } finally {
+      setIsDeleting(false);
     }
   };
   return (
@@ -44,8 +80,8 @@ function DeleteUserModal({
           <p className="text-sm font-light">{action?.confirmation?.message}</p>
         </ModalBody>
         <ModalFooter>
-          <CancelButton onPress={onClose} />
-          <SubmitButton onPress={handleDelete} />
+          <CancelButton onPress={onClose} isDisabled={isDeleting} />
+          <SubmitButton onPress={handleDelete} isLoading={isDeleting} />
         </ModalFooter>
       </ModalContent>
     </Modal>
