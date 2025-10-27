@@ -8,7 +8,7 @@ export async function getUserWithRole(userId: string) {
   const { data: user, error: userError } = await supabase
     .from("users")
     .select("*")
-    .eq("id", userId)
+    .eq("id", userId as any)
     .single();
 
   if (userError) return { user: null, role: null, error: userError };
@@ -16,7 +16,7 @@ export async function getUserWithRole(userId: string) {
   const { data: roleRow, error: roleError } = await supabase
     .from("user_roles")
     .select("role")
-    .eq("user_id", userId)
+    .eq("user_id", userId as any)
     .single();
 
   return {
@@ -77,7 +77,7 @@ export async function getUserById(userId: string) {
       )
     `
     )
-    .eq("id", userId)
+    .eq("id", userId as any)
     .single();
 
   if (error) {

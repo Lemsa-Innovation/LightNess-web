@@ -21,10 +21,6 @@ export function createClient() {
         autoRefreshToken: true,
         detectSessionInUrl: true,
       },
-      realtime: {
-        // Disable realtime if not needed to reduce overhead
-        enabled: false,
-      },
     }
   );
 }

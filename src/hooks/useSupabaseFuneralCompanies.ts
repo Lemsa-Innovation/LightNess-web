@@ -40,7 +40,7 @@ export function useSupabaseFuneralCompanies() {
         if (fetchError) {
           setError(new Error(fetchError.message));
         } else {
-          setFuneralCompanies(funeralCompaniesData || []);
+          setFuneralCompanies((funeralCompaniesData as any) || []);
         }
       } catch (err) {
         setError(

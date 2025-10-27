@@ -39,7 +39,7 @@ export function useSupabaseWashers() {
         if (fetchError) {
           setError(new Error(fetchError.message));
         } else {
-          setWashers(washersData || []);
+          setWashers((washersData as any) || []);
         }
       } catch (err) {
         setError(

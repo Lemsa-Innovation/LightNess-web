@@ -46,7 +46,7 @@ function UpdateUserModal({
       console.log(`✏️ [UpdateUserModal] Updating user: ${user.id}`);
 
       // Update users table
-      const { error: userError } = await supabase
+      const result: any = await (supabase as any)
         .from("users")
         .update({
           first_name: formData.first_name,
@@ -54,8 +54,9 @@ function UpdateUserModal({
           email: formData.email,
           phone_number: formData.phone_number,
           updated_at: new Date().toISOString(),
-        } as any)
+        })
         .eq("id", user.id as any);
+      const { error: userError } = result;
 
       if (userError) {
         console.error("✏️ [UpdateUserModal] User update error:", userError);
@@ -64,9 +65,9 @@ function UpdateUserModal({
 
       // Update user_roles table if role changed
       if (formData.role !== user.role) {
-        const { error: roleError } = await supabase
+        const { error: roleError } = await (supabase as any)
           .from("user_roles")
-          .update({ role: formData.role } as any)
+          .update({ role: formData.role })
           .eq("user_id", user.id as any);
 
         if (roleError) {

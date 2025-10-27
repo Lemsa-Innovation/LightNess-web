@@ -20,7 +20,7 @@ export function useSupabaseBlogs() {
       if (fetchError) {
         setError(new Error(fetchError.message));
       } else {
-        setBlogs(data || []);
+        setBlogs((data as any) || []);
       }
     } catch (err) {
       setError(err instanceof Error ? err : new Error("Failed to fetch blogs"));
@@ -117,7 +117,10 @@ export async function updateBlog(
 }
 
 export async function deleteBlog(id: string) {
-  const { error } = await supabase.from("blogs").delete().eq("id", id);
+  const { error } = await supabase
+    .from("blogs")
+    .delete()
+    .eq("id", id as any);
 
   if (error) {
     throw new Error(error.message);
@@ -130,14 +133,14 @@ export async function getBlogById(id: string): Promise<Blog> {
   const { data, error } = await supabase
     .from("blogs")
     .select("*")
-    .eq("id", id)
+    .eq("id", id as any)
     .single();
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return data as Blog;
+  return data as any as Blog;
 }
 
 export async function uploadBlogImageToStorage(file: File, path: string) {

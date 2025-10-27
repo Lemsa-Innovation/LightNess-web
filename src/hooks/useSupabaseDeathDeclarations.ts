@@ -65,7 +65,7 @@ export function useSupabaseDeathDeclarations() {
       if (fetchError) {
         setError(new Error(fetchError.message));
       } else {
-        setDeathDeclarations(deathDeclarationsData || []);
+        setDeathDeclarations((deathDeclarationsData as any) || []);
       }
     } catch (err) {
       setError(

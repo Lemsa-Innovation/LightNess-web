@@ -20,7 +20,7 @@ export function useSupabaseAnnouncements() {
       if (fetchError) {
         setError(new Error(fetchError.message));
       } else {
-        setAnnouncements(data || []);
+        setAnnouncements((data as any) || []);
       }
     } catch (err) {
       setError(
@@ -123,7 +123,10 @@ export async function updateAnnouncement(
 }
 
 export async function deleteAnnouncement(id: string) {
-  const { error } = await supabase.from("announcements").delete().eq("id", id);
+  const { error } = await supabase
+    .from("announcements")
+    .delete()
+    .eq("id", id as any);
 
   if (error) {
     throw new Error(error.message);
