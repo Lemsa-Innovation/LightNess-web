@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { WasherProfile } from "@/types/database";
 
 export interface SupabaseWasher extends WasherProfile {
+  uid: string; // Add uid property for table key
   user?: {
     first_name?: string;
     last_name?: string;
@@ -54,6 +55,7 @@ export function useSupabaseWashers() {
         setError(new Error(fetchError.message));
       } else {
         const washersDataArray = (washersData as any) || [];
+        // The uid field is already provided by the database
         setWashers(washersDataArray);
 
         // Calculate summary statistics

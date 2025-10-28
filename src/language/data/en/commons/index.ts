@@ -42,6 +42,8 @@ export const commons: Commons = {
     open: "Open",
     closed: "Closed",
     busy: "Busy",
+    validated: "Fully Validated",
+    partially_validated: "Partially Validated",
     paused: "Paused",
     available: "Available",
     offline: "Offline",

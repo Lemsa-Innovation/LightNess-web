@@ -53,6 +53,7 @@ function WashersTable() {
     handleChangeRowsPerPage,
     page,
     rowsPerPage,
+    setMultipleParams,
   } = useTable({
     usedFor: "washers",
     INITIAL_VISIBLE_COLUMNS,
@@ -75,17 +76,36 @@ function WashersTable() {
   // }, [users]);
 
   const statusOptions = useMemo(() => {
-    const statusSet = new Set(washers?.map(({ status }) => status));
+    const statusSet = new Set(
+      washers?.map(({ is_validated_identity, is_validated_certification }) => {
+        if (is_validated_identity && is_validated_certification)
+          return "validated";
+        if (is_validated_identity || is_validated_certification)
+          return "partially_validated";
+        return "pending";
+      })
+    );
     return Array.from(statusSet);
   }, [washers]);
 
   const filteredData = useMemo(() => {
     if (!washers) return [];
-    const hits = washers.filter(({ user, fullname, phone_number }) => {
+
+    const hits = washers.filter((washer) => {
       if (filterValue) {
+        const { user, fullname, phone_number } = washer;
+        // Create searchable values array including user data
+        const searchableValues = [
+          user?.email || "",
+          user?.first_name || "",
+          user?.last_name || "",
+          fullname || "",
+          phone_number || "",
+        ];
+
         return searchIn({
           filterValue,
-          values: [user?.email || "", fullname, phone_number || ""],
+          values: searchableValues,
         });
       }
       return true;
@@ -94,8 +114,16 @@ function WashersTable() {
     const statusFilteredHits =
       statusFilter !== "all" &&
       Array.from(statusFilter).length !== statusOptions.length
-        ? hits.filter(({ status }) =>
-            Array.from(statusFilter).includes(status ?? "inactive")
+        ? hits.filter(
+            ({ is_validated_identity, is_validated_certification }) => {
+              const validationStatus =
+                is_validated_identity && is_validated_certification
+                  ? "validated"
+                  : is_validated_identity || is_validated_certification
+                  ? "partially_validated"
+                  : "pending";
+              return Array.from(statusFilter).includes(validationStatus);
+            }
           )
         : hits;
 
@@ -110,19 +138,22 @@ function WashersTable() {
       // push(`${SIDEBAR_ROUTES.users.path}/${selectedKey}`);
     }
   };
-  const onSearchChange = useCallback((value: string) => {
-    if (value) {
-      handleChangeFilterValue(value);
-      handleChangePage(1);
-    } else {
-      handleChangeFilterValue("");
-    }
-  }, []);
+  const onSearchChange = useCallback(
+    (value: string) => {
+      if (value) {
+        // Set both search and page parameters at the same time
+        setMultipleParams({ search: value, page: "1" });
+      } else {
+        // Set both search and page parameters at the same time
+        setMultipleParams({ search: "", page: "1" });
+      }
+    },
+    [setMultipleParams]
+  );
 
   const onClear = useCallback(() => {
-    handleChangeFilterValue("");
-    handleChangePage(1);
-  }, []);
+    setMultipleParams({ search: "", page: "1" });
+  }, [setMultipleParams]);
   const onRowsPerPageChange = useCallback(
     (event: ChangeEvent<HTMLSelectElement>) => {
       handleChangeRowsPerPage(event.target.value);

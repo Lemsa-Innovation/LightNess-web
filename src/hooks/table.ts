@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useSearchParamsName } from "./searchParams";
 import { ColumnUID } from "@/language/structure";
+import { useSearchParams } from "next/navigation";
 
 export function useTable({
   usedFor,
@@ -16,10 +17,12 @@ export function useTable({
     rowsPerPage: `${usedFor}.rowsPerPage`,
     visibleColumns: `${usedFor}.visibleColumns`,
   };
-  const { setParam, getParam, getCookies, setCookies } = useSearchParamsName();
+  const { setParam, setMultipleParams, getParam, getCookies, setCookies } =
+    useSearchParamsName();
+  const searchParams = useSearchParams();
 
   const page = Number(getParam("page") ?? 1) ?? 1;
-  const filterValue = getParam("search");
+  const filterValue = searchParams.get("search");
 
   const handleChangePage = (value: number) => {
     setParam("page", value.toString());
@@ -96,5 +99,6 @@ export function useTable({
     handleChangeFilterValue,
     handleChangeVisibleColumns,
     handleSort,
+    setMultipleParams,
   };
 }

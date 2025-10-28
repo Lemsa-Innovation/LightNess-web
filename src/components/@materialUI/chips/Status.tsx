@@ -20,6 +20,8 @@ export const statusColor: Record<keyof Status, InputProps["color"]> = {
   completed: "success",
   removed: "danger",
   inactive: "danger",
+  validated: "success",
+  partially_validated: "warning",
 };
 function StatusChip({ statusKey }: { statusKey: keyof Status }) {
   const { languageData } = useLanguage();

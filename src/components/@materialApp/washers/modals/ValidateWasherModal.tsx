@@ -60,14 +60,15 @@ export function ValidateWasherModal({
     try {
       setIsLoading(true);
 
-      const { error } = await (supabase as any)
-        .from("washer_profiles")
-        .update({
-          is_validated_identity: isValidatingIdentity,
-          is_validated_certification: isValidatingCertification,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("uid", washer.uid as any);
+      const { error } = await (supabase as any).rpc(
+        "update_validation_status",
+        {
+          entity_type: "washer",
+          target_uid: washer.uid,
+          new_is_validated_identity: isValidatingIdentity,
+          new_is_validated_certification: isValidatingCertification,
+        }
+      );
 
       if (error) {
         throw error;

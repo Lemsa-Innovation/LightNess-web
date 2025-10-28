@@ -67,6 +67,8 @@ export interface Status {
   open: string;
   closed: string;
   busy: string;
+  validated: string;
+  partially_validated: string;
   paused: string;
   available: string;
   offline: string;

@@ -45,13 +45,15 @@ export function ValidateFuneralCompanyModal({
     try {
       setIsLoading(true);
 
-      const { error } = await (supabase as any)
-        .from("funeral_company_profiles")
-        .update({
-          is_validated_identity: isValidatingIdentity,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("uid", funeralCompany.uid as any);
+      const { error } = await (supabase as any).rpc(
+        "update_validation_status",
+        {
+          entity_type: "funeral",
+          target_uid: funeralCompany.uid,
+          new_is_validated_identity: isValidatingIdentity,
+          new_is_validated_certification: null,
+        }
+      );
 
       if (error) {
         throw error;

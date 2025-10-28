@@ -46,6 +46,7 @@ function UsersTable() {
     rowsPerPage,
     sortDescriptor,
     handleSort,
+    setMultipleParams,
   } = useTable({
     usedFor: "users",
     INITIAL_VISIBLE_COLUMNS: [
@@ -87,21 +88,26 @@ function UsersTable() {
 
   const filteredData = useMemo(() => {
     if (!users) return [];
-    const hits = users.filter(({ email, id, last_name, first_name }) => {
-      if (filterValue) {
-        return searchIn({
-          filterValue,
-          values: [
-            id,
-            email,
-            last_name,
-            first_name,
-            // phone_number ? formatPhoneToLocal(phone_number) : undefined,
-          ],
-        });
+
+    const hits = users.filter(
+      ({ email, id, last_name, first_name, phone_number }) => {
+        if (filterValue) {
+          const searchableValues = [
+            id || "",
+            email || "",
+            last_name || "",
+            first_name || "",
+            phone_number || "",
+          ];
+
+          return searchIn({
+            filterValue,
+            values: searchableValues,
+          });
+        }
+        return true;
       }
-      return true;
-    });
+    );
 
     const statusFilteredHits =
       statusFilter !== "all" &&
@@ -119,7 +125,14 @@ function UsersTable() {
         : statusFilteredHits;
 
     return roleFilteredHits;
-  }, [users, filterValue, roleFilter, statusFilter]);
+  }, [
+    users,
+    filterValue,
+    roleFilter,
+    statusFilter,
+    statusOptions.length,
+    roleOptions.length,
+  ]);
 
   const pages = Math.ceil(filteredData.length / rowsPerPage);
 
@@ -129,25 +142,28 @@ function UsersTable() {
       // push(`${SIDEBAR_ROUTES.users.path}/${selectedKey}`);
     }
   };
-  const onSearchChange = useCallback((value: string) => {
-    if (value) {
-      handleChangeFilterValue(value);
-      handleChangePage(1);
-    } else {
-      handleChangeFilterValue("");
-    }
-  }, []);
+  const onSearchChange = useCallback(
+    (value: string) => {
+      if (value) {
+        // Set both search and page parameters at the same time
+        setMultipleParams({ search: value, page: "1" });
+      } else {
+        // Set both search and page parameters at the same time
+        setMultipleParams({ search: "", page: "1" });
+      }
+    },
+    [setMultipleParams]
+  );
 
   const onClear = useCallback(() => {
-    handleChangeFilterValue("");
-    handleChangePage(1);
-  }, []);
+    setMultipleParams({ search: "", page: "1" });
+  }, [setMultipleParams]);
   const onRowsPerPageChange = useCallback(
     (event: ChangeEvent<HTMLSelectElement>) => {
       handleChangeRowsPerPage(event.target.value);
       handleChangePage(1);
     },
-    []
+    [handleChangeRowsPerPage, handleChangePage]
   );
 
   const getColumns = () => {
@@ -262,6 +278,12 @@ function UsersTable() {
     roleFilter,
     filteredData,
     statusFilter,
+    tableLabels,
+    onSearchChange,
+    onClear,
+    onRowsPerPageChange,
+    columns,
+    allStatus,
   ]);
 
   const bottomContent = useMemo(() => {
@@ -278,7 +300,7 @@ function UsersTable() {
         />
       </div>
     );
-  }, [pages, page]);
+  }, [pages, page, handleChangePage]);
 
   const renderCell = useCallback((user: SupabaseUser, columnKey: Key) => {
     const { verification_steps, created_at } = user;
