@@ -16,12 +16,7 @@ import {
   TableRow,
 } from "@heroui/react";
 import { ChangeEvent, Key, useCallback, useMemo, useState } from "react";
-import {
-  InputSearch,
-  DateChip,
-  ChevronIcon,
-  StatusChip,
-} from "@/components/@materialUI";
+import { InputSearch, DateChip } from "@/components/@materialUI";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { MinimalUser, UserActionsDropdown } from "../cards";
 import { UserRoleChip } from "../chips";
@@ -34,7 +29,6 @@ function UsersTable() {
   const { languageData } = useLanguage();
   const columns = languageData?.commons.table.columns;
   const tableLabels = languageData?.commons.labels.table;
-  const allStatus = languageData?.commons.status;
   const roles = languageData?.profile.roles;
 
   const {
@@ -53,7 +47,6 @@ function UsersTable() {
       "user",
       "role",
       "phoneNumber",
-      "status",
       "registeredDate",
       "actions",
     ],
@@ -61,29 +54,18 @@ function UsersTable() {
       "user",
       "role",
       "phoneNumber",
-      "status",
       "registeredDate",
       "actions",
     ],
   });
 
   const [roleFilter, setRoleFilter] = useState<Selection>("all");
-  const [statusFilter, setStatusFilter] = useState<Selection>("all");
 
   const { users, error, isLoading } = useSupabaseUsers();
 
   const roleOptions = useMemo(() => {
     const roleSet = new Set(users?.map(({ role }) => role));
     return Array.from(roleSet);
-  }, [users]);
-
-  const statusOptions = useMemo(() => {
-    const statusSet = new Set(
-      users
-        ?.map(({ account_status }) => account_status)
-        .filter((status) => !!status)
-    );
-    return Array.from(statusSet);
   }, [users]);
 
   const filteredData = useMemo(() => {
@@ -109,30 +91,14 @@ function UsersTable() {
       }
     );
 
-    const statusFilteredHits =
-      statusFilter !== "all" &&
-      Array.from(statusFilter).length !== statusOptions.length
-        ? hits.filter(({ account_status }) =>
-            Array.from(statusFilter).includes(account_status ?? "unverified")
-          )
-        : hits;
     const roleFilteredHits =
       roleFilter !== "all" &&
       Array.from(roleFilter).length !== roleOptions.length
-        ? statusFilteredHits.filter(({ role }) =>
-            Array.from(roleFilter).includes(role)
-          )
-        : statusFilteredHits;
+        ? hits.filter(({ role }) => Array.from(roleFilter).includes(role))
+        : hits;
 
     return roleFilteredHits;
-  }, [
-    users,
-    filterValue,
-    roleFilter,
-    statusFilter,
-    statusOptions.length,
-    roleOptions.length,
-  ]);
+  }, [users, filterValue, roleFilter, roleOptions.length]);
 
   const pages = Math.ceil(filteredData.length / rowsPerPage);
 
@@ -175,7 +141,6 @@ function UsersTable() {
       { uid: "user", sortable: false },
       { uid: "role", sortable: false },
       { uid: "phoneNumber", sortable: false },
-      { uid: "status", sortable: false },
       { uid: "registeredDate", sortable: false },
       { uid: "actions", sortable: false },
     ];
@@ -218,34 +183,6 @@ function UsersTable() {
                 ))}
               </DropdownMenu>
             </Dropdown> */}
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button endContent={<ChevronIcon down filled />} variant="flat">
-                  {columns?.status}
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
-                {statusOptions.map((status) => (
-                  <DropdownItem
-                    key={status || "unknown"}
-                    className="capitalize"
-                  >
-                    {
-                      allStatus?.[
-                        (status || "unknown") as keyof typeof allStatus
-                      ]
-                    }
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
             <CreateUserModal />
           </div>
         </div>
@@ -272,18 +209,15 @@ function UsersTable() {
       </div>
     );
   }, [
-    statusOptions,
     rowsPerPage,
     roleOptions,
     roleFilter,
     filteredData,
-    statusFilter,
     tableLabels,
     onSearchChange,
     onClear,
     onRowsPerPageChange,
     columns,
-    allStatus,
   ]);
 
   const bottomContent = useMemo(() => {
@@ -312,14 +246,6 @@ function UsersTable() {
         return <UserRoleChip user={user} />;
       case "phoneNumber":
         return <p>{user.phone_number}</p>;
-      case "status":
-        return (
-          <StatusChip
-            statusKey={
-              verification_steps?.email?.verified ? "active" : "unverified"
-            }
-          />
-        );
       case "registeredDate":
         return <DateChip timestamp={created_at} />;
       case "actions":

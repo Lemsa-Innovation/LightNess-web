@@ -1,3 +1,4 @@
+"use client";
 import { ColumnUID } from "@/language/structure/commons";
 import {
   Button,
@@ -53,6 +54,8 @@ function WashersTable() {
     handleChangeRowsPerPage,
     page,
     rowsPerPage,
+    sortDescriptor,
+    handleSort,
     setMultipleParams,
   } = useTable({
     usedFor: "washers",
@@ -159,7 +162,7 @@ function WashersTable() {
       handleChangeRowsPerPage(event.target.value);
       handleChangePage(1);
     },
-    []
+    [handleChangeRowsPerPage, handleChangePage]
   );
 
   const getColumns = () => {
@@ -287,7 +290,7 @@ function WashersTable() {
         />
       </div>
     );
-  }, [pages, page]);
+  }, [pages, page, handleChangePage]);
 
   const renderCell = useCallback((washer: SupabaseWasher, columnKey: Key) => {
     const {
@@ -410,6 +413,15 @@ function WashersTable() {
         isHeaderSticky
         aria-label="stores"
         selectionMode="single"
+        sortDescriptor={
+          sortDescriptor.column
+            ? {
+                column: sortDescriptor.column,
+                direction: sortDescriptor.direction,
+              }
+            : undefined
+        }
+        onSortChange={handleSort}
         topContent={topContent}
         bottomContent={bottomContent}
         onSelectionChange={handleSelection}

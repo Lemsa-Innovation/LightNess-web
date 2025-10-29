@@ -103,6 +103,8 @@ export interface TableDictionnary {
     certificationStatus: string;
     identityValidatedCount: string;
     certificationValidatedCount: string;
+    email: string;
+    declaredByCount: string;
   };
 }
 

@@ -97,6 +97,8 @@ export const commons: Commons = {
       certificationStatus: "Certification",
       identityValidatedCount: "Identité Validée",
       certificationValidatedCount: "Certification Validée",
+      email: "Email",
+      declaredByCount: "# Déclaré par",
     },
   },
   labels: {

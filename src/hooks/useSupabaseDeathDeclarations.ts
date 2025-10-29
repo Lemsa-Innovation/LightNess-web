@@ -7,6 +7,8 @@ export interface SupabaseDeathDeclaration {
   matched_uid: string;
   status: "rejected" | "pending" | "approved";
   created_at: string;
+  attachments?: string[];
+  description?: string;
   declared_by_user?: {
     id: string;
     first_name?: string;
@@ -41,7 +43,13 @@ export function useSupabaseDeathDeclarations() {
         .from("death_declarations")
         .select(
           `
-          *,
+          uid,
+          declared_by,
+          matched_uid,
+          status,
+          created_at,
+          attachments,
+          description,
           declared_by_user:users!death_declarations_declared_by_fkey (
             id,
             first_name,

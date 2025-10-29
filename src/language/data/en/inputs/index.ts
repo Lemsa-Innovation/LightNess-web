@@ -261,6 +261,12 @@ export const inputs: Inputs = {
       placeOfDeath: "Place of death",
       dateOfDeath: "Date of death",
       empty: "No death declarations available",
+      details: "Death Declaration Details",
+      deceasedPerson: "Deceased Person",
+      declarations: "Declarations",
+      description: "Description",
+      attachments: "Attachments",
+      viewAttachment: "View Attachment",
     },
     actions: {
       rejectDeclaration: {

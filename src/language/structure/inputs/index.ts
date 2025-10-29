@@ -93,6 +93,12 @@ export interface Inputs {
       placeOfDeath: string;
       dateOfDeath: string;
       empty: string;
+      details: string;
+      deceasedPerson: string;
+      declarations: string;
+      description: string;
+      attachments: string;
+      viewAttachment: string;
     };
     actions: {
       validateDeclaration: Action;
