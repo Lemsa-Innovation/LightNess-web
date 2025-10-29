@@ -401,11 +401,11 @@ function WashersTable() {
             Validated (Identity + Certification)
           </div>
         </div>
-        <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-          <div className="text-2xl font-bold text-red-600">
+        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+          <div className="text-2xl font-bold text-orange-600">
             {summaryStats.pending}
           </div>
-          <div className="text-sm text-red-800">Pending Validation</div>
+          <div className="text-sm text-orange-800">Pending Validation</div>
         </div>
       </div>
 

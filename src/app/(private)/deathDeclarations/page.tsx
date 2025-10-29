@@ -234,6 +234,14 @@ function DeathDeclarationsTable() {
     detailModalProps.onOpen();
   };
 
+  const summaryStats = useMemo(() => {
+    const total = tableData.length;
+    const validated = tableData.filter((r) => r.status === "approved").length;
+    const rejected = tableData.filter((r) => r.status === "rejected").length;
+    const pending = total - validated - rejected;
+    return { total, validated, rejected, pending };
+  }, [tableData]);
+
   const topContent = useMemo(() => {
     return (
       <div className="flex flex-col gap-4">
@@ -343,6 +351,34 @@ function DeathDeclarationsTable() {
 
   return (
     <>
+      {/* Summary Counters */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <div className="text-2xl font-bold text-blue-600">
+            {summaryStats.total}
+          </div>
+          <div className="text-sm text-blue-800">Total</div>
+        </div>
+        <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+          <div className="text-2xl font-bold text-green-600">
+            {summaryStats.validated}
+          </div>
+          <div className="text-sm text-green-800">Validated</div>
+        </div>
+        <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+          <div className="text-2xl font-bold text-red-600">
+            {summaryStats.rejected}
+          </div>
+          <div className="text-sm text-red-800">Rejected</div>
+        </div>
+        <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+          <div className="text-2xl font-bold text-orange-600">
+            {summaryStats.pending}
+          </div>
+          <div className="text-sm text-orange-800">Pending</div>
+        </div>
+      </div>
+
       {selectedMatchedUid && (
         <DetailModal
           matchedUid={selectedMatchedUid}
