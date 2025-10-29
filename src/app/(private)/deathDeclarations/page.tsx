@@ -351,17 +351,14 @@ function DeathDeclarationsTable() {
               ?.matched_user
           }
           declarations={
-            deathsDeclarations[selectedMatchedUid]?.declaredBy.map(
-              (declaration) => {
-                const user = data?.find(
-                  (d) => d.uid === declaration.uid
-                )?.declared_by_user;
-                return {
-                  ...data?.find((d) => d.uid === declaration.uid)!,
-                  user,
-                };
-              }
-            ) || []
+            (deathsDeclarations[selectedMatchedUid]?.declaredBy
+              .map((declaration) => {
+                const found = data?.find((d) => d.uid === declaration.uid);
+                if (!found) return null;
+                const user = found.declared_by_user;
+                return { ...found, user };
+              })
+              .filter((v) => v !== null) as any[]) || []
           }
           disclosureProps={detailModalProps}
           onSuccess={refetch}
