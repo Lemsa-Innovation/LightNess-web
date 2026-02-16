@@ -10,7 +10,7 @@ import {
 } from "@/components/@materialUI/inputs/texts";
 
 import InputPhone from "@/components/@materialUI/inputs/texts/InputPhone";
-import InputGender from "@/components/@materialUI/inputs/select/gender";
+import InputGender from "@/components/@materialUI/inputs/radio/InputGender";
 import InputCountry from "@/components/@materialUI/inputs/select/country";
 import { useLanguage } from "@/contexts/language/LanguageContext";
 import { toast } from "sonner";
@@ -449,7 +449,7 @@ function SignupPage() {
             <InputGender
               name="gender"
               control={control}
-              field={auth?.fields.gender}
+              label={auth?.fields.gender?.label}
             />
 
             <InputPhone

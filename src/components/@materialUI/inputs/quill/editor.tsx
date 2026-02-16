@@ -1,22 +1,23 @@
 import Quill from "quill";
-import { forwardRef, use, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Control, useController } from "react-hook-form";
 import "quill/dist/quill.snow.css";
 import TurndownService from "turndown";
 import { marked } from "marked";
 
 // Editor is an uncontrolled React component
+// React 19: ref is passed as a regular prop, forwardRef no longer needed
 type EditorProps = {
   readOnly?: boolean;
   control: Control<any>;
   name: string;
   defaultValue?: string;
+  ref?: React.Ref<Quill | null>;
 };
 
 const turndownService = new TurndownService();
 
-const Editor = forwardRef<Quill, EditorProps>(
-  ({ readOnly, control, name, defaultValue }, ref) => {
+function Editor({ readOnly, control, name, defaultValue, ref }: EditorProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const quillRef = useRef<Quill | null>(null);
 
@@ -81,9 +82,8 @@ const Editor = forwardRef<Quill, EditorProps>(
       };
     }, [ref, onChange, defaultValue, readOnly]);
 
-    return <div ref={containerRef} className="h-[400px] "></div>;
-  }
-);
+  return <div ref={containerRef} className="h-[400px] "></div>;
+}
 
 Editor.displayName = "Editor";
 
